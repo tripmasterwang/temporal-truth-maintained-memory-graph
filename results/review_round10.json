@@ -1,0 +1,99 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 13.315899133682251,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Well-defined method: claim schema, linker, truth-consistent retrieval",
+      "Strong ablation study isolating the linker's contribution",
+      "Efficiency analysis shows lower compute than baseline"
+    ],
+    "weaknesses": [
+      "Overall accuracy (62.0%) is lower than flat baseline (66.0%)",
+      "Knowledge-update (KU) performance drops significantly (75.0% vs 87.5%)",
+      "No statistical significance test for main TR gain (n=13 too small)",
+      "Method details (e.g., MCS algorithm optimality) lack formal proof",
+      "Evaluation limited to 50-question slice; full benchmark results missing"
+    ],
+    "required_revisions": [
+      "Clarify why overall accuracy is lower than flat baseline despite TR gain",
+      "Explain the significant drop in KU performance (75.0% vs 87.5%)",
+      "Provide full benchmark results on all 500 LongMemEval-S questions",
+      "Include formal proof or more rigorous analysis of MCS algorithm optimality claim",
+      "Add error analysis for cases where TTMG underperforms flat RAG"
+    ],
+    "verdict": "weak_accept"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 14.57631254196167,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.0
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon memory",
+      "Novel method: claim-level memory with truth-maintenance edges",
+      "Strong focus on temporal-reasoning slice, the target capability",
+      "Includes ablation study isolating the contribution of the linker",
+      "Reports efficiency gains vs. baseline (tokens, latency)"
+    ],
+    "weaknesses": [
+      "Overall accuracy on benchmark is lower than flat baseline",
+      "Small sample size for key TR slice (n=13), statistical significance weak",
+      "No error bars or variance reported for main results",
+      "No comparison to other temporal reasoning or TKG methods",
+      "Ablation only tests linker removal; missing schema/parser ablations",
+      "No analysis of failure modes beyond one qualitative example"
+    ],
+    "required_revisions": [
+      "Report standard deviations or confidence intervals for all accuracy numbers",
+      "Clarify why overall accuracy is lower than flat baseline despite TR gain",
+      "Add statistical test results (e.g., McNemar p-values) for all comparisons",
+      "Include ablation of claim schema (without edges) to separate its effect",
+      "Provide full results on all LongMemEval-S slices, not just stratified 50",
+      "Justify hyperparameter choices (similarity gate, thresholds) with pilot data"
+    ],
+    "verdict": "weak_accept"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 12.546937942504883,
+    "scores": {
+      "originality": 8,
+      "quality": 7,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 7.5
+    },
+    "strengths": [
+      "Clear, practical system design with explicit truth-maintenance edges",
+      "Strong, focused improvement on temporal-reasoning slice (+15.3pp)",
+      "Efficiency gains over baseline (59.3% token reduction)",
+      "Ablation study isolates contribution of linker mechanism",
+      "Well-defined schema and retrieval algorithm"
+    ],
+    "weaknesses": [
+      "Overall accuracy (62.0%) is lower than flat baseline (66.0%)",
+      "Limited evaluation scale (50-question slice, n=13 for TR)",
+      "No analysis of failure modes for non-temporal questions",
+      "Relies on LLM for linking and parsing, adds complexity",
+      "Statistical significance on small TR slice is weak"
+    ],
+    "required_revisions": [
+      "Clarify why overall accuracy is lower than flat baseline despite TR gain",
+      "Provide more details on the 'hybrid reader context' integration",
+      "Justify hyperparameter choices (e.g., similarity thresholds)",
+      "Include latency breakdown (write vs. read) in efficiency table",
+      "Discuss scalability of greedy MCS algorithm for larger graphs"
+    ],
+    "verdict": "weak_accept"
+  }
+}

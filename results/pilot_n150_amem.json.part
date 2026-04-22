@@ -1,0 +1,152 @@
+{
+  "args": {
+    "method": "amem",
+    "limit": 150,
+    "stratify": true,
+    "types": null,
+    "only_abs": false,
+    "include_abs": true,
+    "max_sessions": 3,
+    "writer_model": "Kimi-K2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "seed": 0,
+    "output": "results/pilot_n150_amem.json",
+    "progress_every": 1,
+    "disable_temporal": false,
+    "disable_contradict": false,
+    "disable_consistent_subgraph": false,
+    "disable_supersede_flag": false,
+    "disable_writer_claims": false,
+    "disable_abstention": false
+  },
+  "rows": [
+    {
+      "question_id": "gpt4_7bc6cf22",
+      "question_type": "temporal-reasoning",
+      "is_abstention": false,
+      "question": "How many days ago did I read the March 15th issue of The New Yorker?",
+      "gold": "12 days ago. 13 days (including the last day) is also acceptable.",
+      "pred": "You read the March 15th issue of The New Yorker on March 20, 2023.",
+      "correct": 0,
+      "judge_reason": "Model answer provides a date but not a relative number of days.",
+      "f1": 0.07692307692307691,
+      "abstained": false,
+      "retrieve_time": 0.015904903411865234,
+      "reader_time": 3.289252996444702,
+      "ingest_time": 118.61157846450806,
+      "answer_time": 3.3052451610565186,
+      "metrics": {
+        "writer_calls": 34,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "15745da0",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "How long have I been collecting vintage cameras?",
+      "gold": "three months",
+      "pred": "You have been collecting vintage cameras for three months.",
+      "correct": 1,
+      "judge_reason": "Model answer matches the reference exactly.",
+      "f1": 0.3636363636363636,
+      "abstained": false,
+      "retrieve_time": 0.016626358032226562,
+      "reader_time": 2.618950843811035,
+      "ingest_time": 80.69336748123169,
+      "answer_time": 2.6356844902038574,
+      "metrics": {
+        "writer_calls": 23,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "cc06de0d",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "question": "For my daily commute, how much more expensive was the taxi ride compared to the train fare?",
+      "gold": "$6",
+      "pred": "The taxi ride cost $12, and the train fare is $6, so the taxi was $6 more expensive.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference, stating $6 difference.",
+      "f1": 0.10526315789473684,
+      "abstained": false,
+      "retrieve_time": 0.013106822967529297,
+      "reader_time": 3.1928207874298096,
+      "ingest_time": 125.84503507614136,
+      "answer_time": 3.2060132026672363,
+      "metrics": {
+        "writer_calls": 36,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "a40e080f",
+      "question_type": "single-session-assistant",
+      "is_abstention": false,
+      "question": "I was going through our previous conversation and I was wondering if you could remind me of the two companies you mentioned that prioritize employee safety and well-being like Triumvirate?",
+      "gold": "Patagonia and Southwest Airlines.",
+      "pred": "Based on our previous conversation, the two companies mentioned that prioritize employee safety and well-being like Triumvirate are:\n\n1. **Patagonia**  \n2. **Southwest Airlines**",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.2857142857142857,
+      "abstained": false,
+      "retrieve_time": 0.012934684753417969,
+      "reader_time": 3.104417324066162,
+      "ingest_time": 125.35165500640869,
+      "answer_time": 3.117448329925537,
+      "metrics": {
+        "writer_calls": 37,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "5d3d2817",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "What was my previous occupation?",
+      "gold": "Marketing specialist at a small startup",
+      "pred": "Based on the retrieved notes, your previous occupation was a marketing specialist at a small startup.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.5454545454545454,
+      "abstained": false,
+      "retrieve_time": 0.012930870056152344,
+      "reader_time": 1.6517934799194336,
+      "ingest_time": 123.10449981689453,
+      "answer_time": 1.6648242473602295,
+      "metrics": {
+        "writer_calls": 37,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "gpt4_194be4b3",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "question": "How many musical instruments do I currently own?",
+      "gold": "I currently own 4 musical instruments. I've had the Fender Stratocaster electric guitar for 5 years, the Yamaha FG800 acoustic guitar for 8 years, the 5-piece Pearl Export drum set for an unspecified amount of time, and the Korg B1 piano for 3 years.",
+      "pred": "Based on the retrieved notes, you currently own at least a **5-piece Pearl Export drum set** and a **guitar**. There is also mention of considering buying a ukulele, but no confirmation of purchase. Therefore, you own at least **2 musical instruments**.",
+      "correct": 0,
+      "judge_reason": "Model answer undercounts; reference lists 4 instruments.",
+      "f1": 0.31818181818181823,
+      "abstained": false,
+      "retrieve_time": 0.01633143424987793,
+      "reader_time": 2.9753293991088867,
+      "ingest_time": 110.43769526481628,
+      "answer_time": 2.9917683601379395,
+      "metrics": {
+        "writer_calls": 33,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    }
+  ]
+}

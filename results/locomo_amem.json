@@ -1,0 +1,620 @@
+{
+  "args": {
+    "method": "amem",
+    "limit_convs": 3,
+    "max_sessions": 5,
+    "max_qa_per_conv": 20,
+    "writer_model": "Kimi-K2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "output": "results/locomo_amem.json"
+  },
+  "summary": {
+    "n": 60,
+    "accuracy": 0.5,
+    "f1": 0.13528857080149434
+  },
+  "rows": [
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When did Caroline go to the LGBTQ support group?",
+      "gold": "7 May 2023",
+      "pred": "Caroline went to the LGBTQ support group on May 7, 2023 (the day before the note from May 8, 2023).",
+      "correct": 1,
+      "f1": 0.2608695652173913,
+      "judge_reason": "Model answer matches reference date."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When did Melanie paint a sunrise?",
+      "gold": "2022",
+      "pred": "I do not know when Melanie painted a sunrise. The retrieved notes mention her painting and creativity but do not specify a sunrise or its date.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly abstains, as reference answer is not in notes."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 3,
+      "question": "What fields would Caroline be likely to pursue in her educaton?",
+      "gold": "Psychology, counseling certification",
+      "pred": "Based on the notes, Caroline is likely to pursue fields related to counseling, social work, or child and family services, given her dedication to helping others, involvement in adoption, and motivation for counseling.",
+      "correct": 0,
+      "f1": 0.05555555555555555,
+      "judge_reason": "Model answer is too broad and speculative, not matching the specific reference."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "What did Caroline research?",
+      "gold": "Adoption agencies",
+      "pred": "Based on the retrieved notes, Caroline researched counseling, as she is described as doing impressive work and showing dedication to helping others in that field.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model answer contradicts reference; says counseling, not adoption agencies."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "What is Caroline's identity?",
+      "gold": "Transgender woman",
+      "pred": "Based on the memory notes, Caroline is a compassionate individual who is motivated by family, interested in helping children in need, and values self-care.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model answer does not state Caroline's identity as transgender woman."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When did Melanie run a charity race?",
+      "gold": "The sunday before 25 May 2023",
+      "pred": "Melanie ran the charity race last Saturday, which was on May 20, 2023.",
+      "correct": 0,
+      "f1": 0.3157894736842105,
+      "judge_reason": "Model's date (May 20) contradicts reference (Sunday before May 25)."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When is Melanie planning on going camping?",
+      "gold": "June 2023",
+      "pred": "Melanie already went camping last week (around late June 2023).",
+      "correct": 0,
+      "f1": 0.33333333333333337,
+      "judge_reason": "Model contradicts reference; states past event, not future plan."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "What is Caroline's relationship status?",
+      "gold": "Single",
+      "pred": "Based on the retrieved notes, there is no information about Caroline's relationship status.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model abstains correctly, as reference indicates no information."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When did Caroline give a speech at a school?",
+      "gold": "The week before 9 June 2023",
+      "pred": "I do not know.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model abstains correctly as reference indicates absence of information."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When did Caroline meet up with her friends, family, and mentors?",
+      "gold": "The week before 9 June 2023",
+      "pred": "Caroline met up with her friends, family, and mentors sometime in the week before 9 June 2023, as indicated by a photo shared on that date.",
+      "correct": 1,
+      "f1": 0.375,
+      "judge_reason": "Model answer matches reference answer's timeframe."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "How long has Caroline had her current group of friends for?",
+      "gold": "4 years",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, but reference provides a specific answer."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "Where did Caroline move from 4 years ago?",
+      "gold": "Sweden",
+      "pred": "Caroline moved from her home country 4 years ago.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model answer is vague, does not specify Sweden."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "How long ago was Caroline's 18th birthday?",
+      "gold": "10 years ago",
+      "pred": "Caroline's 18th birthday was 10 years ago.",
+      "correct": 1,
+      "f1": 0.5454545454545454,
+      "judge_reason": "Model answer matches reference exactly."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "What career path has Caroline decided to persue?",
+      "gold": "counseling or mental health for Transgender people",
+      "pred": "Based on the retrieved notes, Caroline has decided to pursue a career in counseling and mental health services.",
+      "correct": 1,
+      "f1": 0.24,
+      "judge_reason": "Model answer matches reference, specifying counseling and mental health."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 3,
+      "question": "Would Caroline still want to pursue counseling as a career if she hadn't received support growing up?",
+      "gold": "Likely no",
+      "pred": "Based on the retrieved notes, Caroline's motivation to pursue counseling is directly tied to the support she received and her own positive experiences with counseling and support groups. Without that support, it is unclear if she would have developed the same passion for this career path.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly infers 'likely no' from provided context."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "What activities does Melanie partake in?",
+      "gold": "pottery, camping, painting, swimming",
+      "pred": "Melanie partakes in pottery, which she describes as therapeutic and creative.",
+      "correct": 0,
+      "f1": 0.13333333333333333,
+      "judge_reason": "Model answer is incomplete, missing camping, painting, swimming."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When did Melanie sign up for a pottery class?",
+      "gold": "2 July 2023",
+      "pred": "Melanie signed up for a pottery class on July 2, 2023.",
+      "correct": 1,
+      "f1": 0.42857142857142855,
+      "judge_reason": "Model answer matches reference date exactly."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 2,
+      "question": "When is Caroline going to the transgender conference?",
+      "gold": "July 2023",
+      "pred": "Caroline is going to the transgender conference sometime in July 2023.",
+      "correct": 1,
+      "f1": 0.3076923076923077,
+      "judge_reason": "Model answer matches reference timeframe."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "Where has Melanie camped?",
+      "gold": "beach, mountains, forest",
+      "pred": "Based on the retrieved notes, there is no information about where Melanie has camped.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model abstains correctly as information is absent."
+    },
+    {
+      "sample_id": "conv-26",
+      "category": 1,
+      "question": "What do Melanie's kids like?",
+      "gold": "dinosaurs, nature",
+      "pred": "Based on the retrieved notes, there is no specific information about what Melanie's kids like.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly abstains, as reference says the information is not present."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When Jon has lost his job as a banker?",
+      "gold": "19 January, 2023",
+      "pred": "Jon lost his job as a banker on 19 January, 2023.",
+      "correct": 1,
+      "f1": 0.42857142857142855,
+      "judge_reason": "Model answer matches reference exactly."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When Gina has lost her job at Door Dash?",
+      "gold": "January, 2023",
+      "pred": "Gina lost her job at Door Dash in January 2023.",
+      "correct": 1,
+      "f1": 0.33333333333333337,
+      "judge_reason": "Model answer matches reference exactly."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 4,
+      "question": "How do Jon and Gina both like to destress?",
+      "gold": "by dancing",
+      "pred": "Based on the retrieved notes, Jon destresses through dancing, as it lets him be himself and gives him a positive feeling. There is no information about how Gina likes to destress.",
+      "correct": 0,
+      "f1": 0.06060606060606061,
+      "judge_reason": "Model fails to answer for Gina."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 1,
+      "question": "What do Jon and Gina both have in common?",
+      "gold": "They lost their jobs and decided to start their own businesses.",
+      "pred": "Both Jon and Gina are pursuing their own business ventures—Jon is involved in dance and performances, while Gina has started her own clothing store.",
+      "correct": 1,
+      "f1": 0.16666666666666666,
+      "judge_reason": "Model correctly states both started their own businesses."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 4,
+      "question": "Why did Jon decide to start his dance studio?",
+      "gold": "He lost his job and decided to start his own business to share his passion.",
+      "pred": "Jon decided to start his dance studio because dancing has been his passion and escape since childhood, and he wanted to teach others the joy it brings him.",
+      "correct": 0,
+      "f1": 0.41860465116279066,
+      "judge_reason": "Model omits key reason: losing his job."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 1,
+      "question": "What Jon thinks the ideal dance studio should look like?",
+      "gold": "By the water, with natural light and Marley flooring",
+      "pred": "Based on the notes, Jon envisions his ideal dance studio as being by the water and having great natural light.",
+      "correct": 0,
+      "f1": 0.41379310344827586,
+      "judge_reason": "Model omitted mention of Marley flooring."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When is Jon's group performing at a festival?",
+      "gold": "February, 2023",
+      "pred": "Jon's group is performing at a festival next month (as of January 20, 2023).",
+      "correct": 0,
+      "f1": 0.11764705882352941,
+      "judge_reason": "Model answer is imprecise and lacks the specific date."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Gina launch an ad campaign for her store?",
+      "gold": "29 January, 2023",
+      "pred": "Gina launched the ad campaign on 29 January, 2023.",
+      "correct": 1,
+      "f1": 0.5,
+      "judge_reason": "Model answer matches reference exactly."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When was Jon in Paris?",
+      "gold": "28 January 2023",
+      "pred": "The retrieved notes do not contain any information about Jon being in Paris.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly abstains as information is not present."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 1,
+      "question": "Which city have both Jean and John visited?",
+      "gold": "Rome",
+      "pred": "Based on the retrieved notes, both Jean and John have visited Paris.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model answer is Paris, but reference answer is Rome."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Gina team up with a local artist for some cool designs?",
+      "gold": "February, 2023",
+      "pred": "Gina teamed up with a local artist for some cool designs on 8 February 2023.",
+      "correct": 1,
+      "f1": 0.23529411764705882,
+      "judge_reason": "Model's specific date (8 February 2023) is consistent with the reference month and year."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Gina get her tattoo?",
+      "gold": "A few years ago",
+      "pred": "Gina got her tattoo a few years ago.",
+      "correct": 1,
+      "f1": 0.6666666666666666,
+      "judge_reason": "Model answer matches the reference answer."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Jon start to go to the gym?",
+      "gold": "March, 2023",
+      "pred": "I do not know. The retrieved notes do not contain information about when Jon started going to the gym.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly abstains, as reference answer is not in notes."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Gina open her online clothing store?",
+      "gold": "16 March, 2023",
+      "pred": "Based on the retrieved notes, Gina's online clothing store was already open by 29 January 2023, as she mentioned launching an ad campaign for it on that date. The exact opening date is not specified.",
+      "correct": 0,
+      "f1": 0.05128205128205128,
+      "judge_reason": "Model does not provide the exact date from reference."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Jon start expanding his studio's social media presence?",
+      "gold": "April, 2023",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, but reference provides a specific date."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Jon host a dance competition?",
+      "gold": "May, 2023",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Reference provides a date, model abstains incorrectly."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Jon go to a fair to get more exposure for his dance studio?",
+      "gold": "24 April, 2023",
+      "pred": "The retrieved notes do not mention Jon going to a fair for his dance studio.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstained but reference provides a specific date."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 1,
+      "question": "Why did Gina decide to start her own clothing store?",
+      "gold": "She always loved fashion trends and finding unique pieces and she lost her job so decided it was time to start her own business.",
+      "pred": "Gina decided to start her own clothing store after losing her job as a banker, wanting to take a risk and start her own business.",
+      "correct": 1,
+      "f1": 0.3673469387755102,
+      "judge_reason": "Model captures key points: job loss and desire to start business."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 1,
+      "question": "Do Jon and Gina start businesses out of what they love?",
+      "gold": "Yes",
+      "pred": "Yes, both Jon and Gina start businesses based on their passions. Gina mentions starting a clothing store from an idea inspired by a fashion magazine, and Jon is encouraged for his passion and commitment to his business.",
+      "correct": 1,
+      "f1": 0.052631578947368425,
+      "judge_reason": "Model correctly confirms based on provided details."
+    },
+    {
+      "sample_id": "conv-30",
+      "category": 2,
+      "question": "When did Gina interview for a design internship?",
+      "gold": "10 May, 2023",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, but reference provides a specific date."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "Who did Maria have dinner with on May 3, 2023?",
+      "gold": "her mother",
+      "pred": "Based on the retrieved notes, there is no information about who Maria had dinner with on May 3, 2023.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly abstains as information is absent."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "When did Maria donate her car?",
+      "gold": "21 December 2022",
+      "pred": "I do not know.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model abstains correctly; reference date not in question."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What martial arts has John done?",
+      "gold": "Kickboxing, Taekwondo",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, but reference provides specific answer."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What type of volunteering have John and Maria both done?",
+      "gold": "Volunteering at a homeless shelter",
+      "pred": "Based on the retrieved notes, there is no specific information about what type of volunteering John and Maria have both done.",
+      "correct": 0,
+      "f1": 0.07692307692307693,
+      "judge_reason": "Model abstained but reference provided a specific answer."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "When did John join the online support group?",
+      "gold": "The week before 1 January 2023",
+      "pred": "John joined the online support group in the last week of December 2022.",
+      "correct": 1,
+      "f1": 0.21052631578947367,
+      "judge_reason": "Last week of December 2022 is the week before 1 January 2023."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "When did Maria go to the beach?",
+      "gold": "December 2022",
+      "pred": "Based on the retrieved notes, Maria went to the beach in December 2022. She mentioned taking a picture there \"last month\" in a conversation on January 1, 2023.",
+      "correct": 1,
+      "f1": 0.13333333333333333,
+      "judge_reason": "Model answer correctly states December 2022, matching reference."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "Where has Maria made friends?",
+      "gold": "homeless shelter, gym, church",
+      "pred": "Based on the retrieved notes, Maria has made friends in a creative group or activity (note 5) and through collaborative efforts or teamwork (note 6).",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model answer does not match reference locations."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What items des John mention having as a child?",
+      "gold": "A doll, a film camera",
+      "pred": "Based on the retrieved notes, there is no information about items John had as a child.",
+      "correct": 0,
+      "f1": 0.09523809523809523,
+      "judge_reason": "Model should have abstained, but incorrectly answered."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 3,
+      "question": "What might John's financial status be?",
+      "gold": "Middle-class or wealthy",
+      "pred": "Based on the retrieved notes, there is no specific information about John's financial status.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains but reference provides an answer."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "Who gave Maria's family money when she was younger and her family was going through tough times?",
+      "gold": "Her aunt",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, but reference provides an answer."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "When did Maria meet Jean?",
+      "gold": "February 24, 2023",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains but reference provides a specific date."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What people has Maria met and helped while volunteering?",
+      "gold": "David, Jean, Cindy, Laura",
+      "pred": "Based on the retrieved notes, Maria has met and helped John while volunteering.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model answer does not match reference; lists John instead of David, Jean, Cindy, Laura."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What test has John taken multiple times?",
+      "gold": "The military aptitude test",
+      "pred": "John has taken the military aptitude test multiple times.",
+      "correct": 1,
+      "f1": 0.6153846153846153,
+      "judge_reason": "Model answer matches the reference exactly."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "When did Maria's grandmother pass away?",
+      "gold": "The week before 6 March 2023",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, but reference provides a specific date."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 3,
+      "question": "Would John be considered a patriotic person?",
+      "gold": "Yes",
+      "pred": "Based on the retrieved notes, John appears to be actively involved in community service and politics, which suggests he may be patriotic, but the notes do not explicitly confirm his patriotism.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains, reference says yes."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What writing classes has Maria taken?",
+      "gold": "Poetry, creative writing",
+      "pred": "I do not know.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Model abstains but reference provides answer."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 2,
+      "question": "When did John get his degree?",
+      "gold": "The week before 2 April 2023",
+      "pred": "Based on the retrieved memory notes, there is no information about when John got his degree.",
+      "correct": 1,
+      "f1": 0.09090909090909091,
+      "judge_reason": "Model abstains, matching reference's implicit absence."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 3,
+      "question": "What might John's degree be in?",
+      "gold": "Political science, Public administration, Public affairs",
+      "pred": "Based on the retrieved notes, there is no information about John's degree.",
+      "correct": 1,
+      "f1": 0.0,
+      "judge_reason": "Model correctly abstains, matching reference's lack of information."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "Who did John go to yoga with?",
+      "gold": "Rob",
+      "pred": "Based on the retrieved notes, I do not know who John went to yoga with.",
+      "correct": 0,
+      "f1": 0.0,
+      "judge_reason": "Reference provides answer, model abstains incorrectly."
+    },
+    {
+      "sample_id": "conv-41",
+      "category": 1,
+      "question": "What damages have happened to John's car?",
+      "gold": "Broken windshield, Car broke down",
+      "pred": "I do not know. The retrieved notes do not contain any information about damages to John's car.",
+      "correct": 1,
+      "f1": 0.08695652173913045,
+      "judge_reason": "Model correctly abstains, as reference answer is not in notes."
+    }
+  ]
+}

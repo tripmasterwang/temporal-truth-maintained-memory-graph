@@ -1,0 +1,52 @@
+{
+  "args": {
+    "method": "ttmg",
+    "limit": 2,
+    "stratify": false,
+    "types": [
+      "knowledge-update"
+    ],
+    "only_abs": false,
+    "include_abs": true,
+    "max_sessions": 5,
+    "writer_model": "deepseek-v3.2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "seed": 0,
+    "output": "results/smoke/ttmg_smoke.json",
+    "progress_every": 1,
+    "disable_temporal": false,
+    "disable_contradict": false,
+    "disable_consistent_subgraph": false,
+    "disable_supersede_flag": false,
+    "disable_writer_claims": false,
+    "disable_abstention": false
+  },
+  "rows": [
+    {
+      "question_id": "18bc8abd",
+      "question_type": "knowledge-update",
+      "is_abstention": false,
+      "question": "What brand of BBQ sauce am I currently obsessed with?",
+      "gold": "Kansas City Masterpiece",
+      "pred": "You are currently obsessed with Kansas City Masterpiece BBQ sauce.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.4615384615384615,
+      "abstained": false,
+      "retrieve_time": 3.4694581031799316,
+      "reader_time": 4.227447986602783,
+      "ingest_time": 603.4195890426636,
+      "answer_time": 7.697444200515747,
+      "metrics": {
+        "writer_calls": 5,
+        "linker_calls": 32,
+        "parser_calls": 1,
+        "reader_calls": 1,
+        "abstentions": 0
+      },
+      "n_sessions": 5
+    }
+  ]
+}

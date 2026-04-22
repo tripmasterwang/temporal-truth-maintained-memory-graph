@@ -1,0 +1,105 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 16.927419900894165,
+    "scores": {
+      "originality": 7,
+      "quality": 5,
+      "clarity": 6,
+      "significance": 6,
+      "overall": 5.5
+    },
+    "strengths": [
+      "Novel application of truth maintenance to agent memory",
+      "Clear problem framing: truthfulness and abstention in long-horizon memory",
+      "Structured claim schema with validity intervals and edges",
+      "Strong empirical gains on abstention and single-session-user slices",
+      "Ablation study isolates causal role of LLM linker"
+    ],
+    "weaknesses": [
+      "Overall accuracy is lower than baseline (61.3% vs 68.0%)",
+      "Method details are high-level; lacks algorithmic specifics",
+      "No statistical significance reported for main results",
+      "Small sample sizes for key slices (e.g., n=9 for abstention)",
+      "No comparison to recent state-of-the-art memory systems",
+      "Placeholder numbers and macros throughout (e.g., efficiency table)"
+    ],
+    "required_revisions": [
+      "Replace all placeholder numbers (e.g., 13603, 35904 tokens) with actual experimental results.",
+      "Provide full algorithm details for maximum-consistent subgraph and edge labeling.",
+      "Report statistical significance (p-values, confidence intervals) for all comparisons.",
+      "Clarify the experimental protocol: how was the 150-question slice selected?",
+      "Include a detailed comparison to recent memory baselines beyond Flat RAG and A-Mem.",
+      "Explain the regression on assistant-authored, multi-session, and preference slices.",
+      "Provide full implementation details and hyperparameter tuning process.",
+      "Add a table with complete results for all question types, not just selected slices."
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 18.986107349395752,
+    "scores": {
+      "originality": 7,
+      "quality": 4,
+      "clarity": 6,
+      "significance": 5,
+      "overall": 4.5
+    },
+    "strengths": [
+      "Novel idea: truth maintenance for agent memory via claim-level graph with explicit edges.",
+      "Clear problem framing: addresses abstention and knowledge-update failures in long-horizon memory.",
+      "Efficiency claim: session-batched writer reduces token cost vs. per-turn baseline."
+    ],
+    "weaknesses": [
+      "Incomplete results: overall accuracy is lower than baseline (-6.7pp).",
+      "Missing statistical significance: no p-values or confidence intervals for main claims.",
+      "Insufficient ablation: only one ablation (linker removal) is reported.",
+      "Unclear evaluation: stratified slice size (150) not justified; no details on stratification.",
+      "Placeholder numbers: macros not filled (e.g., token counts, latency).",
+      "No failure analysis: errors on non-target slices (SSA, MS) not analyzed.",
+      "Reproducibility gaps: missing dataset preprocessing details (e.g., haystack capping)."
+    ],
+    "required_revisions": [
+      "Fill all placeholder macros with actual numbers (e.g., token counts, latency).",
+      "Report statistical significance (e.g., McNemar p-values, confidence intervals) for all slice comparisons.",
+      "Add ablation studies: test contribution of claim schema, temporal parser, and hybrid reader separately.",
+      "Justify the 150-question stratified slice: show it is representative of full benchmark.",
+      "Analyze failures: explain performance drop on SSA and MS slices.",
+      "Clarify evaluation protocol: detail how LLM judge is applied and how abstention is scored.",
+      "Provide full hyperparameter search details and sensitivity analysis.",
+      "Include runtime and memory usage details for full system."
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 14.879427909851074,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance with LLM-based linking",
+      "Strong, specific results on abstention and single-session-user slices",
+      "Efficiency claims: lower token cost than baseline A-Mem",
+      "Well-defined schema and retrieval algorithm"
+    ],
+    "weaknesses": [
+      "Overall accuracy is lower than baseline (61.3% vs 68.0%)",
+      "Performance regresses on several non-target slices (e.g., SSA, MS)",
+      "Scalability of O(k^2) MCS algorithm and edge storage unclear for large graphs",
+      "Relies heavily on LLM linker; robustness to linker errors not analyzed",
+      "No analysis of latency/throughput under high write load"
+    ],
+    "required_revisions": [
+      "Clarify the 150-question stratified slice selection method and justify its representativeness.",
+      "Provide token/latency breakdown (write vs. read) to validate efficiency claims.",
+      "Discuss system limitations: e.g., handling of ambiguous or complex claims, scalability of graph operations.",
+      "Include placeholder values for missing macros (e.g., \\tau_{\\text{sim}}, \\tau_{\\text{bypass}}) or state they are tuned hyperparameters.",
+      "Justify the choice of DeepSeek-V3.2 for all LLM calls and discuss cost/performance trade-offs."
+    ],
+    "verdict": "weak_accept"
+  }
+}

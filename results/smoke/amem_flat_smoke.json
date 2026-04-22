@@ -1,0 +1,88 @@
+{
+  "args": {
+    "method": "amem_flat",
+    "limit": 2,
+    "stratify": false,
+    "types": [
+      "knowledge-update"
+    ],
+    "only_abs": false,
+    "include_abs": true,
+    "max_sessions": 5,
+    "writer_model": "deepseek-v3.2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "seed": 0,
+    "output": "results/smoke/amem_flat_smoke.json",
+    "progress_every": 1,
+    "disable_temporal": false,
+    "disable_contradict": false,
+    "disable_consistent_subgraph": false,
+    "disable_supersede_flag": false,
+    "disable_writer_claims": false,
+    "disable_abstention": false
+  },
+  "n_items": 2,
+  "elapsed_sec": 68.1490490436554,
+  "summary": {
+    "n": 2,
+    "accuracy": 1.0,
+    "f1": 0.3846153846153846,
+    "abstain_rate": 0.0,
+    "ingest_time_mean": 1.6848276853561401,
+    "answer_time_mean": 15.403412938117981,
+    "by_type": {
+      "knowledge-update": {
+        "n": 2,
+        "accuracy": 1.0,
+        "f1": 0.3846153846153846,
+        "abstain_rate": 0.0
+      }
+    }
+  },
+  "rows": [
+    {
+      "question_id": "18bc8abd",
+      "question_type": "knowledge-update",
+      "is_abstention": false,
+      "question": "What brand of BBQ sauce am I currently obsessed with?",
+      "gold": "Kansas City Masterpiece",
+      "pred": "You are currently obsessed with Kansas City Masterpiece BBQ sauce.",
+      "correct": 1,
+      "judge_reason": "Model answer matches the reference exactly.",
+      "f1": 0.4615384615384615,
+      "abstained": false,
+      "retrieve_time": 0.0313870906829834,
+      "reader_time": 2.6400249004364014,
+      "ingest_time": 2.07055926322937,
+      "answer_time": 2.6714870929718018,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 5
+    },
+    {
+      "question_id": "0e4e4c46",
+      "question_type": "knowledge-update",
+      "is_abstention": false,
+      "question": "What is my current highest score in Ticket to Ride?",
+      "gold": "132 points",
+      "pred": "Your current highest score in Ticket to Ride is 132 points.",
+      "correct": 1,
+      "judge_reason": "Model answer matches the reference answer exactly.",
+      "f1": 0.3076923076923077,
+      "abstained": false,
+      "retrieve_time": 0.03056812286376953,
+      "reader_time": 28.10472559928894,
+      "ingest_time": 1.2990961074829102,
+      "answer_time": 28.13533878326416,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 5
+    }
+  ]
+}

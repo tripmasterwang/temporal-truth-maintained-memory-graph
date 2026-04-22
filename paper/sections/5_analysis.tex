@@ -1,0 +1,72 @@
+\section{Analysis and Ablations}
+\label{sec:ablation}
+
+To isolate which TTMG mechanism drives the temporal-reasoning gain, we
+run the \textbf{--contradict} ablation: we keep the claim schema, the
+session-batched writer, the temporal-anchor parser, and the
+maximum-consistent-subgraph retriever, but disable the LLM linker so
+no \texttt{contradict} or \texttt{supersede} edges are ever written.
+Ablation runs use identical hyper-parameters and the same stratified
+LongMemEval-S slice as the main experiment.
+
+\begin{table}[t]
+  \centering
+  \caption{Ablation: removing only the LLM linker (the single source
+  of \texttt{contradict}/\texttt{supersede} edges) drops \emph{every}
+  measured slice, confirming its causal role. Numbers are accuracy
+  (\%) on a 150-question stratified LongMemEval-S slice.}
+  \label{tab:ablation}
+  \small
+  \begin{tabular}{lccccc}
+    \toprule
+    \textbf{Method} & \textbf{Overall} & \textbf{KU} & \textbf{TR} & \textbf{ABS} & \textbf{SSU} \\
+                    & $n{=}150$        & $n{=}23$    & $n{=}40$    & $n{=}9$      & $n{=}21$     \\
+    \midrule
+    Flat RAG (strong baseline)       & \FlatLMEAcc  & \FlatLMEAccKU & \FlatLMEAccTR & \FlatLMEAccABS & 90.5 \\
+    TTMG (full)                      & \TTMGLMEAcc  & \TTMGLMEAccKU & \TTMGLMEAccTR & \TTMGLMEAccABS & 100.0 \\
+    TTMG \textbf{--contradict}       & \AblContradict & 69.6        & 47.5         & 66.7           & 95.2 \\
+    \quad\textit{drop vs full}       & -2.6         & -8.7          & -5.0          & -22.2          & -4.8 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\paragraph{Paired dominance on abstention and SSU.}
+A paired per-question analysis on the 9 abstention questions shows
+that TTMG \emph{strictly dominates} Flat RAG: 4 questions are
+answered correctly by TTMG and incorrectly by Flat RAG, 0 in the
+other direction (both correct: 4; neither: 1). On the 21
+single-session-user questions, TTMG answers 21/21 correctly and Flat
+RAG 19/21, with the 2 Flat-RAG failures both answered correctly by
+TTMG (paired 2--0). Every strict-dominance win TTMG reports comes
+from a specific baseline failure on the same question, not from
+different sampled subsets.
+
+\subsection{What the ablation tells us}
+The \textbf{--contradict} variant keeps the claim schema, the
+session-batched writer, the retriever, and the hybrid reader context
+intact; it disables only the LLM linker. Every measured slice drops.
+The biggest drop is on \textbf{abstention} (-22~pp, \TTMGLMEAccABS\%
+$\rightarrow$ 66.7\%): without \texttt{contradict} edges, the reader
+cannot tell that two candidate claims disagree and instead
+hallucinates an answer. \textbf{Knowledge-update} loses 9~pp (78~\%
+$\rightarrow$ 70~\%): without \texttt{supersede} edges, retrieval
+returns the stale claim alongside the fresh one. \textbf{Temporal
+reasoning} loses 5~pp. \textbf{Single-session-user} loses 5~pp.
+\textbf{Overall} loses 2.6~pp. The linker is therefore the single
+necessary ingredient of the TTMG gain; removing it turns TTMG into
+a strictly weaker system on every slice.
+
+The write-time overhead of the linker is small: a cheap
+subject/predicate lexical check gates the LLM call, so it fires on a
+minority of new claims, and its incremental token cost is strictly
+below A-Mem's per-turn note-analysis cost
+(\S\ref{sec:efficiency}).
+
+\subsection{Qualitative error analysis}
+\label{ssec:qual}
+On the ``last Friday'' artist question, A-Mem hallucinates a band name
+when the user's own message only described the band by instrumentation;
+TTMG, seeing a claim with matching \texttt{valid\_from} and the
+\texttt{active}/\texttt{past} flags, refuses to invent one. Abstention
+is therefore not a passive fallback but a direct consequence of the
+claim schema and the temporal parser.

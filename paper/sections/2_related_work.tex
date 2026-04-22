@@ -1,0 +1,42 @@
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Agentic memory systems.}
+Early LLM agent memories treat conversation history as a flat vector
+index \citep{mem0,memgpt,longrag}. Recent work organises memory as a
+structured graph with LLM-enriched nodes: A-Mem generates keywords,
+contextual descriptions, and tags per note, then adds links to
+semantically similar notes and rewrites tags on affected neighbours
+\citep{amem}. Memory consolidation \citep{memorybank,memoria} and
+hierarchical memory \citep{mem0,hippocampal} add compression on top.
+TTMG shares A-Mem's design -- LLM-enriched nodes with automatically
+discovered links -- but changes the unit of memory from a \emph{note}
+to a \emph{claim} and the class of links from semantic similarity to
+\emph{truth-maintenance relations} (\texttt{support},
+\texttt{contradict}, \texttt{supersede}).
+
+\paragraph{Truth maintenance and belief revision.}
+Classical TMSs~\citep{tms_doyle,atms_dekleer} and belief-revision
+calculi~\citep{agm,nonmonotonic} maintain the consistency of a
+logical knowledge base as new assertions arrive. TTMG imports the
+core idea -- every assertion carries a validity interval and
+provenance, and the graph tracks which assertion is currently in
+force -- but uses an LLM-based pairwise labeler instead of a formal
+entailment solver, so it runs inside a dialogue system.
+
+\paragraph{Temporal knowledge graphs and contradiction detection.}
+Temporal knowledge graphs \citep{tkg_survey,tkgqa} attach time stamps
+to $(s, p, o)$ edges; contradiction detection has a long NLI-based
+line \citep{nli_contradict,anli}. TTMG differs in being a \emph{live}
+agent memory: claims are generated and linked as the agent talks,
+the contradiction scorer is a small LLM call whose output directly
+flips a claim's \texttt{active} bit, and the retriever computes a
+maximum-consistent subgraph over returned candidates.
+
+\paragraph{Long-context conversational benchmarks.}
+LongMemEval~\citep{longmemeval} contributes 500 questions across six
+capabilities with session-level answer attribution and 30 abstention
+probes. LoCoMo~\citep{locomo} extends dialogue length and
+MemoryAgentBench~\citep{memoryagentbench} targets conflict
+resolution; we focus on LongMemEval-S because its abstention and
+knowledge-update slices isolate the failure modes TTMG targets.

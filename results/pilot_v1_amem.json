@@ -1,0 +1,466 @@
+{
+  "args": {
+    "method": "amem",
+    "limit": 20,
+    "stratify": true,
+    "types": null,
+    "only_abs": false,
+    "include_abs": true,
+    "max_sessions": 3,
+    "writer_model": "Kimi-K2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "seed": 0,
+    "output": "results/pilot_v1_amem.json",
+    "progress_every": 1,
+    "disable_temporal": false,
+    "disable_contradict": false,
+    "disable_consistent_subgraph": false,
+    "disable_supersede_flag": false,
+    "disable_writer_claims": false,
+    "disable_abstention": false
+  },
+  "n_items": 19,
+  "elapsed_sec": 2346.3450820446014,
+  "summary": {
+    "n": 19,
+    "accuracy": 0.5263157894736842,
+    "f1": 0.22907642933714306,
+    "abstain_rate": 0.0,
+    "ingest_time_mean": 105.13306183564036,
+    "answer_time_mean": 2.9106509936483285,
+    "by_type": {
+      "single-session-user": {
+        "n": 3,
+        "accuracy": 0.6666666666666666,
+        "f1": 0.2076146076146076,
+        "abstain_rate": 0.0
+      },
+      "multi-session": {
+        "n": 5,
+        "accuracy": 0.4,
+        "f1": 0.023529411764705882,
+        "abstain_rate": 0.0
+      },
+      "single-session-assistant": {
+        "n": 2,
+        "accuracy": 1.0,
+        "f1": 0.6,
+        "abstain_rate": 0.0
+      },
+      "knowledge-update": {
+        "n": 3,
+        "accuracy": 0.6666666666666666,
+        "f1": 0.5582010582010581,
+        "abstain_rate": 0.0
+      },
+      "temporal-reasoning": {
+        "n": 5,
+        "accuracy": 0.4,
+        "f1": 0.09649122807017545,
+        "abstain_rate": 0.0
+      },
+      "single-session-preference": {
+        "n": 1,
+        "accuracy": 0.0,
+        "f1": 0.2549019607843137,
+        "abstain_rate": 0.0
+      }
+    },
+    "abstention_correct": 1.0
+  },
+  "rows": [
+    {
+      "question_id": "19b5f2b3_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "How long was I in Korea for?",
+      "gold": "You did not mention this information. You mentioned staying in Japan, but not in Korea.",
+      "pred": "I do not know how long you were in Korea for.",
+      "correct": 1,
+      "judge_reason": "Model abstains, matching reference that info is absent.",
+      "f1": 0.30769230769230765,
+      "abstained": false,
+      "retrieve_time": 0.012409687042236328,
+      "reader_time": 1.3165640830993652,
+      "ingest_time": 57.57936096191406,
+      "answer_time": 1.3290319442749023,
+      "metrics": {
+        "writer_calls": 16,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "55241a1f",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "question": "What is the total number of comments on my recent Facebook Live session and my most popular YouTube video?",
+      "gold": "33",
+      "pred": "The total number of comments is 12 on your recent Facebook Live session, but the number of comments on your most popular YouTube video is not provided in the memory.",
+      "correct": 0,
+      "judge_reason": "Model gave partial answer, not total.",
+      "f1": 0.0,
+      "abstained": false,
+      "retrieve_time": 0.01827239990234375,
+      "reader_time": 2.4805266857147217,
+      "ingest_time": 112.3965802192688,
+      "answer_time": 2.4988744258880615,
+      "metrics": {
+        "writer_calls": 32,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "4388e9dd",
+      "question_type": "single-session-assistant",
+      "is_abstention": false,
+      "question": "I was going through our previous chat and I was wondering, what was Andy wearing in the script you wrote for the comedy movie scene?",
+      "gold": "Andy was wearing an untidy, stained white shirt.",
+      "pred": "Andy was wearing an untidy, stained white shirt.",
+      "correct": 1,
+      "judge_reason": "Model answer exactly matches the reference answer.",
+      "f1": 1.0,
+      "abstained": false,
+      "retrieve_time": 0.021243572235107422,
+      "reader_time": 2.222299814224243,
+      "ingest_time": 98.60291886329651,
+      "answer_time": 2.243602991104126,
+      "metrics": {
+        "writer_calls": 30,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "gpt4_15e38248",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "question": "How many pieces of furniture did I buy, assemble, sell, or fix in the past few months?",
+      "gold": "4",
+      "pred": "Based on the retrieved notes, I do not have sufficient information to determine how many pieces of furniture you bought, assembled, sold, or fixed in the past few months. The notes mention only one specific instance: you fixed a wobbly leg on your kitchen table.",
+      "correct": 0,
+      "judge_reason": "Model abstains but reference provides a specific count.",
+      "f1": 0.0,
+      "abstained": false,
+      "retrieve_time": 0.017167091369628906,
+      "reader_time": 3.972537040710449,
+      "ingest_time": 106.30155396461487,
+      "answer_time": 3.989882230758667,
+      "metrics": {
+        "writer_calls": 30,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "720133ac",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "question": "What is the total cost of Lola's vet visit and flea medication?",
+      "gold": "$75",
+      "pred": "The total cost is $75: $50 for the vet consultation and $25 for the flea medication.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference total and provides breakdown.",
+      "f1": 0.11764705882352941,
+      "abstained": false,
+      "retrieve_time": 0.011874198913574219,
+      "reader_time": 2.4923269748687744,
+      "ingest_time": 99.7446060180664,
+      "answer_time": 2.504274845123291,
+      "metrics": {
+        "writer_calls": 27,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "c6853660",
+      "question_type": "knowledge-update",
+      "is_abstention": false,
+      "question": "Did I mostly recently increase or decrease the limit on the number of cups of coffee in the morning?",
+      "gold": "You increased the limit (from one cup to two cups)",
+      "pred": "You recently increased the limit from one cup to two cups.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.9523809523809523,
+      "abstained": false,
+      "retrieve_time": 0.012898683547973633,
+      "reader_time": 2.9092767238616943,
+      "ingest_time": 115.10260725021362,
+      "answer_time": 2.9222631454467773,
+      "metrics": {
+        "writer_calls": 32,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "71017276",
+      "question_type": "temporal-reasoning",
+      "is_abstention": false,
+      "error": "'int' object has no attribute 'lower'",
+      "correct": 0,
+      "f1": 0.0,
+      "abstained": false,
+      "ingest_time": 0.0,
+      "answer_time": 0.0,
+      "retrieve_time": 0.0,
+      "reader_time": 0.0,
+      "metrics": {},
+      "pred": "",
+      "gold": 4,
+      "n_sessions": 0
+    },
+    {
+      "question_id": "a06e4cfe",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "What is my preferred gin-to-vermouth ratio for a classic gin martini?",
+      "gold": "3:1",
+      "pred": "Your preferred gin-to-vermouth ratio for a classic gin martini is 3:1, with a dash of citrus bitters.",
+      "correct": 0,
+      "judge_reason": "Model adds extra ingredient not in reference.",
+      "f1": 0.18181818181818182,
+      "abstained": false,
+      "retrieve_time": 0.018285036087036133,
+      "reader_time": 3.4457170963287354,
+      "ingest_time": 113.50238180160522,
+      "answer_time": 3.4640932083129883,
+      "metrics": {
+        "writer_calls": 33,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "1b9b7252",
+      "question_type": "single-session-assistant",
+      "is_abstention": false,
+      "question": "I wanted to follow up on our previous conversation about mindfulness techniques. You mentioned some great resources for guided imagery exercises, can you remind me of the website that had free exercises like 'The Mountain Meditation' and 'The Body Scan Meditation'?",
+      "gold": "Mindful.org.",
+      "pred": "The website that offers free exercises like \"The Mountain Meditation\" and \"The Body Scan Meditation\" is **Mindful.org**.",
+      "correct": 1,
+      "judge_reason": "Model answer correctly identifies Mindful.org as the website.",
+      "f1": 0.19999999999999998,
+      "abstained": false,
+      "retrieve_time": 0.02036142349243164,
+      "reader_time": 4.837447643280029,
+      "ingest_time": 118.0390465259552,
+      "answer_time": 4.857862710952759,
+      "metrics": {
+        "writer_calls": 32,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "gpt4_1e4a8aec",
+      "question_type": "temporal-reasoning",
+      "is_abstention": false,
+      "question": "What gardening-related activity did I do two weeks ago?",
+      "gold": "planting 12 new tomato saplings",
+      "pred": "Based on the retrieved notes, you did not mention any specific gardening activity from two weeks ago. The notes only reference general gardening practices and questions you had around that time.",
+      "correct": 0,
+      "judge_reason": "Model abstained, but reference provides a specific activity.",
+      "f1": 0.0,
+      "abstained": false,
+      "retrieve_time": 0.014295816421508789,
+      "reader_time": 3.2513515949249268,
+      "ingest_time": 138.16336846351624,
+      "answer_time": 3.2656915187835693,
+      "metrics": {
+        "writer_calls": 39,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "36580ce8",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "What health issue did I initially think was just a cold?",
+      "gold": "bronchitis",
+      "pred": "You initially thought you had a cold, but it turned out to be bronchitis.",
+      "correct": 1,
+      "judge_reason": "Model correctly identifies bronchitis as the health issue.",
+      "f1": 0.13333333333333333,
+      "abstained": false,
+      "retrieve_time": 0.0120086669921875,
+      "reader_time": 2.656970500946045,
+      "ingest_time": 107.1995599269867,
+      "answer_time": 2.669057846069336,
+      "metrics": {
+        "writer_calls": 28,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "80ec1f4f",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "error": "'int' object has no attribute 'lower'",
+      "correct": 0,
+      "f1": 0.0,
+      "abstained": false,
+      "ingest_time": 0.0,
+      "answer_time": 0.0,
+      "retrieve_time": 0.0,
+      "reader_time": 0.0,
+      "metrics": {},
+      "pred": "",
+      "gold": 2,
+      "n_sessions": 0
+    },
+    {
+      "question_id": "cf22b7bf",
+      "question_type": "knowledge-update",
+      "is_abstention": false,
+      "question": "How much weight have I lost since I started going to the gym consistently?",
+      "gold": "10 pounds",
+      "pred": "You have lost 10 pounds since you started going to the gym consistently 3 months ago.",
+      "correct": 0,
+      "judge_reason": "Model added unsupported detail (3 months).",
+      "f1": 0.2222222222222222,
+      "abstained": false,
+      "retrieve_time": 0.021244525909423828,
+      "reader_time": 3.492159128189087,
+      "ingest_time": 119.40121722221375,
+      "answer_time": 3.5134873390197754,
+      "metrics": {
+        "writer_calls": 34,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "dad224aa",
+      "question_type": "knowledge-update",
+      "is_abstention": false,
+      "question": "What time do I wake up on Saturday mornings?",
+      "gold": "7:30 am",
+      "pred": "You wake up at 7:30 am on Saturdays.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.5,
+      "abstained": false,
+      "retrieve_time": 0.013269662857055664,
+      "reader_time": 3.3607711791992188,
+      "ingest_time": 133.39901304244995,
+      "answer_time": 3.374107837677002,
+      "metrics": {
+        "writer_calls": 36,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "gpt4_fa19884d",
+      "question_type": "temporal-reasoning",
+      "is_abstention": false,
+      "question": "What is the artist that I started to listen to last Friday?",
+      "gold": "a bluegrass band that features a banjo player",
+      "pred": "Based on the retrieved notes, you started listening to a bluegrass band featuring a banjo player last Friday (March 31, 2023). The specific artist is not named in the notes.",
+      "correct": 0,
+      "judge_reason": "Model fails to abstain; reference lacks specific artist.",
+      "f1": 0.31578947368421056,
+      "abstained": false,
+      "retrieve_time": 0.013620138168334961,
+      "reader_time": 4.8487868309021,
+      "ingest_time": 140.9574954509735,
+      "answer_time": 4.862499237060547,
+      "metrics": {
+        "writer_calls": 36,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "bbf86515",
+      "question_type": "temporal-reasoning",
+      "is_abstention": false,
+      "question": "How many days before the 'Rack Fest' did I participate in the 'Turbocharged Tuesdays' event?",
+      "gold": "4 days.",
+      "pred": "You participated in \"Turbocharged Tuesdays\" on June 14th and attended \"Rack Fest\" on June 18th. That is 4 days before Rack Fest.",
+      "correct": 1,
+      "judge_reason": "Model correctly calculates 4 days between events.",
+      "f1": 0.16666666666666669,
+      "abstained": false,
+      "retrieve_time": 0.015901565551757812,
+      "reader_time": 3.885368824005127,
+      "ingest_time": 121.57747745513916,
+      "answer_time": 3.901343822479248,
+      "metrics": {
+        "writer_calls": 30,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "d01c6aa8",
+      "question_type": "temporal-reasoning",
+      "is_abstention": false,
+      "question": "How old was I when I moved to the United States?",
+      "gold": "27",
+      "pred": "I do not know how old you were when you moved to the United States. The retrieved notes mention you have been living in the U.S. for the past five years on a work visa, but they do not specify your age at the time of your move.",
+      "correct": 1,
+      "judge_reason": "Model correctly abstains, as reference answer is not in notes.",
+      "f1": 0.0,
+      "abstained": false,
+      "retrieve_time": 0.011316299438476562,
+      "reader_time": 2.911731719970703,
+      "ingest_time": 136.82276606559753,
+      "answer_time": 2.9230892658233643,
+      "metrics": {
+        "writer_calls": 34,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "4adc0475",
+      "question_type": "multi-session",
+      "is_abstention": false,
+      "question": "What is the total number of goals and assists I have in the recreational indoor soccer league?",
+      "gold": "5",
+      "pred": "You have scored 3 goals and 2 assists in the recreational indoor soccer league.",
+      "correct": 1,
+      "judge_reason": "Model correctly sums 3 goals + 2 assists = 5 total.",
+      "f1": 0.0,
+      "abstained": false,
+      "retrieve_time": 0.013912677764892578,
+      "reader_time": 3.235863208770752,
+      "ingest_time": 132.0465326309204,
+      "answer_time": 3.249825954437256,
+      "metrics": {
+        "writer_calls": 36,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "09d032c9",
+      "question_type": "single-session-preference",
+      "is_abstention": false,
+      "question": "I've been having trouble with the battery life on my phone lately. Any tips?",
+      "gold": "The user would prefer responses that build upon their previous mention of purchasing a portable power bank, such as suggestions on how to optimize its use, like ensuring it's fully charged before use. They might also appreciate tips on utilizing battery-saving features on their phone. The user may not prefer responses that suggest alternative solutions or unrelated advice.",
+      "pred": "Based on the retrieved notes, I don't have specific tips for improving your phone's battery life. The memory contains advice on portable power banks and organizing tech accessories while traveling, but not on optimizing the phone's own battery performance.",
+      "correct": 0,
+      "judge_reason": "Model abstains incorrectly; reference expects battery-saving tips.",
+      "f1": 0.2549019607843137,
+      "abstained": false,
+      "retrieve_time": 0.013432025909423828,
+      "reader_time": 3.719896078109741,
+      "ingest_time": 146.69168901443481,
+      "answer_time": 3.7333805561065674,
+      "metrics": {
+        "writer_calls": 41,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    }
+  ]
+}

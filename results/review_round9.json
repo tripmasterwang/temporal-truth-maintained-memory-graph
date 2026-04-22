@@ -1,0 +1,101 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 17.815536499023438,
+    "scores": {
+      "originality": 8,
+      "quality": 7,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 7.0
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory.",
+      "Novel combination of temporal knowledge graphs and self-organizing note graphs.",
+      "Strong empirical results on temporal-reasoning slice (+15.3pp over baseline).",
+      "Efficiency gains demonstrated (lower token count and latency).",
+      "Ablation study isolates the contribution of the linker mechanism."
+    ],
+    "weaknesses": [
+      "Overall accuracy (62.0%) is lower than flat baseline (66.0%).",
+      "Limited evaluation scale (50-question slice of LongMemEval-S).",
+      "No statistical significance testing reported.",
+      "Knowledge-update (KU) performance drops significantly (75.0% vs 87.5%).",
+      "F1 score (0.174) is lower than baselines, suggesting retrieval precision/recall trade-off."
+    ],
+    "required_revisions": [
+      "Clarify the discrepancy between the abstract's claim of +15.3pp 'over the strongest baseline' and the results table showing flat RAG as strongest on overall accuracy.",
+      "Justify the stratified slice selection (50 questions) and provide full benchmark results if available.",
+      "Include statistical significance tests for reported improvements.",
+      "Explain the drop in KU and overall accuracy; discuss the trade-off between temporal reasoning and general retrieval.",
+      "Provide more details on the 'maximum-consistent subgraph' algorithm's optimality guarantee and the assumption Δ ≤ 2.",
+      "Clarify the placeholder numbers in the conclusion (e.g., 'overall improvement of -2.0')."
+    ],
+    "verdict": "weak_accept"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 16.354748010635376,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel method: claim-level memory with truth-maintenance edges",
+      "Strong ablation isolating the contribution of the linker",
+      "Efficiency analysis shows lower compute than baseline",
+      "Well-defined schema and retrieval algorithm"
+    ],
+    "weaknesses": [
+      "Overall accuracy on primary benchmark is lower than flat baseline",
+      "No statistical significance testing (e.g., confidence intervals)",
+      "Limited baseline comparison (only flat RAG and A-Mem)",
+      "Small evaluation slice (50 questions, TR n=13)",
+      "No analysis of failure modes beyond qualitative example",
+      "Missing details on cross-domain evaluation results"
+    ],
+    "required_revisions": [
+      "Report statistical significance (e.g., confidence intervals) for accuracy differences, especially on the small TR slice (n=13).",
+      "Clarify the cross-domain evaluation results on LoCoMo and MemoryAgentBench; currently only mentioned but not reported.",
+      "Include a more comprehensive baseline (e.g., a simple time-stamped vector store) to better isolate the contribution of the graph structure vs. temporal metadata.",
+      "Add error analysis quantifying common failure modes (e.g., parser mistakes, linker errors) beyond a single qualitative example.",
+      "Justify the choice of the 50-question stratified slice and report full benchmark results if available.",
+      "Specify the exact version and configuration of the DeepSeek-V3.2 reader for reproducibility."
+    ],
+    "verdict": "weak_accept"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 11.418963193893433,
+    "scores": {
+      "originality": 8,
+      "quality": 7,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 7.5
+    },
+    "strengths": [
+      "Clear problem definition: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance with graph-based memory",
+      "Strong empirical gain on temporal-reasoning slice (+15.3pp)",
+      "Efficiency improvement over baseline (-59.3% tokens)",
+      "Ablation study isolates contribution of linker mechanism"
+    ],
+    "weaknesses": [
+      "Overall accuracy lower than flat baseline (62.0 vs 66.0)",
+      "Limited evaluation scale (50-question slice)",
+      "No analysis of failure modes on non-temporal questions",
+      "Placeholder numbers for some results (e.g., cross-domain)",
+      "No discussion of system robustness to noisy claim extraction"
+    ],
+    "required_revisions": [
+      "Replace placeholder cross-domain results with actual numbers",
+      "Clarify why overall accuracy drops despite TR gain",
+      "Add analysis of computational overhead of maximum-consistent subgraph",
+      "Specify memory footprint and scaling characteristics",
+      "Discuss limitations of lexical gating for linker"
+    ],
+    "verdict": "weak_accept"
+  }
+}

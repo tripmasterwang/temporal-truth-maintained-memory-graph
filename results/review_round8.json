@@ -1,0 +1,98 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 14.834538459777832,
+    "scores": {
+      "originality": 8,
+      "quality": 7,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 7.5
+    },
+    "strengths": [
+      "Novel application of truth-maintenance systems to agent memory",
+      "Clear problem framing: moving from similarity to truth-consistent retrieval",
+      "Strong empirical results on knowledge-update tasks (100% accuracy)",
+      "Significant efficiency gains over baseline (55% token reduction)",
+      "Well-designed ablation isolating the linker's contribution"
+    ],
+    "weaknesses": [
+      "Temporal-reasoning results are weak (40%) and sample size is tiny (N=5)",
+      "Overall accuracy only matches the flat baseline, does not exceed it",
+      "Lack of statistical significance reporting (e.g., error bars, p-values)",
+      "No comparison to other temporal or belief-revision baselines",
+      "Limited evaluation on the full LongMemEval benchmark (only -S subset)"
+    ],
+    "required_revisions": [
+      "Replace placeholder temporal-reasoning sample size (N=5) with full evaluation across all seeds and report standard deviation.",
+      "Clarify the exact size and composition of LongMemEval-S used (500 questions total, but slice breakdowns unclear).",
+      "Provide statistical significance tests for the reported accuracy differences.",
+      "Include a comparison to a simple temporal filtering baseline (e.g., recency-based retrieval) to better isolate the contribution of the graph structure.",
+      "Justify the choice of hyperparameters (e.g., similarity thresholds) and show sensitivity if possible."
+    ],
+    "verdict": "weak_accept"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 11.034004211425781,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel combination of temporal knowledge graphs and agent memory",
+      "Strong ablation isolating the linker's contribution",
+      "Efficiency gains demonstrated (tokens, latency)",
+      "Explicit abstention mechanism for contradictions"
+    ],
+    "weaknesses": [
+      "Small sample sizes for key slices (e.g., TR N=5)",
+      "No statistical significance testing reported",
+      "Baseline A-Mem reimplementation details missing",
+      "No error bars or variance on main results",
+      "Cross-domain results only mentioned, not shown"
+    ],
+    "required_revisions": [
+      "Report standard deviations or confidence intervals for all accuracy numbers",
+      "Clarify A-Mem reimplementation details and hyperparameters",
+      "Include full results for LoCoMo and MemoryAgentBench CR",
+      "Specify the exact number of questions per slice used in main table",
+      "Add statistical significance tests comparing TTMG to baselines"
+    ],
+    "verdict": "weak_accept"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 13.67086672782898,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel combination of temporal KG and self-organizing note graphs",
+      "Strong empirical results on knowledge-update slice (100% vs 66.7%)",
+      "Significant compute reduction vs baseline (-55.2% tokens)",
+      "Ablation study isolates contribution of linker mechanism"
+    ],
+    "weaknesses": [
+      "Temporal-reasoning results weak (40%) and sample size small",
+      "Efficiency claims rely on placeholder latency numbers (108.0s, 80.3s)",
+      "No discussion of system overhead for graph maintenance",
+      "Limited evaluation scale (500 questions, single dataset)",
+      "No comparison to simpler temporal filtering baselines"
+    ],
+    "required_revisions": [
+      "Replace placeholder latency numbers (108.0s, 80.3s) with actual measurements",
+      "Clarify how temporal-reasoning slice of only 5 examples affects statistical significance",
+      "Add discussion of graph maintenance overhead (storage, updates, consistency)",
+      "Include comparison to baseline with simple time-window filtering",
+      "Provide more details on linker failure modes and error analysis"
+    ],
+    "verdict": "weak_accept"
+  }
+}

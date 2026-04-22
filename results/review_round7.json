@@ -1,0 +1,100 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 18.292991876602173,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory",
+      "Well-defined method: claim schema, linker, and truth-consistent retrieval",
+      "Strong empirical design: controlled baselines with same reader/embedding",
+      "Ablation study isolates contribution of contradict/supersede edges",
+      "Efficiency analysis shows reduced token cost vs. baseline"
+    ],
+    "weaknesses": [
+      "Results rely heavily on placeholder macros; actual performance unknown",
+      "Temporal-reasoning results (TR) are weak and sample size is tiny (N=5)",
+      "No statistical significance testing or error bars reported",
+      "Limited discussion of failure modes or edge cases of the linker",
+      "Comparison to SOTA memory systems is limited to A-Mem and flat RAG"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., \\TTMGLMEAcc, \\FlatLMEAcc) with actual numeric results from experiments.",
+      "Clarify the sample size and variance for temporal-reasoning (TR) slice; do not hide weak results in text.",
+      "Add statistical significance tests (e.g., confidence intervals, p-values) for accuracy differences.",
+      "Include a detailed error analysis beyond the single qualitative example.",
+      "Provide full results on LoCoMo and MemoryAgentBench CR split, not just LongMemEval-S.",
+      "Justify hyperparameter choices (e.g., similarity gate 0.65, k=8) with ablation or citations.",
+      "Discuss limitations: e.g., linker errors, scalability of pairwise comparisons, handling of implicit contradictions."
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 13.45992112159729,
+    "scores": {
+      "originality": 8,
+      "quality": 6,
+      "clarity": 7,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Well-defined method: claim schema, linker, truth-consistent retrieval",
+      "Strong ablation isolating the linker's contribution",
+      "Efficiency analysis shows lower compute than baseline"
+    ],
+    "weaknesses": [
+      "Results rely on placeholder macros; no raw data or significance tests",
+      "Temporal-reasoning slice (N=5) too small for reliable conclusions",
+      "No statistical significance reported for claimed gains",
+      "Missing details on random seed variance and standard deviations",
+      "Cross-domain evaluation on LoCoMo/MemoryAgentBench not reported"
+    ],
+    "required_revisions": [
+      "Replace all placeholder macros (e.g., \\TTMGLMEAcc, \\DeltaLMEAcc) with actual numeric results from experiments",
+      "Report standard deviations or confidence intervals for all accuracy metrics across seeds",
+      "Conduct and report statistical significance tests (e.g., paired t-test) for differences between TTMG and baselines",
+      "Expand temporal-reasoning evaluation to a larger sample size to support claims",
+      "Include full results for cross-domain evaluations (LoCoMo, MemoryAgentBench) promised in setup",
+      "Clarify how the 5-example temporal-reasoning slice was selected and why it is insufficient for headline claims"
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 14.273115158081055,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Novel integration of truth maintenance with graph-based memory for agents",
+      "Clear focus on practical problem: maintaining factual consistency over time",
+      "Efficiency claims via session-batched writing and gated linking",
+      "Strong evaluation on knowledge-update slice",
+      "Well-defined schema and algorithm"
+    ],
+    "weaknesses": [
+      "Results rely heavily on placeholder macros; actual performance unverified",
+      "Temporal-reasoning results (40%) are weak and sample size tiny (N=5)",
+      "Token and latency improvements are relative to a reimplementation, not original A-Mem",
+      "No discussion of system integration complexity or failure modes",
+      "Scalability of pairwise linking for large claim graphs is unclear"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., \\TTMGLMEAcc, \\AmemTokens) with actual numeric results from runs",
+      "Provide full results for temporal-reasoning slice with proper sample size and error bars",
+      "Clarify the baseline A-Mem implementation details and justify comparison fairness",
+      "Add a section on limitations: e.g., linker error propagation, claim extraction failures, graph size growth",
+      "Include a cost/throughput analysis for the write-time linker at scale"
+    ],
+    "verdict": "weak_reject"
+  }
+}

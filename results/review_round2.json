@@ -1,0 +1,99 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 15.353140354156494,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory",
+      "Well-defined method: claim-level schema with truth-maintenance edges",
+      "Strong empirical claims: +40pp on temporal reasoning, -58% tokens",
+      "Comprehensive ablation study isolating component contributions"
+    ],
+    "weaknesses": [
+      "Results rely on placeholder macros; no actual data presented",
+      "No details on implementation, dataset splits, or statistical significance",
+      "Cross-domain results (LoCoMo, MemoryAgentBench) are placeholders",
+      "Ablation results are placeholders; cannot verify claimed contributions",
+      "No comparison to other recent memory systems beyond A-Mem"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., \\AmemLMEAcc, \\DeltaLMETR) with actual numbers from experiments",
+      "Provide full experimental details: dataset splits, evaluation seeds, statistical tests",
+      "Report cross-domain results (LoCoMo, MemoryAgentBench) with actual numbers",
+      "Fill in ablation table results (\\AblValidity, \\AblContradict, etc.)",
+      "Include implementation details: model sizes, compute, hyperparameter tuning",
+      "Add comparison to more baselines (e.g., MemGPT, MemoryBank, flat RAG)"
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 13.025322198867798,
+    "scores": {
+      "originality": 7,
+      "quality": 4,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 4.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for agent memory",
+      "Well-defined method with explicit claim schema and edges",
+      "Comprehensive ablation plan to isolate components",
+      "Efficiency claims (token reduction) are promising"
+    ],
+    "weaknesses": [
+      "Critical results are placeholders (e.g., --, 100.0%)",
+      "No statistical significance reported for claimed gains",
+      "Cross-domain results are entirely placeholder",
+      "Ablation results are placeholders, no analysis shown",
+      "No comparison to Flat RAG baseline results",
+      "No failure-mode analysis or error examples"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., --, 100.0%) with actual numbers from experiments",
+      "Report statistical significance (e.g., std, p-values) for main comparisons",
+      "Include complete results for Flat RAG baseline",
+      "Fill in ablation table with actual numbers and discuss",
+      "Provide cross-domain results (LoCoMo, MemoryAgentBench-CR) with numbers",
+      "Add error analysis: show cases where TTMG fails vs. succeeds"
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 14.762897491455078,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance with graph-based memory",
+      "Explicit abstention mechanism for contradictions",
+      "Claims efficiency gains (lower tokens, latency) via session batching",
+      "Comprehensive ablation study isolates component contributions"
+    ],
+    "weaknesses": [
+      "Results heavily rely on placeholder macros (e.g., --, 100.0)",
+      "No concrete numbers for cross-domain or ablation results",
+      "Efficiency claims lack detailed breakdown (e.g., cost of writer/linker)",
+      "No discussion of system robustness to noisy claim extraction",
+      "Scalability of maximum-consistent-subgraph on larger k not tested"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (--, 100.0) with actual measured values",
+      "Provide concrete numbers for cross-domain (LoCoMo, MAB-CR) and ablation tables",
+      "Include a detailed cost breakdown (tokens per component) to justify efficiency claim",
+      "Add a sensitivity analysis for hyperparameters (similarity gate, thresholds)",
+      "Discuss limitations: e.g., dependency on claim extraction accuracy, graph size growth"
+    ],
+    "verdict": "weak_accept"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 14.523430824279785,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory.",
+      "Novel combination of temporal knowledge graphs and agent memory.",
+      "Strong empirical gain on target temporal-reasoning slice (+15.3pp).",
+      "Ablation study isolates the contribution of the linker mechanism.",
+      "Efficiency improvement over baseline (lower token count, latency)."
+    ],
+    "weaknesses": [
+      "Overall accuracy (62.0%) is lower than flat baseline (66.0%).",
+      "Small evaluation scale (50-question slice, TR n=13).",
+      "No statistical significance testing reported.",
+      "Limited comparison to other temporal reasoning or TKG methods.",
+      "Method details (e.g., greedy MCS optimality claim) lack formal proof."
+    ],
+    "required_revisions": [
+      "Clarify why overall accuracy is lower than baseline despite TR gain.",
+      "Report standard deviations or confidence intervals for results.",
+      "Include statistical significance tests for the TR improvement.",
+      "Justify the 50-question slice selection and its representativeness.",
+      "Provide more details on the claim extraction/writer performance.",
+      "Discuss limitations of the LLM-based linker (e.g., error propagation)."
+    ],
+    "verdict": "weak_accept"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 15.736045122146606,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon memory",
+      "Novel method: claim-level memory with truth-maintenance edges",
+      "Strong ablation isolating the linker's contribution",
+      "Efficiency analysis shows lower compute than baseline",
+      "Explicit failure-mode analysis and abstention mechanism"
+    ],
+    "weaknesses": [
+      "Overall accuracy lower than flat baseline (62.0 vs 66.0)",
+      "Small sample size for key TR slice (n=13)",
+      "No statistical significance testing reported",
+      "Missing details on dataset stratification and random seeds",
+      "No comparison to recent strong baselines (e.g., MemGPT, LongRAG)"
+    ],
+    "required_revisions": [
+      "Add statistical significance tests (e.g., paired t-test or bootstrap CI) for the reported gains, especially on the small TR slice.",
+      "Clarify the 50-question slice selection: stratification method, random seed usage, and whether it's a held-out test set.",
+      "Report standard deviations for all accuracy numbers, not just means.",
+      "Include a baseline that uses raw turns + temporal parsing (to separate schema vs. temporal parsing gains).",
+      "Provide full results on the entire LongMemEval-S benchmark (500 questions) to validate generalizability.",
+      "Add error bars or confidence intervals to Table 1 and Table 2.",
+      "Clarify the token counting methodology: per-question amortization includes writer/linker costs over how many sessions?"
+    ],
+    "verdict": "weak_accept"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 12.31691312789917,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel combination of temporal knowledge graphs and agent memory",
+      "Practical design with efficiency gates (lexical check, session batching)",
+      "Strong, focused evaluation on temporal-reasoning slice (+15.3pp)",
+      "Ablation study isolates contribution of linker mechanism"
+    ],
+    "weaknesses": [
+      "Overall accuracy (62.0%) is lower than flat baseline (66.0%)",
+      "Token overhead (14.6k/q) still high for real-time deployment",
+      "Limited scalability analysis (graph growth, edge density over time)",
+      "No discussion of failure modes or robustness to noisy claims",
+      "Placeholder numbers for some results (e.g., latency in seconds)"
+    ],
+    "required_revisions": [
+      "Clarify why overall accuracy is lower than baseline despite TR gain",
+      "Provide more details on computational complexity of MCS algorithm at scale",
+      "Justify hyperparameter choices (similarity gate, thresholds)",
+      "Replace placeholder latency numbers with actual measurements",
+      "Discuss integration surface and API for real agent systems"
+    ],
+    "verdict": "weak_accept"
+  }
+}

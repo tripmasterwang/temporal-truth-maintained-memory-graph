@@ -1,0 +1,383 @@
+{
+  "args": {
+    "method": "amem_flat",
+    "limit": 30,
+    "stratify": false,
+    "types": null,
+    "only_abs": true,
+    "include_abs": true,
+    "max_sessions": 3,
+    "writer_model": "deepseek-v3.2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "seed": 0,
+    "output": "results/abs30_flat.json",
+    "progress_every": 1,
+    "disable_temporal": false,
+    "disable_contradict": false,
+    "disable_consistent_subgraph": false,
+    "disable_supersede_flag": false,
+    "disable_writer_claims": false,
+    "disable_abstention": false
+  },
+  "rows": [
+    {
+      "question_id": "0862e8bf_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "What is the name of my hamster?",
+      "gold": "You did not mention this information. You mentioned your cat Luna but not your hamster.",
+      "pred": "I do not know the name of your hamster. The retrieved notes only mention a cat named Luna.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly states info not present.",
+      "f1": 0.3636363636363636,
+      "abstained": false,
+      "retrieve_time": 0.014141321182250977,
+      "reader_time": 2.4546995162963867,
+      "ingest_time": 1.008319616317749,
+      "answer_time": 2.4688920974731445,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "15745da0_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "How long have I been collecting vintage films?",
+      "gold": "You did not mention this information. You mentioned collecting vintage cameras but not vintage films.",
+      "pred": "Based on the retrieved notes, you have not mentioned collecting vintage films. Your previous discussions have been about collecting vintage cameras, vinyl records, and posters/art prints. Therefore, I do not know how long you have been collecting vintage films.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly stating information is not present.",
+      "f1": 0.36363636363636365,
+      "abstained": false,
+      "retrieve_time": 0.007720232009887695,
+      "reader_time": 2.6033973693847656,
+      "ingest_time": 0.17637896537780762,
+      "answer_time": 2.6111817359924316,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "bc8a6e93_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "What did I bake for my uncle's birthday party?",
+      "gold": "You did not mention this information. You mentioned baking for your niece's birthday party but not your uncle's",
+      "pred": "Based on the retrieved notes, you baked a lemon blueberry cake for your niece's birthday party. There is no mention of baking anything for your uncle's birthday party.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly states information is not present.",
+      "f1": 0.48,
+      "abstained": false,
+      "retrieve_time": 0.007519245147705078,
+      "reader_time": 2.7580738067626953,
+      "ingest_time": 0.18142151832580566,
+      "answer_time": 2.765773057937622,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "19b5f2b3_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "How long was I in Korea for?",
+      "gold": "You did not mention this information. You mentioned staying in Japan, but not in Korea.",
+      "pred": "I do not know how long you were in Korea for. The retrieved notes mention your interest in visiting South Korea and the DMZ, but they do not specify the duration of any past trip.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly stating information is not present.",
+      "f1": 0.32,
+      "abstained": false,
+      "retrieve_time": 0.007407665252685547,
+      "reader_time": 2.787759780883789,
+      "ingest_time": 0.11745667457580566,
+      "answer_time": 2.7952208518981934,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "29f2956b_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "How much time do I dedicate to practicing violin every day?",
+      "gold": "You did not mention this information. You mentioned practing guitar everyday, but not violin.",
+      "pred": "I do not know how much time you dedicate to practicing violin daily, as there is no record of your violin practice routine in the retrieved notes.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly stating information is not present.",
+      "f1": 0.14634146341463417,
+      "abstained": false,
+      "retrieve_time": 0.008985519409179688,
+      "reader_time": 2.3617217540740967,
+      "ingest_time": 0.2454836368560791,
+      "answer_time": 2.37088680267334,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "f4f1d8a4_abs",
+      "question_type": "single-session-user",
+      "is_abstention": true,
+      "question": "What did my dad gave me as a birthday gift?",
+      "gold": "You did not mention this information. You mentioned receiving a birthday gift from your sister, but not your dad.",
+      "pred": "I do not know what your dad gave you as a birthday gift. The retrieved notes do not contain that information.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly stating information is not present.",
+      "f1": 0.45,
+      "abstained": false,
+      "retrieve_time": 0.00795745849609375,
+      "reader_time": 1.804945945739746,
+      "ingest_time": 0.2699413299560547,
+      "answer_time": 1.8129849433898926,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "88432d0a_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many times did I bake egg tarts in the past two weeks?",
+      "gold": "The information provided is not enough. You did not mention baking egg tarts.",
+      "pred": "I do not know. The retrieved notes do not contain any information about you baking egg tarts in the past two weeks.",
+      "correct": 1,
+      "judge_reason": "Model abstains correctly, stating no information is available.",
+      "f1": 0.4571428571428572,
+      "abstained": false,
+      "retrieve_time": 0.008879661560058594,
+      "reader_time": 1.9675838947296143,
+      "ingest_time": 0.237274169921875,
+      "answer_time": 1.97652006149292,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "80ec1f4f_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many different museums or galleries did I visit in December?",
+      "gold": "0. You did not mention visitng any museum in December",
+      "pred": "I do not know. The retrieved notes do not contain any information about your museum or gallery visits in December.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly stating info is not present.",
+      "f1": 0.3333333333333333,
+      "abstained": false,
+      "retrieve_time": 0.008268356323242188,
+      "reader_time": 1.8180198669433594,
+      "ingest_time": 0.21572327613830566,
+      "answer_time": 1.8263325691223145,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "eeda8a6d_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many fish are there in my 30-gallon tank?",
+      "gold": "The information provided is not enough. You did not mention that you have a 30-gallon tank.",
+      "pred": "I do not know how many fish are in your 30-gallon tank. The retrieved notes mention a 20-gallon tank with specific fish, but there is no information about a 30-gallon tank's current stock.",
+      "correct": 1,
+      "judge_reason": "Model abstains, correctly noting missing information.",
+      "f1": 0.33333333333333337,
+      "abstained": false,
+      "retrieve_time": 0.00800776481628418,
+      "reader_time": 2.611046314239502,
+      "ingest_time": 0.20032858848571777,
+      "answer_time": 2.6191070079803467,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "60bf93ed_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many days did it take for my iPad case to arrive after I bought it?",
+      "gold": "The information provided is not enough. You did not mention buying an iPad case.",
+      "pred": "I do not know. The retrieved notes do not contain any information about the purchase or delivery of an iPad case.",
+      "correct": 1,
+      "judge_reason": "Model abstains, matching reference that information is missing.",
+      "f1": 0.4,
+      "abstained": false,
+      "retrieve_time": 0.008788585662841797,
+      "reader_time": 2.5220139026641846,
+      "ingest_time": 0.22070717811584473,
+      "answer_time": 2.5308423042297363,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "edced276_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many days did I spend in total traveling in Hawaii and in Seattle?",
+      "gold": "The information provided is not enough. You mentioned traveling for 10 days in Hawaii but did not mention abything about the trip to Seattle.",
+      "pred": "I do not know. The retrieved notes mention a trip to Hawaii but do not specify the number of days spent there, and there is no mention of any trip to Seattle at all.",
+      "correct": 1,
+      "judge_reason": "Model abstains correctly, as reference indicates missing information.",
+      "f1": 0.41379310344827586,
+      "abstained": false,
+      "retrieve_time": 0.00874948501586914,
+      "reader_time": 2.8638124465942383,
+      "ingest_time": 0.20236659049987793,
+      "answer_time": 2.872608184814453,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "gpt4_372c3eed_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many years in total did I spend in formal education from high school to the completion of my Master's degree?",
+      "gold": "The information provided is not enough. You mentioned 4 years in high school (2010-2014), 2 years at PCC (2014-2016), and 4 years at UCLA (2016-2020). But you didn't mention the number of years you spend getting the Master's degree",
+      "pred": "Based on the retrieved notes, you completed a Bachelor's degree in Computer Science from UCLA in 2020, which took four years. However, the notes do not specify the duration of your high school education or whether you have completed a Master's degree. Therefore, I cannot calculate the total years from high school to the completion of a Master's.",
+      "correct": 1,
+      "judge_reason": "Model abstains due to missing Master's degree duration.",
+      "f1": 0.32380952380952377,
+      "abstained": false,
+      "retrieve_time": 0.008735418319702148,
+      "reader_time": 3.170090675354004,
+      "ingest_time": 0.24021339416503906,
+      "answer_time": 3.178868532180786,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "2311e44b_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many pages do I have left to read in 'Sapiens'?",
+      "gold": "The information provided is not enough. You did not mention how many paged do you have left to read in 'Sapiens'.",
+      "pred": "I do not know how many pages you have left to read in \"Sapiens.\" The retrieved notes discuss your reading goals and pace for \"Sapiens\" but do not include your current page number or the book's total length.",
+      "correct": 1,
+      "judge_reason": "Model abstains, matching reference that information is insufficient.",
+      "f1": 0.43333333333333335,
+      "abstained": false,
+      "retrieve_time": 0.007502555847167969,
+      "reader_time": 3.7761270999908447,
+      "ingest_time": 0.22067856788635254,
+      "answer_time": 3.783684015274048,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "6456829e_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How many plants did I initially plant for tomatoes and chili peppers?",
+      "gold": "The information provided is not enough. You mentioned planting 5 plants for tomatoes but you did not mention chili peppers.",
+      "pred": "You initially planted 5 tomato plants. The memory does not specify how many chili pepper plants you planted.",
+      "correct": 1,
+      "judge_reason": "Model abstains on chili peppers, matching reference.",
+      "f1": 0.36842105263157887,
+      "abstained": false,
+      "retrieve_time": 0.008371829986572266,
+      "reader_time": 2.217129945755005,
+      "ingest_time": 0.18051409721374512,
+      "answer_time": 2.225550413131714,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "e5ba910e_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "What is the total cost of my recently purchased headphones and the iPad?",
+      "gold": "The information provided is not enough. You mentioned purchasing a headphone, but you did not mention the iPad.",
+      "pred": "The total cost is $378 for the headphones, but the price of the iPad is not mentioned in the retrieved notes.",
+      "correct": 1,
+      "judge_reason": "Model abstains, says iPad price not mentioned.",
+      "f1": 0.358974358974359,
+      "abstained": false,
+      "retrieve_time": 0.008170843124389648,
+      "reader_time": 1.8413939476013184,
+      "ingest_time": 0.21343541145324707,
+      "answer_time": 1.8496134281158447,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "a96c20ee_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "At which university did I present a poster for my undergrad course research project?",
+      "gold": "The information provided is not enough. You did not mention presenting a poster for your undergrad course research project.",
+      "pred": "Based on the retrieved notes, you presented your poster at a research conference over the summer, but the specific university where this occurred is not mentioned in the provided memory. I do not know at which university you presented it.",
+      "correct": 1,
+      "judge_reason": "Model abstains, matching reference that info is not present.",
+      "f1": 0.3389830508474576,
+      "abstained": false,
+      "retrieve_time": 0.008620738983154297,
+      "reader_time": 2.6167428493499756,
+      "ingest_time": 0.26407647132873535,
+      "answer_time": 2.6254184246063232,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "ba358f49_abs",
+      "question_type": "multi-session",
+      "is_abstention": true,
+      "question": "How old will Rachel be when I get married?",
+      "gold": "The information provided is not enough. You did not mention how old Rachel is right now, nor when will you get married.",
+      "pred": "I do not know. The retrieved notes do not contain any information about Rachel's age or your wedding date.",
+      "correct": 1,
+      "judge_reason": "Model abstains, matching reference that information is missing.",
+      "f1": 0.23809523809523808,
+      "abstained": false,
+      "retrieve_time": 0.008640527725219727,
+      "reader_time": 2.1566100120544434,
+      "ingest_time": 0.25545740127563477,
+      "answer_time": 2.1653859615325928,
+      "metrics": {
+        "writer_calls": 0,
+        "reader_calls": 1
+      },
+      "n_sessions": 3
+    }
+  ]
+}

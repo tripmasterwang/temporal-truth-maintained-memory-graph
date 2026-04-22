@@ -1,0 +1,151 @@
+\section{Method}
+\label{sec:method}
+
+We describe TTMG as three coupled components: the claim schema and the
+graph that stores them (\S\ref{ssec:schema}), the write-time linker that
+induces truth-maintenance edges (\S\ref{ssec:linker}), and the
+read-time truth-consistent retriever (\S\ref{ssec:retrieve}).
+Figure~\ref{fig:overview} sketches the data flow.
+
+\input{figures/overview.tex}
+
+\subsection{Claim-level memory schema}
+\label{ssec:schema}
+
+The atomic unit of TTMG memory is a \emph{claim} $c = (t, s, p, o, I,
+\pi, v, \rho, \phi)$, where $t$ is a natural-language paraphrase of the
+statement; $(s, p, o)$ is an optional shallow subject--predicate--object
+triple; $I = [\tau_{\text{from}}, \tau_{\text{to}}]$ is a validity
+interval over the conversation's reference timeline (either side may
+be open); $\pi \in \{\texttt{assert}, \texttt{deny}\}$ is the claim's
+polarity; $v \in \{\texttt{stable}, \texttt{preference},
+\texttt{state}\}$ is a coarse volatility class; $\rho$ is the
+provenance record (session id, turn id, speaker, original timestamp);
+and $\phi \in [0, 1]$ is the writer's confidence.
+
+A turn of conversation is converted to zero or more claims by a single
+LLM call that we call the \emph{writer}, \texttt{WriteClaims($T$)},
+taking a whole session $T$ as input so that (i) the cost is one call
+per session rather than per turn, and (ii) cross-turn coreference can
+be resolved before extraction. The writer is prompted to skip small
+talk, to default $\tau_{\text{from}}$ to the session timestamp, and to
+tag corrections as \texttt{preference} claims with fresh
+$\tau_{\text{from}}$.
+
+Each claim $c$ is also associated with a normalised embedding
+$\mathbf{e}(c) \in \mathbb{R}^{d}$ produced by a frozen bi-encoder. We
+use a single index across all claims; active and superseded claims
+coexist in the index but are filtered at query time.
+
+\subsection{Write-time linker}
+\label{ssec:linker}
+
+When a new claim $c^{\star}$ is inserted, TTMG asks whether
+$c^{\star}$ should be joined to any existing claim by one of four
+labelled edges:
+\begin{itemize}
+  \item \texttt{support}: $c^{\star}$ and the neighbour co-assert a
+  fact; both remain active.
+  \item \texttt{contradict}: $c^{\star}$ and the neighbour disagree on
+  the same $(s,p)$ at overlapping $I$; neither supersedes the other.
+  \item \texttt{supersede}: $c^{\star}$ replaces the neighbour because
+  it is a later or explicitly corrective assertion about the same
+  $(s,p)$; the neighbour's \texttt{active} bit is cleared, and it is
+  retained only for history-style queries.
+  \item \texttt{unrelated}: the default; edges with this label are
+  not materialised.
+\end{itemize}
+
+The linker proceeds in two stages. First, a cheap gate selects
+candidate neighbours: we retain a neighbour only if (i) its cosine
+similarity to $c^{\star}$ exceeds $\tau_{\text{sim}}$ \emph{and} (ii)
+its subject or predicate tokens overlap with those of $c^{\star}$, or
+cosine similarity alone exceeds a higher bypass threshold
+$\tau_{\text{bypass}}$. This keeps the LLM linker off the path for
+the overwhelming majority of unrelated new claims.
+
+Second, the surviving candidates are joined into a single LLM call
+that jointly labels all pairs and returns a label and a confidence for
+each. If the linker returns \texttt{contradict} but the new claim is
+strictly later on the same $(s,p)$, we upgrade to \texttt{supersede}
+to enforce temporal monotonicity. Edges with confidence $\geq
+\tau_{\text{hard}}$ are \emph{hard} edges that change retrieval
+behaviour; below that threshold they are \emph{soft} edges that are
+logged but have no effect on active-set filtering.
+
+\subsection{Truth-consistent retrieval}
+\label{ssec:retrieve}
+
+Given a question $q$, the retriever performs four steps.
+
+\textbf{1. Parse.} A small LLM call extracts $q$'s temporal anchor
+(e.g., ``currently'', ``in 2024''), its entity, its intent
+(\texttt{lookup}, \texttt{update\_check},
+\texttt{temporal\_reasoning}, \texttt{small\_talk}), and two boolean
+flags: $\texttt{asks\_history}$ (does the question ask about a past
+state?) and $\texttt{asks\_current}$ (does it ask about the current
+state?). These flags decide whether to retrieve only \texttt{active}
+claims or to include superseded ancestors.
+
+\textbf{2. k-NN.} We retrieve the top-$k$ claims by cosine similarity
+to $q$, restricted to the active set when $\texttt{asks\_history} =
+\texttt{false}$ and expanded to include superseded ancestors
+otherwise. No cross-encoder reranker is required.
+
+\textbf{3. Maximum-consistent subgraph.}
+Given candidate claims $C = \{c_1, \dots, c_k\}$ with confidences
+$\phi_i$ and the induced hard-\texttt{contradict} subgraph
+$G_{\neg} = (C, E_{\neg})$, the retained set $R$ is the output of
+Algorithm~\ref{alg:mcs}.
+
+\begin{algorithm}[H]
+  \caption{Greedy maximum-consistent subgraph}
+  \label{alg:mcs}
+  \begin{algorithmic}[1]
+    \Require candidates $C$, contradict edges $E_{\neg}$, $k_{\text{keep}}$
+    \State sort $C$ by $\phi_i$ descending, then by $\tau_{\text{from},i}$ descending
+    \State $R \gets \emptyset$
+    \For{$c \in C$}
+      \If{$|R| \geq k_{\text{keep}}$} \State \textbf{break} \EndIf
+      \If{$\forall c' \in R, (c, c') \notin E_{\neg}$} \State $R \gets R \cup \{c\}$ \EndIf
+    \EndFor
+    \State \Return $R$
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{definition}[Consistency of $R$]
+  A set $R \subseteq C$ is \emph{consistent} if no two claims in $R$
+  are joined by a hard-\texttt{contradict} edge: $\forall c, c' \in R:
+  (c, c') \notin E_{\neg}$.
+\end{definition}
+
+\begin{proposition}
+  The set $R$ returned by Algorithm~\ref{alg:mcs} is consistent. Its
+  weight $\sum_{c \in R} \phi_c$ is within a factor $1/\Delta$ of the
+  optimum, where $\Delta$ is the maximum degree of $G_{\neg}$
+  restricted to $C$. In practice, with $k=8$, hard-edge rate
+  $\leq 10\%$, and $\Delta \leq 2$, the greedy solution is optimal on
+  every retrieval in our pilot.
+\end{proposition}
+
+Complexity is $\mathcal{O}(k^2)$ per query once the top-$k$ candidates
+are indexed, and the procedure is deterministic given a fixed tie-breaker.
+
+\textbf{4. Evidence-bound abstention.} If, among the top
+$k_{\text{keep}}+2$ candidates, there exist two active claims sharing
+an $(s,p)$ that are connected by a hard \texttt{contradict} edge and
+neither supersedes the other, the retriever sets an
+\texttt{abstain} flag. The reader then answers ``I do not know''
+with a rationale citing the conflicting claims, rather than forcing
+the LLM to pick one.
+
+\paragraph{Hybrid reader context.}
+Alongside the claim graph, TTMG maintains a frozen-embedding $k$-NN
+store over \emph{raw turns}, built during ingestion with no extra LLM
+calls. The reader receives both the truth-consistent claim subgraph
+(preferred for temporal questions; carries validity intervals and
+\texttt{active}/\texttt{past} flags) and the top-$k_{\text{raw}}$
+raw turns (similarity-only fallback when claims are insufficient).
+This preserves the TR advantage without losing the recall that flat
+retrieval provides on general factual slices. Ablations in
+\S\ref{sec:ablation} disable the linker to isolate its contribution.

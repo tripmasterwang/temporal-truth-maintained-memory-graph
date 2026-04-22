@@ -1,0 +1,99 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 17.828317165374756,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory",
+      "Novel integration of truth-maintenance systems with LLM-based memory graphs",
+      "Explicit claim-level schema with validity intervals and contradiction edges",
+      "Proposes a concrete mechanism (TTMG) with detailed components",
+      "Reports efficiency gains (token reduction, latency improvement)"
+    ],
+    "weaknesses": [
+      "Results rely heavily on placeholder macros; no actual numbers are shown",
+      "Empirical evaluation is described but not presented; tables are empty",
+      "Ablation study lacks concrete data to support causal claims",
+      "No comparison to strong non-graph baselines (e.g., fine-tuned models)",
+      "Method complexity high; scalability to very long conversations unclear"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., \\AmemLMEAcc, \\TTMGLMEAcc) with actual numerical results",
+      "Fill Table 1, Table 2, Table 3, and Table 4 with complete experimental data",
+      "Provide ablation results (e.g., \\AblContradict) with full numbers and statistical significance",
+      "Include cross-domain results (LoCoMo, MemoryAgentBench-CR) with actual metrics",
+      "Clarify how the 'maximum consistent subgraph' algorithm is implemented and its complexity",
+      "Add error bars or confidence intervals for reported accuracy/F1 scores"
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 15.958230257034302,
+    "scores": {
+      "originality": 7,
+      "quality": 4,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 4.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agent memory.",
+      "Well-defined method: claim-level schema with temporal edges and consistency filtering.",
+      "Explicit ablation isolating the contribution of contradiction edges.",
+      "Reports efficiency gains (token reduction, latency)."
+    ],
+    "weaknesses": [
+      "Critical results are placeholders (e.g., cross-domain, ablation values).",
+      "No statistical significance reported for claimed improvements.",
+      "Baseline comparison incomplete (Flat RAG results missing).",
+      "Ablation coverage is limited (only one component tested).",
+      "No analysis of failure modes or error distribution."
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., --, 52.6) with actual numbers from experiments.",
+      "Report standard deviations or confidence intervals for main results across seeds.",
+      "Include Flat RAG baseline results in Table 1.",
+      "Expand ablation study to test all major components (e.g., temporal parser, maximum-consistent subgraph, abstention trigger).",
+      "Add a quantitative error analysis (e.g., confusion matrix, per-question breakdown).",
+      "Clarify how the 40pp TR gain is computed given the placeholder numbers."
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 14.536120414733887,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance with graph-based memory",
+      "Practical design: session-batched writer reduces token cost",
+      "Explicit abstention mechanism for contradictions",
+      "Strong focus on efficiency (tokens, latency)"
+    ],
+    "weaknesses": [
+      "Results heavily rely on placeholder macros (e.g., --, 100.0)",
+      "Lack of concrete numbers for cross-domain and ablation studies",
+      "No discussion of system robustness or failure modes",
+      "Missing details on linker accuracy and computational overhead",
+      "Evaluation limited to synthetic benchmarks; real-world scalability unclear"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., --, 100.0) with actual measured values",
+      "Provide concrete numbers for cross-domain (LoCoMo, MAB-CR) and ablation results",
+      "Include a table or analysis of linker precision/recall and its impact on retrieval",
+      "Discuss limitations: e.g., linker errors, schema extraction failures, scalability to very large graphs",
+      "Clarify the computational cost of the maximum-consistent-subgraph step and its worst-case behavior"
+    ],
+    "verdict": "weak_accept"
+  }
+}

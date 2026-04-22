@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# LaTeX build
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+
+# Local paper / arXiv downloads (re-fetch as needed)
+arXiv-*.tar.gz
+*.tar.gz
+A-mem-main.zip

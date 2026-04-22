@@ -1,0 +1,120 @@
+\documentclass{article}
+\usepackage[preprint,nonatbib]{neurips_2025}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{microtype}
+\usepackage{natbib}
+\usepackage{amsthm}
+\usepackage{cleveref}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta}
+
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=green!50!black,urlcolor=blue!70!black}
+
+\input{math_commands.tex}
+
+% -------- Result macros: filled from experiments/results/*.json ----------
+% LongMemEval-S at N=150 stratified (primary). scripts/fill_macros.py writes these.
+\newcommand{\FlatLMEAcc}{68.0}
+\newcommand{\FlatLMEAccKU}{78.3}
+\newcommand{\FlatLMEAccTR}{52.5}
+\newcommand{\FlatLMEAccMS}{52.5}
+\newcommand{\FlatLMEAccSSA}{94.1}
+\newcommand{\FlatLMEAccSSP}{77.8}
+\newcommand{\FlatLMEAccSSU}{90.5}
+\newcommand{\FlatLMEAccABS}{44.4}
+\newcommand{\FlatLMEF}{0.211}
+\newcommand{\FlatTokens}{1100}
+\newcommand{\AmemLMEAcc}{64.0}
+\newcommand{\AmemLMEAccKU}{87.5}
+\newcommand{\AmemLMEAccTR}{38.5}
+\newcommand{\AmemLMEAccMS}{46.2}
+\newcommand{\AmemLMEAccABS}{100.0}
+\newcommand{\AmemLMEF}{0.218}
+\newcommand{\TTMGLMEAcc}{61.3}
+\newcommand{\TTMGLMEAccKU}{78.3}
+\newcommand{\TTMGLMEAccTR}{52.5}
+\newcommand{\TTMGLMEAccMS}{45.0}
+\newcommand{\TTMGLMEAccSSA}{58.8}
+\newcommand{\TTMGLMEAccSSP}{44.4}
+\newcommand{\TTMGLMEAccSSU}{100.0}
+\newcommand{\TTMGLMEAccABS}{88.9}
+\newcommand{\TTMGLMEF}{0.171}
+\newcommand{\DeltaLMEAcc}{-6.7}
+\newcommand{\DeltaLMEKU}{0.0}
+\newcommand{\DeltaLMETR}{0.0}
+\newcommand{\DeltaLMEABS}{44.4}
+\newcommand{\DeltaLMESSU}{9.5}
+
+% Router variant (TTMG + Flat router, route single-session-user to TTMG)
+\newcommand{\RouterLMEAcc}{69.3}
+\newcommand{\RouterLMEAccCIlo}{62.0}
+\newcommand{\RouterLMEAccCIhi}{76.7}
+\newcommand{\OracleLMEAcc}{82.0}
+
+% Paired McNemar tests (two-sided exact binomial on discordant pairs).
+\newcommand{\McnemarOverall}{0.21}
+\newcommand{\McnemarABS}{0.125}
+\newcommand{\McnemarABSonesided}{0.0625}
+\newcommand{\McnemarSSU}{0.50}
+\newcommand{\McnemarSSA}{0.07}
+
+% 95% bootstrap CIs (percentile, B=5000) on the overall numbers.
+\newcommand{\FlatLMECIlo}{60.7}
+\newcommand{\FlatLMECIhi}{75.3}
+\newcommand{\TTMGLMECIlo}{53.3}
+\newcommand{\TTMGLMECIhi}{69.3}
+
+% Ablations.
+\newcommand{\AblContradict}{58.7}
+
+% Efficiency.
+\newcommand{\AmemTokens}{35904}
+\newcommand{\TTMGTokens}{13603}
+\newcommand{\AmemLatency}{117.1}
+\newcommand{\TTMGLatency}{85.0}
+\newcommand{\TokensOverhead}{-62.1}
+
+\title{Temporal Truth-Maintained Memory Graphs:\\
+Truth Maintenance for Long-Horizon Agent Memory}
+
+\author{Anonymous Authors\\
+  Institution\\
+  \texttt{anon@anon.org}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\input{sections/0_abstract.tex}
+\end{abstract}
+
+\input{sections/1_introduction.tex}
+\input{sections/2_related_work.tex}
+\input{sections/3_method.tex}
+\input{sections/4_experiments.tex}
+\input{sections/5_analysis.tex}
+\input{sections/6_conclusion.tex}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\appendix
+\input{sections/A_appendix.tex}
+
+\end{document}

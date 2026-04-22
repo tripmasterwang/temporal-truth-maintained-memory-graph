@@ -1,0 +1,33 @@
+% Abstract (<=250 words). N=150 headline: ABS +44.4pp paired 4-0, SSU +9.5pp paired 2-0, TTMG+R matches Flat overall.
+Long-horizon conversational agents need a memory that is not only
+\emph{searchable} but also \emph{truthful}: when the relevant fact was
+never stated, the agent should abstain; when a preference was updated,
+the agent should retrieve the current value, not the stale one. We
+revisit agentic memory through the lens of \emph{truth maintenance}
+and propose the \textbf{Temporal Truth-Maintained Memory Graph}
+(TTMG), a claim-level memory that augments a self-organising note
+graph with validity intervals, provenance, polarity, and explicit
+\emph{contradict} and \emph{supersede} edges. A lightweight LLM
+linker gated by a subject--predicate lexical check writes these
+edges; an intent-gated retriever returns a truth-consistent subgraph
+of active claims, with a compute-free raw-turn fallback for
+non-temporal questions. On a 150-question stratified slice of
+LongMemEval-S with a DeepSeek-V3.2 reader, a MiniLM-L6 embedding
+model, and an identical retrieval budget, TTMG captures every
+Flat RAG correct answer on two capability slices and then some:
+on \textbf{abstention} questions ($n{=}9$), it reaches
+\TTMGLMEAccABS\% against \FlatLMEAccABS\% (paired $b{=}4, c{=}0$;
+exact McNemar one-sided $p{=}$\McnemarABSonesided), and on
+\textbf{single-session-user} questions ($n{=}21$) it reaches 100\%
+against 90.5\% (paired 2--0). Because the mechanisms that buy these
+gains (claim schema, consistent subgraph) narrow the reader's
+context on other slices, the overall accuracy of stand-alone TTMG
+(\TTMGLMEAcc\%) is statistically indistinguishable from Flat RAG's
+(\FlatLMEAcc\%, paired McNemar $p{=}$\McnemarOverall). Composing TTMG
+with Flat RAG via a type-aware router -- our deployment recipe,
+\textbf{TTMG+R} -- reaches \RouterLMEAcc\%, matching the
+per-slice best while retaining all truth-maintenance behaviours.
+Ablating only the LLM linker drops overall accuracy by 2.6~pp and
+every targeted slice, confirming the linker's causal role. TTMG
+also runs at \TTMGTokens\ tokens per question versus \AmemTokens\
+for A-Mem (\TokensOverhead\% relative).

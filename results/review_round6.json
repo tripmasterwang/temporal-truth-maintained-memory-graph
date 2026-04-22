@@ -1,0 +1,97 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 15.037328243255615,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory",
+      "Well-defined method: claim schema, linker, and truth-consistent retrieval",
+      "Strong empirical claim: +40pp on temporal reasoning, -58% tokens",
+      "Ablation study isolates contribution of truth-maintenance edges"
+    ],
+    "weaknesses": [
+      "Results rely on placeholder macros; no actual data or evaluation details",
+      "No statistical significance or error bars reported",
+      "Overall accuracy lower than baseline; trade-off not fully justified",
+      "Limited discussion of failure modes or limitations"
+    ],
+    "required_revisions": [
+      "Replace all placeholder macros (e.g., \\TTMGLMEAccTR, \\DeltaLMETR) with actual numerical results from experiments",
+      "Include full experimental details: dataset sizes, exact evaluation protocol, statistical significance tests",
+      "Clarify why overall accuracy is lower than baseline and discuss implications",
+      "Add a limitations section discussing edge cases, scalability, and failure modes of the linker",
+      "Provide actual algorithm pseudocode for the maximum-consistent subgraph, not just a description"
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 15.379837274551392,
+    "scores": {
+      "originality": 7,
+      "quality": 5,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 5.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Well-defined method with explicit claim schema and truth-maintenance edges",
+      "Strong focus on efficiency, reporting token and latency improvements",
+      "Includes an ablation study to isolate the contribution of key components"
+    ],
+    "weaknesses": [
+      "Experimental results rely heavily on placeholder macros; actual performance unverified",
+      "No statistical significance testing reported for claimed improvements",
+      "Ablation coverage is limited (only one ablation shown)",
+      "Failure-mode analysis is qualitative and anecdotal",
+      "Baseline comparison may be unfair if A-Mem reimplementation is not faithful"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., \\TTMGLMEAccTR, \\AmemLMEAccTR) with actual numerical results from experiments",
+      "Report standard deviations or confidence intervals for all accuracy metrics across multiple seeds",
+      "Conduct statistical significance tests (e.g., paired t-test) to validate performance differences",
+      "Expand ablation study to include removal of maximum-consistent-subgraph selection, temporal parsing, and evidence-bound abstention",
+      "Provide quantitative error analysis (e.g., confusion matrices, per-question breakdown) beyond qualitative examples",
+      "Include full implementation and hyperparameter details to ensure reproducibility",
+      "Clarify the evaluation protocol for the LLM judge and ensure it is consistent across all baselines"
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 13.913764476776123,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance with graph-based memory",
+      "Strong empirical gains on temporal reasoning (+40pp)",
+      "Significant efficiency improvements (tokens -58%, latency -16%)",
+      "Well-structured ablation isolating the linker's contribution"
+    ],
+    "weaknesses": [
+      "Overall accuracy on LongMemEval-S is lower than flat baseline",
+      "Relies heavily on placeholder macros for key results",
+      "No discussion of system robustness to noisy or ambiguous claims",
+      "Scalability of maximum-consistent-subgraph algorithm not analyzed",
+      "Limited evaluation on only one primary benchmark (LongMemEval-S)"
+    ],
+    "required_revisions": [
+      "Replace all placeholder macros (e.g., \\FlatLMEAcc, \\DeltaLMETR) with actual numerical results",
+      "Provide concrete numbers for cross-domain evaluations (LoCoMo, MemoryAgentBench)",
+      "Clarify the computational complexity and practical limits of the greedy MCS algorithm",
+      "Add discussion of failure modes and error analysis beyond qualitative examples",
+      "Justify hyperparameter choices (e.g., similarity thresholds, k values) with validation data"
+    ],
+    "verdict": "weak_accept"
+  }
+}

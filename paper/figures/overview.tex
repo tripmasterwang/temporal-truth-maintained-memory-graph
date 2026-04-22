@@ -1,0 +1,38 @@
+% Placeholder tikz overview figure. Rendered inline by main.tex.
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}[
+    node distance=1.1cm,
+    box/.style={draw,rounded corners,align=center,minimum width=2.6cm,minimum height=0.9cm,font=\small},
+    memory/.style={draw,rounded corners,align=center,minimum width=3.4cm,minimum height=1.2cm,font=\small,fill=blue!5},
+    link/.style={->,>=latex,thick},
+    softlink/.style={->,>=latex,dashed},
+  ]
+    \node[box] (turn) {\textbf{Turn}\\(\emph{session}, \emph{speaker}, \emph{text})};
+    \node[box,right=1.1cm of turn] (writer) {\textbf{Writer}\\claim extraction};
+    \node[memory,right=1.1cm of writer] (claim) {\textbf{Claim}\\$(s,p,o,I,\pi,v,\rho,\phi)$};
+    \node[memory,below=0.9cm of claim,fill=green!5] (graph) {\textbf{Memory graph}\\support / contradict / supersede};
+    \node[box,left=1.1cm of graph] (linker) {\textbf{Linker}\\joint LLM labeller};
+
+    \draw[link] (turn) -- (writer);
+    \draw[link] (writer) -- (claim);
+    \draw[link] (claim) -- (graph);
+    \draw[link] (linker) -- (graph);
+    \draw[softlink] (claim) -- (linker);
+
+    \node[box,below=0.9cm of graph,fill=orange!5] (retrieve) {\textbf{Truth-consistent retrieval}\\query parse $\to$ $k$-NN $\to$ max-consistent subgraph};
+    \node[box,below=0.5cm of retrieve] (reader) {\textbf{Reader}\\(answer or abstain)};
+    \draw[link] (graph) -- (retrieve);
+    \draw[link] (retrieve) -- (reader);
+  \end{tikzpicture}
+  \caption{TTMG at a glance. At write time, the \emph{writer} turns each
+    session into \emph{claim} nodes with validity intervals and provenance;
+    the \emph{linker} labels candidate neighbours with one of
+    \texttt{support}, \texttt{contradict}, \texttt{supersede}, or
+    \texttt{unrelated}. At read time, a query parser extracts the temporal
+    anchor, $k$-NN retrieves candidates from the \emph{active} subset, and
+    the retriever returns the maximum consistent subgraph. The reader
+    receives claims with their validity intervals and can be forced to
+    abstain when two active claims disagree.}
+  \label{fig:overview}
+\end{figure}

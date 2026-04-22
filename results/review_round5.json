@@ -1,0 +1,100 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 15.945446014404297,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 7,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory",
+      "Proposes a novel structured memory graph with explicit temporal and contradiction edges",
+      "Reports strong gains on temporal-reasoning slice (+40pp) and efficiency improvements",
+      "Includes ablation study isolating the contribution of the linker mechanism"
+    ],
+    "weaknesses": [
+      "Overall accuracy on LongMemEval-S is lower than flat baseline (47.4% vs 63.2%)",
+      "Method details are high-level; lacks algorithmic pseudocode and formal definitions",
+      "Evaluation is limited to a single primary benchmark (LongMemEval-S) with small subset sizes",
+      "No statistical significance testing or error bars reported for results",
+      "Placeholder numbers and macros throughout the paper undermine credibility"
+    ],
+    "required_revisions": [
+      "Replace all placeholder macros (e.g., \\FlatLMEAcc, \\DeltaLMETR) with actual numeric results",
+      "Provide full algorithm pseudocode for the maximum-consistent subgraph retrieval",
+      "Include statistical significance tests and confidence intervals for reported improvements",
+      "Clarify the claim extraction process and how SPO triples are obtained",
+      "Add a formal definition of the claim schema and edge types",
+      "Report results on the full LongMemEval benchmark, not just the -S subset",
+      "Include a comparison to more recent memory baselines beyond A-Mem"
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 12.634187698364258,
+    "scores": {
+      "originality": 7,
+      "quality": 5,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 5.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Proposes a novel structured memory schema with explicit temporal edges",
+      "Reports strong gains on target temporal-reasoning slice",
+      "Includes efficiency analysis showing reduced token cost",
+      "Provides detailed ablation isolating contribution of truth-maintenance edges"
+    ],
+    "weaknesses": [
+      "Overall accuracy on primary benchmark is lower than simple baseline",
+      "No statistical significance testing reported for results",
+      "Ablation coverage incomplete (e.g., no ablation of temporal parser)",
+      "Small sample sizes for key slices (KU N=3, ABS N=1) limit confidence",
+      "Cross-domain evaluation on LoCoMo/MemoryAgentBench not reported quantitatively"
+    ],
+    "required_revisions": [
+      "Report standard deviations or confidence intervals for all accuracy numbers",
+      "Conduct statistical significance tests comparing TTMG to baselines",
+      "Provide full ablation study including temporal parser and maximum-consistent-subgraph components",
+      "Report quantitative results for cross-domain evaluations (LoCoMo, MemoryAgentBench)",
+      "Clarify sample sizes for all reported metrics in tables",
+      "Address the performance drop on non-temporal slices in full TTMG"
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 14.025903701782227,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance with graph-based memory",
+      "Strong empirical gains on temporal-reasoning slice",
+      "Significant token and latency reduction vs. baseline",
+      "Ablation study isolates contribution of key mechanism"
+    ],
+    "weaknesses": [
+      "Overall accuracy lower than flat baseline (trade-off not fully justified)",
+      "Placeholder results (e.g., N=3 for knowledge-update) limit confidence",
+      "No discussion of system robustness to noisy or ambiguous claims",
+      "Scalability of maximum-consistent-subgraph on larger k not analyzed",
+      "Cross-domain results (LoCoMo, MemoryAgentBench) only mentioned, not shown"
+    ],
+    "required_revisions": [
+      "Replace all placeholder macros (e.g., \\FlatLMEAcc, \\DeltaLMETR) with actual numeric results in tables and text.",
+      "Provide concrete results for LoCoMo and MemoryAgentBench cross-domain evaluations.",
+      "Clarify the trade-off: why is lower overall accuracy acceptable? Discuss deployment implications.",
+      "Add analysis of computational complexity and memory overhead of the graph structure.",
+      "Discuss failure modes: what happens when the LLM linker mislabels edges?"
+    ],
+    "verdict": "weak_accept"
+  }
+}

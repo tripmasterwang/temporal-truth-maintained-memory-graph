@@ -1,0 +1,100 @@
+\section{Introduction}
+\label{sec:intro}
+
+Long-horizon LLM agents increasingly operate over weeks or months of
+conversation, during which the \emph{facts} that describe a user change:
+jobs end, preferences rotate, diagnoses update, plans get cancelled.
+A memory system for such an agent must therefore serve two distinct
+functions. It must \emph{find} relevant history (the retrieval problem
+that dominates the Retrieval-Augmented Generation literature), and it
+must also \emph{maintain truth} across time, so that the text it
+resurfaces actually describes the user's current state rather than a
+superseded one. The second capability is comparatively under-studied:
+recent surveys of agent memory list ``memory automation'' and
+``trustworthiness'' as open frontiers \citep{survey_agent_memory}, and
+the benchmarks that stress these capabilities -- LongMemEval
+\citep{longmemeval}, LoCoMo \citep{locomo}, and MemoryAgentBench
+\citep{memoryagentbench} -- continue to show large gaps on questions
+that require the system to know \emph{which fact is currently true}.
+
+A-Mem \citep{amem} makes an important step away from flat embedding
+stores by treating memory as a self-organising graph of structured
+notes, each carrying keywords, context, and tags, with links that are
+formed and rewritten as new notes arrive. This mechanism works well on
+retrieval-centric question types but, because it operates at the level
+of free-text notes, it has no explicit handle on \emph{when} a
+statement was true, \emph{whether} a later statement replaced it, or
+\emph{why} two statements might be incompatible. We show that this gap
+is visible as a concrete failure mode on LongMemEval's
+\emph{knowledge-update}, \emph{temporal-reasoning}, and
+\emph{abstention} slices, and that closing it requires changing the
+unit of memory, not the size of the reader.
+
+\paragraph{Our approach.} We propose the \textbf{Temporal
+Truth-Maintained Memory Graph} (TTMG). Instead of free-text notes, the
+atomic memory unit is a \emph{claim}: a subject--predicate--object-like
+assertion accompanied by a \emph{validity interval}, a
+\emph{provenance} record (session id, turn id, speaker, session
+timestamp), a \emph{polarity}, a \emph{volatility} class, and a
+\emph{confidence}. When a new claim is ingested, the system retrieves
+its semantic and lexical neighbours and uses a light LLM linker to
+label each pair as \texttt{support}, \texttt{contradict},
+\texttt{supersede}, or \texttt{unrelated}. \texttt{Supersede} edges
+flip the older claim's \texttt{active} bit so that it is excluded from
+retrieval for current-state questions but remains accessible for
+historical queries. At read time, TTMG parses the question for its
+temporal anchor and current/history intent, runs approximate
+$k$-nearest-neighbour search on the \emph{active} subset, and then
+extracts the \emph{maximum consistent subgraph} -- the largest set of
+retrieved claims no two of which are linked by a hard
+\texttt{contradict} edge. When two active claims about the same
+subject--predicate disagree, TTMG abstains rather than forcing the
+reader to guess.
+
+\paragraph{Contributions.}
+\begin{itemize}
+  \item We introduce a \emph{claim-level} schema for long-horizon agent
+  memory that couples semantic embedding indices with explicit
+  validity intervals, provenance, polarity, and volatility
+  (\S\ref{sec:method}).
+  \item We introduce \emph{contradict} and \emph{supersede} edges, a
+  lightweight LLM linker with a cheap subject--predicate gate, and an
+  intent-gated hybrid reader that prefers claims for temporal
+  questions and raw turns as a fallback on everything else. On a
+  150-question stratified slice of LongMemEval-S, TTMG achieves
+  paired set-inclusion wins over a strong flat hybrid-RAG baseline on
+  two capability slices: \textbf{abstention} accuracy
+  (\TTMGLMEAccABS\% vs \FlatLMEAccABS\%, +\DeltaLMEABS~pp, $n{=}9$,
+  paired $b{=}4, c{=}0$; exact McNemar one-sided
+  $p{=}$\McnemarABSonesided) and \textbf{single-session-user} accuracy
+  (\TTMGLMEAccSSU\% vs \FlatLMEAccSSU\%, $n{=}21$, paired 2--0).
+  Knowledge-update and temporal-reasoning are tied with the baseline
+  at this scale (paired discordance symmetric, McNemar $p{=}1.0$),
+  and we show that TTMG and Flat RAG answer the same slice accuracy
+  through \emph{complementary} subsets of questions (\S\ref{sec:exp}).
+  \item We propose \textbf{TTMG+R}, a type-aware router that composes
+  TTMG with Flat RAG. Routing \texttt{single-session-user} traffic to
+  TTMG and everything else to Flat RAG reaches \RouterLMEAcc\%
+  overall, matching the per-slice best system and improving over
+  Flat RAG by $+1.3$~pp while retaining TTMG's truth-maintenance
+  behaviours (abstention, supersede) wherever they are live
+  (\S\ref{ssec:lme}). An oracle upper bound of \OracleLMEAcc\%
+  documents that claim-level and raw-text retrieval carry
+  substantially complementary information.
+  \item The mechanism is cheaper than the A-Mem note-graph baseline:
+  TTMG uses \TTMGTokens{} tokens per question vs.\ \AmemTokens{}
+  for A-Mem (\TokensOverhead\%) and runs in \TTMGLatency{}s vs.\
+  \AmemLatency{}s, because the session-batched writer replaces
+  A-Mem's per-turn LLM analysis (\S\ref{sec:efficiency}).
+  \item An ablation of the LLM linker drops overall accuracy
+  (-2.6~pp), abstention (-22~pp), knowledge-update (-9~pp),
+  temporal-reasoning (-5~pp), and single-session-user (-5~pp),
+  confirming that write-time truth maintenance -- not the claim
+  schema alone -- supplies the gain (\S\ref{sec:ablation}).
+\end{itemize}
+
+The claim-level abstraction therefore turns memory from ``closest
+text'' into ``currently true fact,'' delivers paired wins on the two
+capability slices that truth maintenance should serve, composes with
+Flat RAG to reach parity on the rest of the benchmark, and does so
+at lower compute cost than a standard note-graph baseline.

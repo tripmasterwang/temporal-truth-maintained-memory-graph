@@ -1,0 +1,105 @@
+\section{Prompt templates}
+\label{app:prompts}
+
+All TTMG LLM calls route through the same chat interface (OpenAI-compatible).
+The three module-specific prompts below are what the writer, linker, and
+retriever query-parser actually see; small differences between the
+session-batched writer and the single-turn writer are flagged.
+
+\subsection{Session-batched writer}
+\label{app:writer_prompt}
+\begin{quote}\small
+\emph{System:} You extract factual claims from conversation turns for a
+long-term memory system. Only extract information the speaker ACTUALLY
+asserts. Do not invent content. Respond with strict JSON only.\\[2pt]
+\emph{User:} Extract factual claims from the conversation below.
+Session metadata: \texttt{session\_id}, \texttt{session\_ts}.
+Turns are numbered. For each turn containing factual content (facts,
+preferences, plans, states), output claims with fields \texttt{turn\_id},
+\texttt{speaker}, \texttt{content}, \texttt{subject}, \texttt{predicate},
+\texttt{object}, \texttt{valid\_from}, \texttt{valid\_to},
+\texttt{polarity} $\in\{\texttt{assert},\texttt{deny}\}$,
+\texttt{volatility} $\in\{\texttt{stable},\texttt{preference},
+\texttt{state}\}$, \texttt{confidence} $\in [0,1]$. Skip greetings,
+small talk and pure questions asked of the model. Keep content under 25
+words. Return \texttt{\{"claims":[\ldots]\}}.
+\end{quote}
+
+\subsection{Link labeller}
+\label{app:linker_prompt}
+\begin{quote}\small
+\emph{System:} You label pairs of factual claims as one of
+\texttt{support}, \texttt{contradict}, \texttt{supersede}, or
+\texttt{unrelated}. Respond in strict JSON only.\\[2pt]
+\emph{User:} For the NEW claim and each CANDIDATE claim output a label
+and a confidence in $[0,1]$.
+\textbf{support}: same fact; both coexist. \textbf{contradict}:
+disagree on the same $(s,p)$ at overlapping times. \textbf{supersede}:
+the NEW claim replaces the CANDIDATE (same $(s,p)$, later
+\texttt{valid\_from}, or explicit correction). \textbf{unrelated}:
+otherwise. Be conservative: default to \texttt{unrelated} unless
+subject and predicate match. Return
+\texttt{\{"pairs":[\{"id":\ldots,"label":\ldots,"confidence":\ldots\}]\}}.
+\end{quote}
+
+\subsection{Query parser}
+\label{app:parser_prompt}
+\begin{quote}\small
+\emph{System:} You parse a question asked of a long-term memory system.
+Respond with strict JSON only.\\[2pt]
+\emph{User:} Parse the question. Return fields
+\texttt{temporal\_anchor} (time string or \texttt{null}),
+\texttt{asks\_history} (question asks about a past state that may have
+been superseded), \texttt{asks\_current} (question asks about the
+current state), \texttt{entity} (main subject or \texttt{null}),
+\texttt{intent} $\in\{\texttt{lookup}, \texttt{update\_check},
+\texttt{temporal\_reasoning}, \texttt{small\_talk}\}$.
+\end{quote}
+
+\section{Hyper-parameters}
+\label{app:hparams}
+
+\begin{table}[h]
+  \centering
+  \caption{TTMG default hyper-parameters, used unchanged across all
+  benchmarks.}
+  \label{tab:hyperparams}
+  \small
+  \begin{tabular}{ll}
+    \toprule
+    Component & Value / model \\
+    \midrule
+    Embedding model & \texttt{all-MiniLM-L6-v2} \\
+    Reader / writer / linker / parser & \texttt{deepseek-v3.2} \\
+    Retrieval $k$ & 8 \\
+    $k_{\text{keep}}$ at read time & 3 \\
+    Linker candidate $k$ at write time & 3 \\
+    Similarity gate for linker & 0.65 \\
+    Bypass threshold & 0.85 \\
+    Hard-edge threshold $\tau_{\text{hard}}$ & 0.7 \\
+    Session-batched writer & on \\
+    Random seeds & \{0, 7, 17\} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Dataset details}
+\label{app:datasets}
+
+LongMemEval-S contains 500 questions across six types:
+\emph{single-session-user} (70), \emph{single-session-assistant}~(56),
+\emph{single-session-preference}~(30), \emph{multi-session}~(133),
+\emph{knowledge-update}~(78), and \emph{temporal-reasoning}~(133). A
+further 30 questions bearing an \texttt{\_abs} suffix in their
+question identifier are \emph{abstention} probes: the reference answer
+states that the information was never mentioned, so the correct
+response is ``I do not know''. Each question is paired with an
+average of $\sim\!53$ haystack sessions drawn from a user's
+conversation history; \texttt{answer\_session\_ids} labels the
+session(s) from which the answer may be derived.
+
+Each of the 50 questions retrieves memory from its own haystack; we
+cap the ingested haystack at the 3 highest-priority sessions (the
+answer session plus the two earliest matching sessions) to keep the
+per-question ingestion budget manageable while preserving the ratio
+of relevant-to-irrelevant sessions the LongMemEval benchmark intends.

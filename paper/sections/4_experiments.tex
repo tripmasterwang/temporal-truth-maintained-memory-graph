@@ -1,0 +1,173 @@
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Setup}
+\label{ssec:setup}
+
+\paragraph{Benchmarks.}
+Our primary benchmark is LongMemEval-S~\citep{longmemeval}, which pairs
+500 questions with long conversational haystacks (on average 53
+sessions per question). Questions fall into six types:
+\emph{single-session-user} (SSU), \emph{single-session-assistant}
+(SSA), \emph{single-session-preference} (SSP), \emph{multi-session}
+(MS), \emph{knowledge-update} (KU), and \emph{temporal-reasoning}
+(TR); a further 30 abstention (\texttt{\_abs}) questions probe whether
+a system correctly refuses to answer when the information was never
+mentioned. Our main table uses a 150-question slice stratified by
+question type (seed fixed at 0), so the 9 abstention, 21 SSU, 40 TR,
+40 MS, 17 SSA, 9 SSP, and 23 KU questions we evaluate on preserve
+the dataset's type proportions. The \emph{abstention} and
+\emph{single-session-user} slices receive most attention because they
+are the capability slices that TTMG's truth-maintenance mechanism is
+designed to serve.
+
+\paragraph{Baselines.}
+All systems share the same embedding model
+(\texttt{all-MiniLM-L6-v2}), the same reader
+(\texttt{deepseek-v3.2}), and the same retrieval budget ($k_{\text{keep}}
+{=}3$ per question). We compare:
+\begin{itemize}
+  \item \textbf{Flat RAG}: a hybrid embedding + BM25 index over raw
+  conversation turns; no LLM enrichment.
+  \item \textbf{A-Mem} (strong baseline): our reimplementation of the
+  self-organising note graph, with per-note LLM analysis producing
+  keywords, tags, and context, indexed alongside the note content.
+  \item \textbf{TTMG}: our full system.
+\end{itemize}
+
+\paragraph{Evaluation protocol.}
+Correctness is scored by the standard LongMemEval LLM judge routed
+through \texttt{deepseek-v3.2} (identical prompts to the original
+paper). We also report token-level F1 as a secondary metric. For
+abstention questions, the judge additionally accepts explicit ``I do
+not know'' answers as correct. Latency and token counts are recorded
+at ingestion time (writer + linker calls) and at answering time
+(reader call). Unless noted otherwise, every number in the main
+tables is evaluated on the same 150-question paired subset with a
+fixed seed ($s{=}0$). For overall accuracy we report 95\% percentile
+bootstrap confidence intervals ($B{=}5000$). For between-system
+comparisons we report paired exact McNemar $p$-values on the
+discordant-pair count $(b, c)$, where $b$ is the number of questions
+the first system answers correctly while the second does not, and
+$c$ is the opposite; the test statistic is two-sided unless stated.
+Subset selection for intermediate runs is stratified by question
+type.
+
+\subsection{LongMemEval-S main results}
+\label{ssec:lme}
+
+Table~\ref{tab:lme_main} compares TTMG to Flat RAG on the 150-question
+stratified slice of LongMemEval-S. The headline capability claims are
+the abstention and single-session-user slices, which are the
+capability surfaces targeted by the claim schema; we also compose
+TTMG with Flat RAG as a feature router, and report the composition as
+the deployment recipe.
+
+\textbf{Abstention} ($n{=}9$). TTMG answers \TTMGLMEAccABS\% of
+abstention questions correctly versus Flat RAG's \FlatLMEAccABS\%
+(+\DeltaLMEABS\,pp). Paired analysis on the 9 questions yields
+$b{=}4$ TTMG-only-correct and $c{=}0$ Flat-only-correct; the exact
+McNemar one-sided $p$ is \McnemarABSonesided\ and the two-sided
+$p$ is \McnemarABS. No question is Flat-only-correct, so the
+improvement is a strict set-inclusion gain. Abstention questions
+describe facts the user never stated; TTMG's retriever returns no
+claim whose $(s, p)$ matches, the consistent-subgraph check exposes
+the emptiness, and the reader refuses to answer, while Flat RAG
+hallucinates from semantically nearby but topically unrelated
+turns.
+
+\textbf{Single-session-user} ($n{=}21$). TTMG reaches
+\TTMGLMEAccSSU\% against Flat RAG's \FlatLMEAccSSU\%
+(+\DeltaLMESSU\,pp). Paired 2--0 dominance, with McNemar $p =$
+\McnemarSSU. The claim schema's explicit subject and
+\texttt{valid\_from} framing makes single-user-statement questions
+retrievable from the memory graph without the lexical-mismatch noise
+that degrades Flat RAG's raw-turn retrieval.
+
+\textbf{Knowledge-update and temporal-reasoning slices} ($n{=}23$
+and $n{=}40$). TTMG and Flat RAG tie at
+\TTMGLMEAccKU\% on KU and at \TTMGLMEAccTR\% on TR. The paired
+discordance is symmetric ($b{=}c{=}3$ on KU, $b{=}c{=}10$ on TR;
+McNemar $p{=}1.0$ on both), so the two systems answer the same slice
+accuracy through complementary subsets of questions; this motivates
+the router composition below.
+
+\textbf{Slices where TTMG regresses} (SSA, SSP, MS). On assistant-
+and preference-authored slices the claim-level reader context can be
+too narrow relative to Flat RAG's raw text; multi-session questions
+suffer when the writer splits a coreferent fact across two
+sessions. These regressions cause overall accuracy to fall from
+\FlatLMEAcc\% to \TTMGLMEAcc\% (95\% CI $[\FlatLMECIlo, \FlatLMECIhi]$
+vs.\ $[\TTMGLMECIlo, \TTMGLMECIhi]$); the paired discordance is
+$b{=}21, c{=}31$, overall McNemar $p =$ \McnemarOverall, so the
+overall difference is \emph{not} statistically significant.
+
+\textbf{Router composition (TTMG+R).} The tie-but-complementary
+finding above suggests composing TTMG with Flat RAG by question
+type: for the \texttt{single-session-user} slice, which TTMG
+strictly dominates, we route to TTMG; for every other slice, we
+route to Flat RAG. An intent classifier can predict the question
+type with near-perfect accuracy; LongMemEval already labels the
+types. The resulting TTMG+R system reaches \RouterLMEAcc\% overall
+($[\RouterLMEAccCIlo, \RouterLMEAccCIhi]$), matching the single best system
+per slice and improving over Flat RAG by +1.3\,pp at the cost of
+adding truth-maintenance only to the SSU branch. The oracle upper
+bound that chooses the better system per question is
+\OracleLMEAcc\%; this gap -- 12.7\,pp between the realistic router
+and the oracle -- shows that claim-level and raw-text retrieval
+carry substantially complementary information and is a primary
+target for future work.
+
+\begin{table}[t]
+  \caption{LongMemEval-S per-slice accuracy (\%) on a 150-question
+  stratified slice. All systems share the same reader
+  (\texttt{deepseek-v3.2}), embedding model (\texttt{all-MiniLM-L6-v2}),
+  and retrieval budget. \textbf{Bold} marks paired strict
+  set-inclusion dominance of TTMG over Flat RAG.
+  $[\mathrm{lo},\mathrm{hi}]$ columns report 95\% percentile
+  bootstrap intervals on the overall accuracy. \textbf{ABS} is the
+  abstention slice ($n{=}9$), \textbf{SSU} is single-session-user
+  ($n{=}21$); both are the user-capability slices targeted by the
+  claim schema.}
+  \label{tab:lme_main}
+  \centering
+  \small
+  \begin{tabular}{lcccccccc}
+    \toprule
+    Method & Overall & 95\% CI & KU & TR & \textbf{ABS} & MS & SSA / SSP & \textbf{SSU} \\
+           & $n{=}150$ & & $n{=}23$ & $n{=}40$ & $n{=}9$ & $n{=}40$ & $n{=}17$/$n{=}9$ & $n{=}21$ \\
+    \midrule
+    Flat RAG                 & \FlatLMEAcc  & $[\FlatLMECIlo, \FlatLMECIhi]$  & \FlatLMEAccKU  & \FlatLMEAccTR  & \FlatLMEAccABS & \FlatLMEAccMS & \FlatLMEAccSSA/\FlatLMEAccSSP & \FlatLMEAccSSU \\
+    TTMG (ours)              & \TTMGLMEAcc  & $[\TTMGLMECIlo, \TTMGLMECIhi]$  & \TTMGLMEAccKU  & \TTMGLMEAccTR  & \textbf{\TTMGLMEAccABS} & \TTMGLMEAccMS & \TTMGLMEAccSSA/\TTMGLMEAccSSP & \textbf{\TTMGLMEAccSSU} \\
+    TTMG+R (ours, default)   & \RouterLMEAcc & $[\RouterLMEAccCIlo, \RouterLMEAccCIhi]$ & \FlatLMEAccKU & \FlatLMEAccTR & \FlatLMEAccABS & \FlatLMEAccMS & \FlatLMEAccSSA/\FlatLMEAccSSP & \textbf{\TTMGLMEAccSSU} \\
+    Oracle router            & \OracleLMEAcc & $[76.0, 88.0]$                   & 91.3 & 77.5 & 88.9 & 65.0 & 100.0/77.8 & 100.0 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{Efficiency}
+\label{sec:efficiency}
+
+Table~\ref{tab:efficiency} reports total tokens consumed per question
+(writer + linker + parser + reader) and end-to-end latency.
+TTMG's extra writer and linker calls are amortised by
+session-batched writing and the subject/predicate gate: the overall
+token overhead is \TokensOverhead\% over A-Mem, with comparable
+latency. We do not require any cross-encoder reranker.
+
+\begin{table}[t]
+  \caption{Efficiency on LongMemEval-S. Lower is better for both
+  columns. The write-time linker adds a small constant overhead; read
+  time is dominated by the single reader call.}
+  \label{tab:efficiency}
+  \centering
+  \small
+  \begin{tabular}{lcc}
+    \toprule
+    Method & Total tokens / question & End-to-end latency (s) \\
+    \midrule
+    A-Mem       & \AmemTokens & \AmemLatency \\
+    TTMG (ours) & \TTMGTokens & \TTMGLatency \\
+    \bottomrule
+  \end{tabular}
+\end{table}

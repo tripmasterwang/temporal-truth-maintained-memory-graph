@@ -1,0 +1,385 @@
+{
+  "n_questions": 150,
+  "types": {
+    "knowledge-update": 23,
+    "multi-session": 40,
+    "single-session-assistant": 17,
+    "single-session-preference": 9,
+    "single-session-user": 21,
+    "temporal-reasoning": 40
+  },
+  "per_method_by_type": {
+    "flat": {
+      "knowledge-update": {
+        "n": 23,
+        "acc": 0.782608695652174,
+        "ci95": [
+          0.6086956521739131,
+          0.9565217391304348
+        ]
+      },
+      "single-session-preference": {
+        "n": 9,
+        "acc": 0.7777777777777778,
+        "ci95": [
+          0.4444444444444444,
+          1.0
+        ]
+      },
+      "single-session-user": {
+        "n": 21,
+        "acc": 0.9047619047619048,
+        "ci95": [
+          0.7619047619047619,
+          1.0
+        ]
+      },
+      "multi-session": {
+        "n": 40,
+        "acc": 0.525,
+        "ci95": [
+          0.375,
+          0.675
+        ]
+      },
+      "temporal-reasoning": {
+        "n": 40,
+        "acc": 0.525,
+        "ci95": [
+          0.375,
+          0.675
+        ]
+      },
+      "single-session-assistant": {
+        "n": 17,
+        "acc": 0.9411764705882353,
+        "ci95": [
+          0.8235294117647058,
+          1.0
+        ]
+      },
+      "__overall__": {
+        "n": 150,
+        "acc": 0.68,
+        "ci95": [
+          0.6066666666666667,
+          0.7533333333333333
+        ]
+      }
+    },
+    "ttmg": {
+      "knowledge-update": {
+        "n": 23,
+        "acc": 0.782608695652174,
+        "ci95": [
+          0.6086956521739131,
+          0.9565217391304348
+        ]
+      },
+      "single-session-preference": {
+        "n": 9,
+        "acc": 0.4444444444444444,
+        "ci95": [
+          0.1111111111111111,
+          0.7777777777777778
+        ]
+      },
+      "single-session-user": {
+        "n": 21,
+        "acc": 1,
+        "ci95": [
+          1.0,
+          1.0
+        ]
+      },
+      "multi-session": {
+        "n": 40,
+        "acc": 0.45,
+        "ci95": [
+          0.3,
+          0.6
+        ]
+      },
+      "temporal-reasoning": {
+        "n": 40,
+        "acc": 0.525,
+        "ci95": [
+          0.375,
+          0.675
+        ]
+      },
+      "single-session-assistant": {
+        "n": 17,
+        "acc": 0.5882352941176471,
+        "ci95": [
+          0.35294117647058826,
+          0.8235294117647058
+        ]
+      },
+      "__overall__": {
+        "n": 150,
+        "acc": 0.6133333333333333,
+        "ci95": [
+          0.5333333333333333,
+          0.6933333333333334
+        ]
+      }
+    }
+  },
+  "mcnemar": {
+    "overall": {
+      "ttmg_vs_flat": {
+        "b_A_only": 21,
+        "c_B_only": 31,
+        "p_value": 0.21160856876151612
+      }
+    },
+    "by_type": {
+      "knowledge-update": {
+        "ttmg_vs_flat": {
+          "b_A_only": 3,
+          "c_B_only": 3,
+          "p_value": 1.0
+        }
+      },
+      "multi-session": {
+        "ttmg_vs_flat": {
+          "b_A_only": 5,
+          "c_B_only": 8,
+          "p_value": 0.5810546875
+        }
+      },
+      "single-session-assistant": {
+        "ttmg_vs_flat": {
+          "b_A_only": 1,
+          "c_B_only": 7,
+          "p_value": 0.0703125
+        }
+      },
+      "single-session-preference": {
+        "ttmg_vs_flat": {
+          "b_A_only": 0,
+          "c_B_only": 3,
+          "p_value": 0.25
+        }
+      },
+      "single-session-user": {
+        "ttmg_vs_flat": {
+          "b_A_only": 2,
+          "c_B_only": 0,
+          "p_value": 0.5
+        }
+      },
+      "temporal-reasoning": {
+        "ttmg_vs_flat": {
+          "b_A_only": 10,
+          "c_B_only": 10,
+          "p_value": 1.0
+        }
+      }
+    }
+  },
+  "router": {
+    "oracle": {
+      "overall": {
+        "n": 150,
+        "acc": 0.82,
+        "ci95": [
+          0.76,
+          0.88
+        ]
+      }
+    },
+    "router_v1_TR_SSU": {
+      "overall": {
+        "n": 150,
+        "acc": 0.6933333333333334,
+        "ci95": [
+          0.62,
+          0.7666666666666667
+        ]
+      },
+      "by_type": {
+        "knowledge-update": {
+          "n": 23,
+          "acc": 0.782608695652174,
+          "ci95": [
+            0.6086956521739131,
+            0.9565217391304348
+          ]
+        },
+        "single-session-preference": {
+          "n": 9,
+          "acc": 0.7777777777777778,
+          "ci95": [
+            0.4444444444444444,
+            1.0
+          ]
+        },
+        "single-session-user": {
+          "n": 21,
+          "acc": 1,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "multi-session": {
+          "n": 40,
+          "acc": 0.525,
+          "ci95": [
+            0.375,
+            0.675
+          ]
+        },
+        "temporal-reasoning": {
+          "n": 40,
+          "acc": 0.525,
+          "ci95": [
+            0.375,
+            0.675
+          ]
+        },
+        "single-session-assistant": {
+          "n": 17,
+          "acc": 0.9411764705882353,
+          "ci95": [
+            0.8235294117647058,
+            1.0
+          ]
+        }
+      }
+    },
+    "router_v2_TR_SSU_KU": {
+      "overall": {
+        "n": 150,
+        "acc": 0.6933333333333334,
+        "ci95": [
+          0.62,
+          0.7666666666666667
+        ]
+      },
+      "by_type": {
+        "knowledge-update": {
+          "n": 23,
+          "acc": 0.782608695652174,
+          "ci95": [
+            0.6086956521739131,
+            0.9565217391304348
+          ]
+        },
+        "single-session-preference": {
+          "n": 9,
+          "acc": 0.7777777777777778,
+          "ci95": [
+            0.4444444444444444,
+            1.0
+          ]
+        },
+        "single-session-user": {
+          "n": 21,
+          "acc": 1,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "multi-session": {
+          "n": 40,
+          "acc": 0.525,
+          "ci95": [
+            0.375,
+            0.675
+          ]
+        },
+        "temporal-reasoning": {
+          "n": 40,
+          "acc": 0.525,
+          "ci95": [
+            0.375,
+            0.675
+          ]
+        },
+        "single-session-assistant": {
+          "n": 17,
+          "acc": 0.9411764705882353,
+          "ci95": [
+            0.8235294117647058,
+            1.0
+          ]
+        }
+      }
+    },
+    "router_v3_slice_dominance": {
+      "overall": {
+        "n": 150,
+        "acc": 0.6933333333333334,
+        "ci95": [
+          0.62,
+          0.7666666666666667
+        ]
+      },
+      "by_type": {
+        "knowledge-update": {
+          "n": 23,
+          "acc": 0.782608695652174,
+          "ci95": [
+            0.6086956521739131,
+            0.9565217391304348
+          ]
+        },
+        "single-session-preference": {
+          "n": 9,
+          "acc": 0.7777777777777778,
+          "ci95": [
+            0.4444444444444444,
+            1.0
+          ]
+        },
+        "single-session-user": {
+          "n": 21,
+          "acc": 1,
+          "ci95": [
+            1.0,
+            1.0
+          ]
+        },
+        "multi-session": {
+          "n": 40,
+          "acc": 0.525,
+          "ci95": [
+            0.375,
+            0.675
+          ]
+        },
+        "temporal-reasoning": {
+          "n": 40,
+          "acc": 0.525,
+          "ci95": [
+            0.375,
+            0.675
+          ]
+        },
+        "single-session-assistant": {
+          "n": 17,
+          "acc": 0.9411764705882353,
+          "ci95": [
+            0.8235294117647058,
+            1.0
+          ]
+        }
+      }
+    },
+    "router_v3_route_set": [
+      "knowledge-update",
+      "single-session-user",
+      "temporal-reasoning"
+    ],
+    "flips_v3": {
+      "ttmg_win_captured": 15,
+      "flat_win_captured": 18,
+      "both_right": 71,
+      "both_wrong": 27
+    }
+  }
+}

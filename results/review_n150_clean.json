@@ -1,0 +1,103 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 22.664292812347412,
+    "scores": {
+      "originality": 7,
+      "quality": 4,
+      "clarity": 6,
+      "significance": 5,
+      "overall": 4.5
+    },
+    "strengths": [
+      "Novel idea: applies truth maintenance systems to agent memory for temporal consistency.",
+      "Clear problem framing: identifies truth maintenance as a key gap in long-horizon agent memory.",
+      "Proposes a structured claim schema with validity intervals and explicit contradiction/supersede edges.",
+      "Reports strong gains on specific slices (abstention, single-session-user) with strict dominance claims.",
+      "Includes an ablation study to isolate the contribution of the LLM linker."
+    ],
+    "weaknesses": [
+      "Overall accuracy is lower than the strong baseline (61.3% vs 68.0%), raising questions about general utility.",
+      "Experimental results are incomplete: key numbers (e.g., temporal-reasoning, multi-session) are missing from the main table.",
+      "Method details are vague: no specifics on how the LLM linker is implemented or how the 'maximum consistent subgraph' algorithm is justified.",
+      "Evaluation scale is limited: only a 150-question slice of LongMemEval-S is used, not the full benchmark.",
+      "Claims of 'strict dominance' are based on very small sample sizes (n=9, n=21), limiting statistical confidence.",
+      "Lack of comparison to recent state-of-the-art memory systems beyond a reimplemented A-Mem."
+    ],
+    "required_revisions": [
+      "Provide the complete results table (Table 1) with all six LongMemEval-S question types and the overall accuracy for all baselines.",
+      "Clarify the implementation of the LLM linker: prompt details, model used, and how confidence thresholds are set.",
+      "Justify the greedy 'maximum consistent subgraph' algorithm with theoretical or empirical evidence for near-optimality.",
+      "Report standard deviations or confidence intervals for accuracy scores across the three random seeds.",
+      "Include a comparison to a more diverse set of recent memory baselines (e.g., MemGPT, MemoryBank).",
+      "Explain the drop in performance on non-target slices (e.g., assistant-authored, multi-session) and discuss trade-offs.",
+      "Provide the exact prompts used for the writer, linker, and parser in the main text or a clearly referenced appendix."
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 17.022377729415894,
+    "scores": {
+      "originality": 7,
+      "quality": 5,
+      "clarity": 6,
+      "significance": 4,
+      "overall": 5.0
+    },
+    "strengths": [
+      "Novel idea: applies truth maintenance to agent memory via claim-level graph",
+      "Clear problem framing: focuses on truthfulness and abstention in long-horizon memory",
+      "Strong ablation: isolates causal role of LLM linker via -contradict ablation",
+      "Efficiency claim: reports lower token cost vs. baseline A-Mem"
+    ],
+    "weaknesses": [
+      "Overall accuracy lower than baseline (61.3% vs 68.0%)",
+      "Small sample sizes (n=9 for abstention, n=21 for SSU) limit statistical confidence",
+      "Missing standard error bars or significance tests for most results",
+      "No comparison to recent state-of-the-art memory systems beyond A-Mem",
+      "Failure analysis limited; no breakdown of error types on underperforming slices"
+    ],
+    "required_revisions": [
+      "Report standard deviations or confidence intervals for all accuracy numbers",
+      "Conduct proper statistical significance tests (e.g., paired t-test, bootstrap) for all comparisons",
+      "Clarify how the 150-question stratified slice was selected from LongMemEval-S",
+      "Justify why overall accuracy is lower despite gains on specific slices",
+      "Include a baseline that uses raw turns + claim schema but no linker (to separate schema vs. linker effects)",
+      "Provide full results table with all six LongMemEval-S question types, not just selected slices",
+      "Clarify token counting methodology: are tokens per question averaged over ingestion + query?",
+      "Specify the exact version of DeepSeek-V3.2 used and any prompting details not in appendix"
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 15.882626056671143,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Novel integration of truth maintenance systems (TMS) with LLM-based memory",
+      "Strong empirical results on abstention and single-session-user slices",
+      "Efficiency claims: lower token cost than A-Mem baseline",
+      "Well-defined claim schema and edge types (support, contradict, supersede)"
+    ],
+    "weaknesses": [
+      "Overall accuracy (61.3%) is lower than baseline (68.0%)",
+      "Performance on key target slice (temporal reasoning) only matches baseline",
+      "No latency breakdown (ingestion vs. query) for system assessment",
+      "Scalability of O(k^2) maximum-consistent subgraph algorithm not analyzed",
+      "Ablation shows linker is critical, but schema alone underperforms"
+    ],
+    "required_revisions": [
+      "Clarify how 'strictly dominates' is defined given lower overall accuracy",
+      "Provide latency breakdown (write-time vs. read-time) for practical assessment",
+      "Justify hyperparameter choices (similarity gate, bypass threshold) or show sensitivity",
+      "Include placeholder numbers in tables (e.g., Table 1 F1, Tokens/q) with real values",
+      "Discuss failure modes: why do assistant/multi-session slices regress?"
+    ],
+    "verdict": "weak_accept"
+  }
+}

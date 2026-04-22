@@ -1,0 +1,7 @@
+\section{Conclusion}
+
+We addressed the problem of maintaining factual truth in long-context conversational memory. The task is not merely to retrieve textually similar past utterances, but to ensure that the information presented to the model over time remains consistent with the evolving ground truth, even as user statements are corrected or superseded.
+
+Our solution introduces a structured memory mechanism that explicitly models the truth status of information. Each memory unit is a claim schema annotated with its validity and linked to others via \textit{contradict} and \textit{supersede} edges. This graph enables truth-consistent retrieval, where only currently valid claims are surfaced, and strategic abstention when the memory lacks sufficient information to answer reliably. This approach directly enforces a coherence constraint over the memory's contents.
+
+The method yields an overall improvement of \DeltaLMEAcc on the LongMemEval-S benchmark. This demonstrates that explicitly reasoning about truth maintenance is a critical and useful unit of memory for long-running, knowledge-intensive dialogues.

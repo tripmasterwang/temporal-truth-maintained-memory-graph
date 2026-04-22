@@ -1,0 +1,102 @@
+{
+  "strict_ml": {
+    "elapsed_sec": 16.280088901519775,
+    "scores": {
+      "originality": 7,
+      "quality": 6,
+      "clarity": 8,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance in long-horizon agent memory.",
+      "Novel method: claim-level memory with explicit temporal and contradiction edges.",
+      "Strong empirical claim: +40pp on temporal reasoning, -58% tokens vs. baseline.",
+      "Well-structured ablation isolating the contribution of truth-maintenance edges.",
+      "Good clarity in describing method components and experimental setup."
+    ],
+    "weaknesses": [
+      "Results rely heavily on placeholder macros; actual performance unverified.",
+      "Ablation results incomplete (e.g., '--' values for key metrics).",
+      "Cross-domain results (LoCoMo, MAB-CR) not reported (shown as '--').",
+      "Method details (e.g., greedy max-consistent subgraph) lack theoretical justification.",
+      "Comparison to A-Mem reimplementation may lack reproducibility details.",
+      "No discussion of limitations or failure cases of TTMG."
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., '--') with actual numbers from experiments.",
+      "Report full results for cross-domain evaluations (LoCoMo, MemoryAgentBench-CR).",
+      "Complete ablation table with all reported metrics (e.g., AblValidity, AblConsistent).",
+      "Provide error bars or statistical significance tests for reported accuracy differences.",
+      "Clarify how the 'maximum consistent subgraph' algorithm is optimal or near-optimal.",
+      "Include a limitations section discussing TTMG's assumptions and potential failures."
+    ],
+    "verdict": "weak_reject"
+  },
+  "empirical_skeptic": {
+    "elapsed_sec": 14.190333366394043,
+    "scores": {
+      "originality": 7,
+      "quality": 5,
+      "clarity": 8,
+      "significance": 6,
+      "overall": 5.5
+    },
+    "strengths": [
+      "Clear problem framing: truth maintenance for long-horizon agents",
+      "Proposes a novel structured memory schema with temporal edges",
+      "Reports strong gains on temporal-reasoning slice (+40pp)",
+      "Shows significant token and latency reduction vs. baseline",
+      "Includes an ablation study isolating the linker's contribution"
+    ],
+    "weaknesses": [
+      "Results contain many placeholder values (e.g., '--')",
+      "No statistical significance reported for claimed improvements",
+      "Ablation coverage is incomplete (only one component removed)",
+      "Cross-domain results are missing (placeholders)",
+      "Failure-mode analysis is qualitative only, no quantitative breakdown",
+      "Overall accuracy on LongMemEval-S is lower than flat baseline"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (e.g., '--') with actual numbers",
+      "Report standard deviations or confidence intervals for all accuracy metrics",
+      "Expand ablation study to test each component (e.g., parser, subgraph selection)",
+      "Provide quantitative error analysis per question type",
+      "Include cross-domain results (LoCoMo, MemoryAgentBench-CR) with full metrics",
+      "Clarify sample sizes for knowledge-update and abstention slices"
+    ],
+    "verdict": "weak_reject"
+  },
+  "systems_practitioner": {
+    "elapsed_sec": 13.164949893951416,
+    "scores": {
+      "originality": 8,
+      "quality": 6,
+      "clarity": 7,
+      "significance": 7,
+      "overall": 6.5
+    },
+    "strengths": [
+      "Novel integration of truth maintenance with agent memory graphs",
+      "Clear focus on practical metrics: throughput, latency, token cost",
+      "Strong claim: +40pp TR accuracy, -58% tokens vs baseline",
+      "Ablation isolates contribution of truth-maintenance edges",
+      "Explicit abstention mechanism for robustness"
+    ],
+    "weaknesses": [
+      "Results rely heavily on placeholder macros (e.g., --, 100.0)",
+      "No concrete cross-domain results (LoCoMo, MAB-CR show --)",
+      "Ablation results incomplete (e.g., AblConsistent, AblEmbOnly are --)",
+      "Efficiency gains claimed but not fully validated (latency numbers placeholder?)",
+      "Trade-off: overall accuracy drops vs flat baseline"
+    ],
+    "required_revisions": [
+      "Replace all placeholder result macros (--, 100.0) with actual numbers from experiments",
+      "Provide complete ablation results (validity, consistency, embedding-only)",
+      "Include cross-domain results (LoCoMo, MemoryAgentBench-CR) or remove claims",
+      "Clarify if latency/token numbers are from a real run or estimates",
+      "Discuss the overall accuracy trade-off more explicitly in the main text"
+    ],
+    "verdict": "weak_accept"
+  }
+}
