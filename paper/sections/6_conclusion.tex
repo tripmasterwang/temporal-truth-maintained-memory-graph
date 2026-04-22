@@ -1,7 +1,34 @@
 \section{Conclusion}
 
-We addressed the problem of maintaining factual truth in long-context conversational memory. The task is not merely to retrieve textually similar past utterances, but to ensure that the information presented to the model over time remains consistent with the evolving ground truth, even as user statements are corrected or superseded.
+We addressed the problem of maintaining factual truth in long-context
+conversational memory. The task is not merely to retrieve textually
+similar past utterances, but to ensure that the information presented
+to the model over time remains consistent with the evolving ground
+truth, even as user statements are corrected or superseded.
 
-Our solution introduces a structured memory mechanism that explicitly models the truth status of information. Each memory unit is a claim schema annotated with its validity and linked to others via \textit{contradict} and \textit{supersede} edges. This graph enables truth-consistent retrieval, where only currently valid claims are surfaced, and strategic abstention when the memory lacks sufficient information to answer reliably. This approach directly enforces a coherence constraint over the memory's contents.
+Our solution introduces a structured memory mechanism that explicitly
+models the truth status of information. Each memory unit is a claim
+schema annotated with its validity and linked to others via
+\textit{contradict} and \textit{supersede} edges. This graph enables
+truth-consistent retrieval, where only currently valid claims are
+surfaced, and strategic abstention when the memory lacks sufficient
+information to answer reliably. This approach directly enforces a
+coherence constraint over the memory's contents.
 
-The method yields an overall improvement of \DeltaLMEAcc on the LongMemEval-S benchmark. This demonstrates that explicitly reasoning about truth maintenance is a critical and useful unit of memory for long-running, knowledge-intensive dialogues.
+Empirically, TTMG achieves paired set-inclusion gains on two
+truth-maintenance-sensitive capability slices -- abstention
+(+\DeltaLMEABS{}\,pp; paired 4--0) and single-session-user
+(+\DeltaLMESSU{}\,pp; paired 2--0) -- at \TokensOverhead\% of A-Mem's
+token cost. On the unselected bulk of the benchmark, TTMG and Flat
+RAG are statistically indistinguishable (overall $p{=}$\McnemarOverall);
+composing the two via inference-time routers (TTMG-Abstain
+\AbstainRouterAcc\%, TTMG+R-LLM \LLMRouterAcc\%) matches Flat RAG's
+overall accuracy while preserving TTMG's abstention and supersede
+behaviours. The oracle upper bound of \OracleLMEAcc\% documents
+that claim-level and raw-text retrieval carry substantially
+complementary information; harvesting
+that complementarity beyond the feature router is a direct target for
+future work. Explicitly reasoning about truth maintenance is therefore
+a useful primitive to add to long-running conversational agents,
+particularly where abstention and user-fact fidelity matter more than
+bulk retrieval accuracy.

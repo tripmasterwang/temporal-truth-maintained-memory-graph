@@ -3,17 +3,31 @@
 
 \paragraph{Agentic memory systems.}
 Early LLM agent memories treat conversation history as a flat vector
-index \citep{mem0,memgpt,longrag}. Recent work organises memory as a
-structured graph with LLM-enriched nodes: A-Mem generates keywords,
-contextual descriptions, and tags per note, then adds links to
-semantically similar notes and rewrites tags on affected neighbours
-\citep{amem}. Memory consolidation \citep{memorybank,memoria} and
-hierarchical memory \citep{mem0,hippocampal} add compression on top.
-TTMG shares A-Mem's design -- LLM-enriched nodes with automatically
-discovered links -- but changes the unit of memory from a \emph{note}
-to a \emph{claim} and the class of links from semantic similarity to
-\emph{truth-maintenance relations} (\texttt{support},
-\texttt{contradict}, \texttt{supersede}).
+index \citep{mem0,longrag}. MemGPT~\citep{memgpt} introduces an
+OS-style hierarchical memory controller that pages between a small
+fast context and a larger recall store; its mechanism is
+\emph{retrieval-time} eviction, with no explicit model of
+contradicting or superseded content. MemoryBank~\citep{memorybank}
+introduces an Ebbinghaus-curve forgetting mechanism with periodic
+consolidation of frequently-recalled notes; the consolidation step
+is a summary rewrite, not a truth-maintenance operation. Both
+treat the note/chunk as the atomic unit and rely on downstream
+retrieval to pick the currently relevant entry. A-Mem~\citep{amem}
+goes further by treating memory as a self-organising graph of
+structured notes, each carrying keywords, contextual descriptions,
+and tags, with links that are formed and rewritten as new notes
+arrive. These systems are \emph{retrieval-centric}: they surface
+the closest matching textual chunk. They have no explicit handle on
+\emph{when} a statement was true, \emph{whether} a later statement
+replaced it, or \emph{why} two statements might be incompatible.
+TTMG shares A-Mem's skeleton -- LLM-enriched nodes with
+automatically discovered links -- but changes the unit of memory
+from a \emph{note} to a \emph{claim} and the class of links from
+semantic similarity to \emph{truth-maintenance relations}
+(\texttt{support}, \texttt{contradict}, \texttt{supersede}).
+Memory consolidation \citep{memoria} and hierarchical memory
+\citep{hippocampal} add compression on top and are orthogonal to
+the truth-maintenance mechanism.
 
 \paragraph{Truth maintenance and belief revision.}
 Classical TMSs~\citep{tms_doyle,atms_dekleer} and belief-revision

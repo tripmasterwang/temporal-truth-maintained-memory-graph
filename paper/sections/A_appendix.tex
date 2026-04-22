@@ -56,7 +56,7 @@ current state), \texttt{entity} (main subject or \texttt{null}),
 \texttt{temporal\_reasoning}, \texttt{small\_talk}\}$.
 \end{quote}
 
-\section{Hyper-parameters}
+\section{Hyper-parameters and inference-time router}
 \label{app:hparams}
 
 \begin{table}[h]
@@ -70,18 +70,56 @@ current state), \texttt{entity} (main subject or \texttt{null}),
     Component & Value / model \\
     \midrule
     Embedding model & \texttt{all-MiniLM-L6-v2} \\
-    Reader / writer / linker / parser & \texttt{deepseek-v3.2} \\
+    Reader (answer generation) & \texttt{deepseek-v3.2} \\
+    Writer / linker / parser & \texttt{Kimi-K2} \\
+    Intent classifier (TTMG+R-LLM) & \texttt{Kimi-K2}, zero-shot \\
     Retrieval $k$ & 8 \\
     $k_{\text{keep}}$ at read time & 3 \\
     Linker candidate $k$ at write time & 3 \\
     Similarity gate for linker & 0.65 \\
     Bypass threshold & 0.85 \\
     Hard-edge threshold $\tau_{\text{hard}}$ & 0.7 \\
+    Minimum claim-query similarity & 0.35 \\
     Session-batched writer & on \\
-    Random seeds & \{0, 7, 17\} \\
+    Max sessions ingested per question & 3 \\
+    Evaluation seed & 0 (stratified) \\
     \bottomrule
   \end{tabular}
 \end{table}
+
+\subsection{LLM intent classifier for TTMG+R-LLM}
+\label{app:intent}
+The TTMG+R-LLM router uses a one-shot Kimi-K2 call per incoming
+question to predict one of the six LongMemEval types. The classifier
+prompt lists the six labels with one example each and asks for a
+single-key JSON response. On the 150-question stratified evaluation
+slice, its overall accuracy is \IntentAccOverall\%. Per-class
+recall is: \texttt{single-session-user} \IntentRecallSSU\%,
+\texttt{single-session-assistant} \IntentRecallSSA\%,
+\texttt{temporal-reasoning} \IntentRecallTR\%,
+\texttt{multi-session} \IntentRecallMS\%, \texttt{knowledge-update}
+39.1\%, \texttt{single-session-preference} 22.2\%. The high recall
+on SSU and SSA is what makes the simple
+``route-SSU-to-TTMG-else-Flat'' rule practical; the lower recall on
+MS and KU is the dominant source of the gap to the oracle upper
+bound and a natural target for a better-trained classifier.
+
+\subsection{Reproducibility statement}
+\label{app:reproduce}
+We release the full source (writer/linker/parser/reader prompts,
+the retriever algorithm, the claim schema, and all experiment
+scripts), the N=150 stratified subsample identifiers and seed
+(\texttt{seed=0}, stratified on \texttt{question\_type}), all
+hyper-parameters (Table~\ref{tab:hyperparams}), and the raw
+per-question outputs
+(\texttt{results/pilot\_n150\_*.json}), which includes the
+\texttt{question\_id}, \texttt{correct} flag, and metric counters
+per question. McNemar $p$-values and bootstrap CIs are computed by
+\texttt{scripts/analyze\_n150.py}. The LLM intent classifier is
+implemented in \texttt{scripts/llm\_intent\_classifier.py}. All
+calls route through the MAAS OpenAI-compatible endpoint; model
+identifiers (\texttt{deepseek-v3.2}, \texttt{Kimi-K2}) are frozen
+strings provided by the hosting platform.
 
 \section{Dataset details}
 \label{app:datasets}

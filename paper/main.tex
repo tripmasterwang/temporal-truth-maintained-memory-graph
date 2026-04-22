@@ -60,11 +60,27 @@
 \newcommand{\DeltaLMEABS}{44.4}
 \newcommand{\DeltaLMESSU}{9.5}
 
-% Router variant (TTMG + Flat router, route single-session-user to TTMG)
+% Router variants. TTMG-Abstain: route on TTMG's own abstention flag (no labels).
+% TTMG+R-LLM: route on Kimi-K2 zero-shot intent classifier (real-world deployable).
+% Oracle: analysis upper bound (not deployable).
+\newcommand{\AbstainRouterAcc}{67.3}
+\newcommand{\AbstainRouterCIlo}{60.0}
+\newcommand{\AbstainRouterCIhi}{74.7}
+\newcommand{\LLMRouterAcc}{66.0}
+\newcommand{\LLMRouterCIlo}{58.7}
+\newcommand{\LLMRouterCIhi}{74.0}
+\newcommand{\IntentAccOverall}{64.7}
+\newcommand{\IntentRecallSSU}{81.0}
+\newcommand{\IntentRecallSSA}{100.0}
+\newcommand{\IntentRecallTR}{87.5}
+\newcommand{\IntentRecallMS}{42.5}
+\newcommand{\OracleLMEAcc}{82.0}
+\newcommand{\OracleLMECIlo}{76.0}
+\newcommand{\OracleLMECIhi}{88.0}
+% Legacy alias for the oracle-typed "+R" variant (ground-truth labels)
 \newcommand{\RouterLMEAcc}{69.3}
 \newcommand{\RouterLMEAccCIlo}{62.0}
 \newcommand{\RouterLMEAccCIhi}{76.7}
-\newcommand{\OracleLMEAcc}{82.0}
 
 % Paired McNemar tests (two-sided exact binomial on discordant pairs).
 \newcommand{\McnemarOverall}{0.21}

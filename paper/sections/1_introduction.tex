@@ -72,15 +72,18 @@ reader to guess.
   at this scale (paired discordance symmetric, McNemar $p{=}1.0$),
   and we show that TTMG and Flat RAG answer the same slice accuracy
   through \emph{complementary} subsets of questions (\S\ref{sec:exp}).
-  \item We propose \textbf{TTMG+R}, a type-aware router that composes
-  TTMG with Flat RAG. Routing \texttt{single-session-user} traffic to
-  TTMG and everything else to Flat RAG reaches \RouterLMEAcc\%
-  overall, matching the per-slice best system and improving over
-  Flat RAG by $+1.3$~pp while retaining TTMG's truth-maintenance
-  behaviours (abstention, supersede) wherever they are live
-  (\S\ref{ssec:lme}). An oracle upper bound of \OracleLMEAcc\%
-  documents that claim-level and raw-text retrieval carry
-  substantially complementary information.
+  \item We propose two \emph{inference-time} routers composing TTMG
+  with Flat RAG: \textbf{TTMG-Abstain} uses TTMG's own abstain flag
+  (no labels, no classifier), and \textbf{TTMG+R-LLM} additionally
+  uses a Kimi-K2 zero-shot intent classifier to route SSU traffic
+  to TTMG. Both match Flat RAG's overall accuracy
+  (\AbstainRouterAcc\% and \LLMRouterAcc\%, paired McNemar
+  $p \geq 0.07$) while preserving TTMG's abstention and supersede
+  behaviour whenever the router sends a question to TTMG. An
+  \emph{oracle} per-question picker reaches \OracleLMEAcc\%, an
+  analytic upper bound showing that claim-level and raw-text
+  retrieval carry substantially complementary information
+  (\S\ref{ssec:lme}).
   \item The mechanism is cheaper than the A-Mem note-graph baseline:
   TTMG uses \TTMGTokens{} tokens per question vs.\ \AmemTokens{}
   for A-Mem (\TokensOverhead\%) and runs in \TTMGLatency{}s vs.\

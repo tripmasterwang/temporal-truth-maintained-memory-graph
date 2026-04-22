@@ -23,10 +23,13 @@ against 90.5\% (paired 2--0). Because the mechanisms that buy these
 gains (claim schema, consistent subgraph) narrow the reader's
 context on other slices, the overall accuracy of stand-alone TTMG
 (\TTMGLMEAcc\%) is statistically indistinguishable from Flat RAG's
-(\FlatLMEAcc\%, paired McNemar $p{=}$\McnemarOverall). Composing TTMG
-with Flat RAG via a type-aware router -- our deployment recipe,
-\textbf{TTMG+R} -- reaches \RouterLMEAcc\%, matching the
-per-slice best while retaining all truth-maintenance behaviours.
+(\FlatLMEAcc\%, paired McNemar $p{=}$\McnemarOverall). Composing TTMG with Flat RAG at inference time --
+using only TTMG's own abstention flag or a zero-shot LLM intent
+classifier, \emph{without} any benchmark labels -- recovers
+Flat RAG's overall accuracy
+(TTMG-Abstain \AbstainRouterAcc\%, TTMG+R-LLM \LLMRouterAcc\%)
+while retaining TTMG's truth-maintenance behaviours whenever
+the router sends a question to TTMG.
 Ablating only the LLM linker drops overall accuracy by 2.6~pp and
 every targeted slice, confirming the linker's causal role. TTMG
 also runs at \TTMGTokens\ tokens per question versus \AmemTokens\

@@ -103,32 +103,53 @@ $b{=}21, c{=}31$, overall McNemar $p =$ \McnemarOverall, so the
 overall difference is \emph{not} statistically significant.
 
 \textbf{Router composition (TTMG+R).} The tie-but-complementary
-finding above suggests composing TTMG with Flat RAG by question
-type: for the \texttt{single-session-user} slice, which TTMG
-strictly dominates, we route to TTMG; for every other slice, we
-route to Flat RAG. An intent classifier can predict the question
-type with near-perfect accuracy; LongMemEval already labels the
-types. The resulting TTMG+R system reaches \RouterLMEAcc\% overall
-($[\RouterLMEAccCIlo, \RouterLMEAccCIhi]$), matching the single best system
-per slice and improving over Flat RAG by +1.3\,pp at the cost of
-adding truth-maintenance only to the SSU branch. The oracle upper
-bound that chooses the better system per question is
-\OracleLMEAcc\%; this gap -- 12.7\,pp between the realistic router
-and the oracle -- shows that claim-level and raw-text retrieval
-carry substantially complementary information and is a primary
-target for future work.
+finding above motivates composing TTMG with Flat RAG at inference
+time using two signals that are available without the benchmark's
+ground-truth type labels: \emph{(i)} \textbf{TTMG-Abstain router},
+which routes to TTMG only when TTMG's own consistent-subgraph
+retriever raises the abstain flag ($(s, p)$-match is empty or
+conflicts hard), and to Flat RAG otherwise; and \emph{(ii)}
+\textbf{TTMG+R-LLM}, which additionally routes to TTMG when a
+one-shot Kimi-K2 zero-shot classifier (see
+Appendix~\ref{app:hparams}, intent accuracy \IntentAccOverall\%
+overall on the held-out 350 questions, SSU recall
+\IntentRecallSSU\%) predicts \texttt{single-session-user}. The
+inference-time routers reach \AbstainRouterAcc\%
+($[\AbstainRouterCIlo, \AbstainRouterCIhi]$) and \LLMRouterAcc\%
+($[\LLMRouterCIlo, \LLMRouterCIhi]$) respectively. Both are
+statistically indistinguishable from Flat RAG
+(paired McNemar $p \geq 0.07$), matching Flat's overall accuracy
+while retaining TTMG's abstention and supersede behaviour whenever
+the router sends a question to TTMG. We also report an
+\emph{oracle router} that picks the better of the two systems per
+question (\OracleLMEAcc\%, $[\OracleLMECIlo, \OracleLMECIhi]$)
+purely as an upper-bound analysis probe; it is \emph{not}
+deployable without a per-question verifier. The 12.7-15~pp gap
+between the deployable routers and the oracle documents that
+claim-level and raw-text retrieval carry substantially complementary
+information: the dominant driver of the gap is the intent
+classifier's low recall on the multi-session slice
+(\IntentRecallMS\%), where neither retrieval mode cleanly wins per
+question. Closing this gap -- via a richer intent classifier,
+denser writer coverage on assistant-authored turns, or multi-claim
+composition in the reader prompt -- is a direct target for future
+work.
 
 \begin{table}[t]
   \caption{LongMemEval-S per-slice accuracy (\%) on a 150-question
   stratified slice. All systems share the same reader
   (\texttt{deepseek-v3.2}), embedding model (\texttt{all-MiniLM-L6-v2}),
-  and retrieval budget. \textbf{Bold} marks paired strict
-  set-inclusion dominance of TTMG over Flat RAG.
-  $[\mathrm{lo},\mathrm{hi}]$ columns report 95\% percentile
-  bootstrap intervals on the overall accuracy. \textbf{ABS} is the
-  abstention slice ($n{=}9$), \textbf{SSU} is single-session-user
-  ($n{=}21$); both are the user-capability slices targeted by the
-  claim schema.}
+  and retrieval budget. \textbf{Bold} marks paired set-inclusion wins
+  of TTMG over Flat RAG (per-question: every question Flat gets right,
+  TTMG also gets right, plus strictly more).
+  $[\mathrm{lo},\mathrm{hi}]$ reports 95\% percentile bootstrap
+  intervals on the overall accuracy. The router rows' per-slice
+  performance matches Flat on non-SSU slices by construction: without
+  a separate abstention detector, neither router automatically
+  identifies abstention questions, so the routers' ABS accuracy
+  equals Flat's rather than TTMG's -- preserving the abstention
+  benefit in a router is exactly the future-work item we point to
+  in \S\ref{ssec:lme}.}
   \label{tab:lme_main}
   \centering
   \small
@@ -138,9 +159,13 @@ target for future work.
            & $n{=}150$ & & $n{=}23$ & $n{=}40$ & $n{=}9$ & $n{=}40$ & $n{=}17$/$n{=}9$ & $n{=}21$ \\
     \midrule
     Flat RAG                 & \FlatLMEAcc  & $[\FlatLMECIlo, \FlatLMECIhi]$  & \FlatLMEAccKU  & \FlatLMEAccTR  & \FlatLMEAccABS & \FlatLMEAccMS & \FlatLMEAccSSA/\FlatLMEAccSSP & \FlatLMEAccSSU \\
+    A-Mem (reimpl.)          & \AmemLMEAcc  & [--]                            & \AmemLMEAccKU  & \AmemLMEAccTR  & \AmemLMEAccABS & \AmemLMEAccMS & --            & --             \\
     TTMG (ours)              & \TTMGLMEAcc  & $[\TTMGLMECIlo, \TTMGLMECIhi]$  & \TTMGLMEAccKU  & \TTMGLMEAccTR  & \textbf{\TTMGLMEAccABS} & \TTMGLMEAccMS & \TTMGLMEAccSSA/\TTMGLMEAccSSP & \textbf{\TTMGLMEAccSSU} \\
-    TTMG+R (ours, default)   & \RouterLMEAcc & $[\RouterLMEAccCIlo, \RouterLMEAccCIhi]$ & \FlatLMEAccKU & \FlatLMEAccTR & \FlatLMEAccABS & \FlatLMEAccMS & \FlatLMEAccSSA/\FlatLMEAccSSP & \textbf{\TTMGLMEAccSSU} \\
-    Oracle router            & \OracleLMEAcc & $[76.0, 88.0]$                   & 91.3 & 77.5 & 88.9 & 65.0 & 100.0/77.8 & 100.0 \\
+    \midrule
+    TTMG-Abstain router      & \AbstainRouterAcc & $[\AbstainRouterCIlo, \AbstainRouterCIhi]$ & -- & -- & -- & -- & -- & -- \\
+    TTMG+R-LLM router        & \LLMRouterAcc & $[\LLMRouterCIlo, \LLMRouterCIhi]$         & -- & -- & -- & -- & -- & \textbf{\TTMGLMEAccSSU} \\
+    \midrule
+    Oracle (upper bound)     & \OracleLMEAcc & $[\OracleLMECIlo, \OracleLMECIhi]$         & 91.3 & 77.5 & 88.9 & 65.0 & 100.0/77.8 & 100.0 \\
     \bottomrule
   \end{tabular}
 \end{table}

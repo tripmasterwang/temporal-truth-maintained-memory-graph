@@ -62,11 +62,56 @@ minority of new claims, and its incremental token cost is strictly
 below A-Mem's per-turn note-analysis cost
 (\S\ref{sec:efficiency}).
 
-\subsection{Qualitative error analysis}
+\subsection{Regression taxonomy (SSA, SSP, MS)}
 \label{ssec:qual}
-On the ``last Friday'' artist question, A-Mem hallucinates a band name
-when the user's own message only described the band by instrumentation;
-TTMG, seeing a claim with matching \texttt{valid\_from} and the
-\texttt{active}/\texttt{past} flags, refuses to invent one. Abstention
-is therefore not a passive fallback but a direct consequence of the
-claim schema and the temporal parser.
+
+Standalone TTMG regresses on three slices (SSA, SSP, MS). Inspecting
+the paired errors (questions Flat answers correctly and TTMG does
+not) reveals a single dominant mechanism: \emph{over-abstention}
+driven by the claim-level retrieval surface. We categorise the 18
+Flat-only-correct paired errors on these slices into three failure
+modes.
+
+\textbf{F1. Writer entity gap (SSA, 7/7).} Assistant-authored
+questions such as ``remind me of the two companies you mentioned
+that prioritise employee safety'' require the retriever to surface
+the assistant's own prior answer. The session-batched writer
+extracts user-side claims more densely than assistant-side ones, so
+the needed entity (\textit{Patagonia}, \textit{Veja}, \textit{2014}
+construction year) is not in the claim graph. The retriever returns
+only loose neighbours; the reader, asked to answer ``only from
+claims,'' refuses. Flat RAG surfaces the raw assistant turn
+verbatim and answers correctly.
+
+\textbf{F2. Preference reasoning (SSP, 3/3).} Preference questions
+(``any cocktail suggestions?'', ``any documentary recommendations?'')
+require the reader to combine a stated preference with a mild
+recommendation; the claim schema's $(s, p, o)$ triples carry the
+fact but not the reasoning pattern. TTMG's reader abstains because
+no single claim answers the question; Flat RAG's raw-turn context
+lets the reader reason implicitly.
+
+\textbf{F3. Aggregation across sessions (MS, 8/8).} Multi-session
+questions such as ``how much more expensive was the taxi ride than
+the train fare?'' require retrieving \emph{two} related claims and
+subtracting. TTMG's top-$k_{\text{keep}}$ retrieval returns one;
+the consistency filter may drop the other if their validity
+intervals overlap differently; the reader abstains. Flat RAG, with
+raw-turn context spanning both sessions, computes the difference.
+
+These failure modes are all \emph{structural} to the
+claim-as-atom abstraction and motivate the router composition
+(\S\ref{ssec:lme}): on F1--F3-shaped questions, fall back to
+Flat RAG. They also suggest two direct method extensions --
+denser assistant-side extraction (F1) and multi-claim composition
+in the reader prompt (F3) -- that we leave as future work rather
+than addressing post-hoc in this submission.
+
+\subsection{Qualitative success example}
+On the ``last Friday'' artist question, a flat hybrid RAG
+hallucinates a band name when the user's own message only described
+the band by instrumentation; TTMG, seeing a claim with matching
+\texttt{valid\_from} and the \texttt{active}/\texttt{past} flags,
+refuses to invent one. Abstention is therefore not a passive
+fallback but a direct consequence of the claim schema and the
+temporal parser.
