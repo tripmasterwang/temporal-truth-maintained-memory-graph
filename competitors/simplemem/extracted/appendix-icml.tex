@@ -1,0 +1,248 @@
+\clearpage
+\onecolumn
+\appendix
+
+\section{Detailed System Prompts}
+\label{app:prompts}
+
+To ensure full reproducibility of the \textbf{SimpleMem} pipeline, we provide the exact system prompts used in the key processing stages. All prompts are designed to be model-agnostic but were optimized for GPT-4o-mini in our experiments to ensure cognitive economy.
+
+\subsection{Stage 1: Semantic Structured Compression Prompt}
+\label{app:prompt_stage1}
+
+This prompt performs entropy-aware filtering and context normalization. Its goal is to transform raw dialogue windows into compact, context-independent memory units while excluding low-information interaction content.
+
+\begin{lstlisting}[caption={Prompt for Semantic Structured Compression and Normalization.}, label={lst:encoding_prompt}]
+You are a memory encoder in a long-term memory system. Your task is to transform raw conversational input into compact, self-contained memory units.
+
+INPUT METADATA:
+Window Start Time: {window_start_time} (ISO 8601)
+Participants: {speakers_list}
+
+INSTRUCTIONS:
+1. Information Filtering:
+   - Discard social filler, acknowledgements, and conversational routines that introduce no new factual or semantic information.
+   - Discard redundant confirmations unless they modify or finalize a decision.
+   - If no informative content is present, output an empty list.
+
+2. Context Normalization:
+   - Resolve all pronouns and implicit references into explicit entity names.
+   - Ensure each memory unit is interpretable without access to prior dialogue.
+
+3. Temporal Normalization:
+   - Convert relative temporal expressions (e.g., "tomorrow", "last week") into absolute ISO 8601 timestamps using the window start time.
+
+4. Memory Unit Extraction:
+   - Decompose complex utterances into minimal, indivisible factual statements.
+
+INPUT DIALOGUE:
+{dialogue_window}
+
+OUTPUT FORMAT (JSON):
+{
+  "memory_units": [
+    {
+      "content": "Alice agreed to meet Bob at the Starbucks on 5th Avenue on 2025-11-20T14:00:00.",
+      "entities": ["Alice", "Bob", "Starbucks", "5th Avenue"],
+      "topic": "Meeting Planning",
+      "timestamp": "2025-11-20T14:00:00",
+      "salience": "high"
+    }
+  ]
+}
+\end{lstlisting}
+
+\subsection{Stage 2: Adaptive Retrieval Planning Prompt}
+\label{app:prompt_stage2}
+
+This prompt analyzes the user query prior to retrieval. Its purpose is to estimate query complexity and generate a structured retrieval plan that adapts retrieval scope accordingly.
+
+\begin{lstlisting}[caption={Prompt for Query Analysis and Adaptive Retrieval Planning.}, label={lst:query_analysis}]
+Analyze the following user query and generate a retrieval plan. Your objective is to retrieve sufficient information while minimizing unnecessary context usage.
+
+USER QUERY:
+{user_query}
+
+INSTRUCTIONS:
+1. Query Complexity Estimation:
+   - Assign "LOW" if the query can be answered via direct fact lookup or a single memory unit.
+   - Assign "HIGH" if the query requires aggregation across multiple events, temporal comparison, or synthesis of patterns.
+
+2. Retrieval Signals:
+   - Lexical layer: extract exact keywords or entity names.
+   - Temporal layer: infer absolute time ranges if relevant.
+   - Semantic layer: rewrite the query into a declarative form suitable for semantic matching.
+
+OUTPUT FORMAT (JSON):
+{
+  "complexity": "HIGH",
+  "retrieval_rationale": "The query requires reasoning over multiple temporally separated events.",
+  "lexical_keywords": ["Starbucks", "Bob"],
+  "temporal_constraints": {
+    "start": "2025-11-01T00:00:00",
+    "end": "2025-11-30T23:59:59"
+  },
+  "semantic_query": "The user is asking about the scheduled meeting with Bob, including location and time."
+}
+\end{lstlisting}
+
+\subsection{Stage 3: Reconstructive Synthesis Prompt}
+\label{app:prompt_stage3}
+
+This prompt guides the final answer generation using retrieved memory. It combines high-level abstract representations with fine-grained factual details to produce a grounded response.
+
+
+\begin{lstlisting}[caption={Prompt for Reconstructive Synthesis (Answer Generation).}, label={lst:synthesis_prompt}]
+You are an assistant with access to a structured long-term memory.
+
+USER QUERY:
+{user_query}
+
+RETRIEVED MEMORY (Ordered by Relevance):
+
+[ABSTRACT REPRESENTATIONS]:
+{retrieved_abstracts}
+
+[DETAILED MEMORY UNITS]:
+{retrieved_units}
+
+INSTRUCTIONS:
+1. Hierarchical Reasoning:
+   - Use abstract representations to capture recurring patterns or general user preferences.
+   - Use detailed memory units to ground the response with specific facts.
+
+2. Conflict Handling:
+   - If inconsistencies arise, prioritize the most recent memory unit.
+   - Optionally reference abstract patterns when relevant.
+
+3. Temporal Consistency:
+   - Ensure all statements respect the timestamps provided in memory.
+
+4. Faithfulness:
+   - Base the answer strictly on the retrieved memory.
+   - If required information is missing, respond with: "I do not have enough information in my memory."
+
+FINAL ANSWER:
+\end{lstlisting}
+
+\subsection{LongMemEval Evaluation Prompt}
+\label{sec:longmemeval_prompt}
+
+For the LongMemEval benchmark, we employed \texttt{gpt-4.1-mini} as the judge to evaluate the correctness of the agent's responses. The prompt strictly instructs the judge to focus on semantic and temporal consistency rather than exact string matching. The specific prompt template used is provided below:
+
+\begin{lstlisting}[caption={LLM-as-a-Judge Evaluation Prompt.}, label={lst:eval_prompt}]
+Your task is to label an answer to a question as 'CORRECT' or 'WRONG'. 
+You will be given the following data: 
+    (1) a question (posed by one user to another user), 
+    (2) a 'gold' (ground truth) answer, 
+    (3) a generated answer
+which you will score as CORRECT/WRONG.
+
+The point of the question is to ask about something one user should know about the other user based on their prior conversations. 
+The gold answer will usually be a concise and short answer that includes the referenced topic, for example:
+Question: Do you remember what I got the last time I went to Hawaii?
+Gold answer: A shell necklace
+
+The generated answer might be much longer, but you should be generous with your grading - as long as it touches on the same topic as the gold answer, it should be counted as CORRECT.  
+
+For time related questions, the gold answer will be a specific date, month, year, etc. The generated answer might be much longer or use relative time references (like "last Tuesday" or "next month"), but you should be generous with your grading - as long as it refers to the same date or time period as the gold answer, it should be counted as CORRECT. Even if the format differs (e.g., "May 7th" vs "7 May"), consider it CORRECT if it's the same date.
+
+Now it's time for the real question:
+Question:  {question}
+Gold answer: {gold_answer}
+Generated answer: {generated_answer}
+
+First, provide a short (one sentence) explanation of your reasoning, then finish with CORRECT or WRONG.  
+Do NOT include both CORRECT and WRONG in your response, or it will break the evaluation script. 
+
+Just return the label CORRECT or WRONG in a json format with the key as "label". 
+\end{lstlisting}
+\section{Extended Implementation Details and Experiments}
+\label{app:implementation}
+
+\subsection{Dataset Description}
+\textbf{LoCoMo}~\cite{maharana2024eval} is specifically designed to test the limits of LLMs in processing long-term conversational dependencies.
+The dataset comprises conversation samples ranging from 200 to 400 turns, containing complex temporal shifts and interleaved topics. The evaluation set consists of 1,986 questions categorized into four distinct reasoning types:
+(1) Multi-Hop Reasoning: Questions requiring the synthesis of information from multiple disjoint turns (e.g., \texttt{``Based on what X said last week and Y said today...''});
+(2) Temporal Reasoning: Questions testing the model's ability to understand event sequencing and absolute timelines (e.g., \texttt{``Did X happen before Y?''});
+(3) Open Domain: General knowledge questions grounded in the conversation context;
+(4) Single Hop: Direct retrieval tasks requiring exact matching of specific facts.
+
+\textbf{LongMemEval-S} benchmark. The defining characteristic of this dataset is its \textit{extreme context length}, which poses a unique and severe challenge for memory systems. Unlike standard benchmarks, LongMemEval-S requires the system to precisely locate specific answers across various sub-categories (e.g., temporal events, user preferences) within an exceptionally long interaction history. This massive search space significantly escalates the difficulty of retrieval and localization, serving as a rigorous stress test for the system's precision. We utilized an \emph{LLM-as-a-judge} protocol (using \texttt{gpt-4.1-mini}) to score the correctness of generated answers against ground-truth references, categorizing responses as either \textsc{Correct} or \textsc{Wrong} based on semantic and temporal alignment. The full evaluation prompt is provided in Appendix~\ref{sec:longmemeval_prompt}.
+
+
+
+\subsection{Hyperparameter Configuration}
+Table~\ref{tab:hyperparams_detail} summarizes the hyperparameters used to obtain the results reported in Section~\ref{sec:experiments}.
+These values were selected to balance memory compactness and retrieval recall, with particular attention to the thresholds governing semantic structured compression and recursive consolidation.
+
+\subsection{Hyperparameter Sensitivity Analysis}
+\label{sec:sensitivity}
+
+To assess the effectiveness of semantic structured compression and to motivate the design of adaptive retrieval, we analyze system sensitivity to the number of retrieved memory entries ($k$).
+We vary $k$ from 1 to 20 and report the average F1 score on the LoCoMo benchmark using the GPT-4.1-mini backend.
+
+\begin{wraptable}{r}{0.45\textwidth}
+\footnotesize
+\centering
+\caption{Performance sensitivity to retrieval count ($k$). \textbf{SimpleMem} demonstrates "Rapid Saturation," reaching near-optimal performance at $k=3$ (42.85) compared to its peak at $k=10$ (43.45). This validates the high information density of Atomic Entries, proving that huge context windows are often unnecessary for accuracy.}
+\label{tab:sensitivity}
+\resizebox{1\linewidth}{!}{
+\begin{tabular}{l|ccccc}
+\toprule
+\multirow{2}{*}{\textbf{Method}} & \multicolumn{5}{c}{\textbf{Top-$k$ Retrieved Entries}} \\
+ & \textbf{$k$=1} & \textbf{$k$=3} & \textbf{$k$=5} & \textbf{$k$=10} & \textbf{$k$=20} \\
+\midrule
+ReadAgent & 6.12 & 8.45 & 9.18 & 8.92 & 8.50 \\
+MemGPT & 18.40 & 22.15 & 25.59 & 24.80 & 23.10 \\
+\textbf{SimpleMem} & \textbf{35.20} & \textbf{42.85} & \textbf{43.24} & \textbf{43.45} & \textbf{43.40} \\
+\bottomrule
+\end{tabular}
+}
+\end{wraptable}
+% \noindent \textbf{Analysis.}
+Table~\ref{tab:sensitivity} provides two key observations. First, rapid performance saturation is observed at low retrieval depth.
+SimpleMem achieves strong performance with a single retrieved entry (35.20 F1) and reaches approximately 99\% of its peak performance at $k=3$.
+This behavior indicates that semantic structured compression produces memory units with high information content, often sufficient to answer a query without aggregating many fragments.
+
+Second, robustness to increased retrieval depth distinguishes SimpleMem from baseline methods.
+While approaches such as MemGPT experience performance degradation at larger $k$, SimpleMem maintains stable accuracy even when retrieving up to 20 entries.
+This robustness enables adaptive retrieval to safely expand context for complex reasoning tasks without introducing excessive irrelevant information.
+
+
+\begin{table*}[ht]
+\centering
+\caption{Detailed hyperparameter configuration for SimpleMem. The system employs adaptive thresholds to balance memory compactness and retrieval effectiveness.}
+\label{tab:hyperparams_detail}
+\resizebox{1\linewidth}{!}{
+\begin{tabular}{llp{7cm}}
+\toprule
+\textbf{Module} & \textbf{Parameter} & \textbf{Value / Description} \\
+\midrule
+\multirow{4}{*}{\textit{Stage 1: Semantic Structured Compression}} 
+ & Window Size ($W$) & 20 turns \\
+ & Sliding Stride & 5 turns (25\% overlap) \\
+ % & Information Threshold ($\tau$) & 0.35 (filters low-information interaction content) \\
+ & Model Backend & \texttt{gpt-4.1-mini} (temperature = 0.0) \\
+ % & Coreference Scope & Current window with up to two preceding turns \\
+ & Output Constraint & Strict JSON schema enforced \\
+\midrule
+\multirow{3}{*}{\textit{Stage 2: Online Semantic Synthesis}} 
+ & Embedding Model & \texttt{Qwen3-embedding-0.6b} (1024 dimensions) \\
+ % & Consolidation Threshold ($\tau_{\text{cluster}}$) & 0.85 (triggers abstraction over related memory units) \\
+ % & Temporal Decay ($\lambda$) & 0.1 (controls temporal influence during consolidation) \\
+ & Vector Database & LanceDB (v0.4.5) with IVF-PQ indexing \\
+ & Stored Metadata & \texttt{timestamp}, \texttt{entities}, \texttt{topic}, \texttt{salience} \\
+\midrule
+\multirow{5}{*}{\textit{Stage 3: Intent-Aware Retrieval Planning}} 
+ & Query Complexity Estimator & \texttt{gpt-4.1-mini} \\
+ & Retrieval Range & [3, 20] \\
+ & Minimum Depth & 1 \\
+ & Maximum Depth & 20 \\
+ & Re-ranking & Disabled (multi-view score fusion applied directly) \\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+

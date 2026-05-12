@@ -1,0 +1,49 @@
+{
+   "sources" : [
+      {
+         "usage" : "toplevel",
+         "filename" : "iclr2026_conference.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figure/Attention_Matrix3.png"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figure/compression_accuracy.pdf"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "figure/human.png"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "iclr2026_conference.bbl"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "iclr2026_conference.bib"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "iclr2026_conference.bst"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "section/appendix_lightmem_results.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "table/cost_appendix.tex"
+      },
+      {
+         "usage" : "ignore",
+         "filename" : "zhipulogo.png"
+      }
+   ],
+   "spec_version" : 1,
+   "texlive_version" : "2025",
+   "process" : {
+      "compiler" : "pdflatex"
+   }
+}

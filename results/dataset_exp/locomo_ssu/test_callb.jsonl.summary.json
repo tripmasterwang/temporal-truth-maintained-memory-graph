@@ -1,0 +1,40 @@
+{
+  "bench": "locomo-ssu",
+  "args": {
+    "bench": "locomo-ssu",
+    "dataset_root": null,
+    "qaconv_split": "test",
+    "split_json": "/home/workspace/lww/project0412/projects/Temporal Truth-Maintained Memory Graph/results/dataset_exp/locomo_ssu/split_s0.json",
+    "eval_set": "test",
+    "locomo_data": "/home/workspace/lww/project0412/projects/dataset/locomo-main/data/locomo10.json",
+    "locomo_max_convs": null,
+    "locomo_max_qa_per_conv": null,
+    "method": "callb",
+    "out": "/home/workspace/lww/project0412/projects/Temporal Truth-Maintained Memory Graph/results/dataset_exp/locomo_ssu/test_callb.jsonl",
+    "limit": 40,
+    "seed": 0,
+    "callb_model": "/home/workspace/lww/project0412/projects/Temporal Truth-Maintained Memory Graph/results/dataset_exp/locomo_ssu/lb_mlp.json",
+    "callb_crc": "/home/workspace/lww/project0412/projects/Temporal Truth-Maintained Memory Graph/results/dataset_exp/locomo_ssu/lb_crc.json",
+    "callb_alpha": 0.2,
+    "no_crc_threshold": 0.5,
+    "rerank_top_k": 3,
+    "writer_model": "deepseek-v3.2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2"
+  },
+  "elapsed_sec": 2481.095895767212,
+  "n_written_this_run": 40,
+  "summary": {
+    "n": 40,
+    "accuracy": 0.525,
+    "f1": 0.23807334758854748,
+    "abstain_rate": 0.0,
+    "per_type": {
+      "locomo_ssu": {
+        "n": 40,
+        "acc": 0.525
+      }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+\begin{abstract}
+
+\vspace{1cm}
+
+Large Language Models (LLMs) have demonstrated remarkable prowess in generating contextually coherent responses, yet their fixed context windows pose fundamental challenges for maintaining consistency over prolonged multi-session dialogues. We introduce \mem, a scalable memory-centric architecture that addresses this issue by dynamically extracting, consolidating, and retrieving salient information from ongoing conversations. Building on this foundation, we further propose an enhanced variant that leverages graph-based memory representations to capture complex relational structures among conversational elements.
+Through comprehensive evaluations on the \texttt{LOCOMO} benchmark, we systematically compare our approaches against six baseline categories: (i) established memory-augmented systems, (ii) retrieval-augmented generation (RAG) with varying chunk sizes and
+$k$-values, (iii) a full-context approach that processes the entire conversation history, (iv) an open-source memory solution, (v) a proprietary model system, and (vi) a dedicated memory management platform. 
+Empirical results demonstrate that our methods consistently outperform all existing memory systems across four question categories: single-hop, temporal, multi-hop, and open-domain. 
+Notably, \mem~achieves 26\% relative improvements in the LLM-as-a-Judge metric over OpenAI, while \mem~with graph memory achieves around 2\% higher overall score than the base \mem~configuration.
+Beyond accuracy gains, we also markedly reduce computational overhead compared to the full-context approach. In particular, \mem~attains a 91\% lower p95 latency and saves more than 90\% token cost, thereby offering a compelling balance between advanced reasoning capabilities and practical deployment constraints.
+Our findings highlight the critical role of structured, persistent memory mechanisms for long-term conversational coherence, paving the way for more reliable and efficient LLM-driven AI agents.
+
+\vspace{5mm}
+\textbf{Code can be found at}: \href{https://mem0.ai/research}{https://mem0.ai/research}
+
+
+
+\end{abstract}

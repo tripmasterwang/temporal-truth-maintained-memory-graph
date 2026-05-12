@@ -1,0 +1,12 @@
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
+
+We have introduced \mem~and \memp, two complementary memory architectures that overcome the intrinsic limitations of fixed context windows in LLMs. By dynamically extracting, consolidating, and retrieving compact memory representations, \mem~achieves state-of-the-art performance across single‑hop and multi‑hop reasoning, while \memp’s graph‑based extensions unlock significant gains in temporal and open‑domain tasks. On the \texttt{LOCOMO} benchmark, our methods deliver 5\%, 11\%, and 7\% relative improvements in single-hop, temporal, and multi-hop reasoning question types over best performing methods in respective question type and reduce p95 latency by over 91\% compared to full‑context baselines—demonstrating a powerful balance between precision and responsiveness. \mem’s dense memory pipeline excels at rapid retrieval for straightforward queries, minimizing token usage and computational overhead. In contrast, \memp’s structured graph representations provide nuanced relational clarity, enabling complex event sequencing and rich context integration without sacrificing practical efficiency. Together, they form a versatile memory toolkit that adapts to diverse conversational demands while remaining deployable at scale.
+
+Future research directions include optimizing graph operations to reduce the latency overhead in \memp, exploring hierarchical memory architectures that blend efficiency with relational representation, and developing more sophisticated memory consolidation mechanisms inspired by human cognitive processes. Additionally, extending our memory frameworks to domains beyond conversational scenarios, such as procedural reasoning and multimodal interactions, would further validate their broader applicability. By addressing the fundamental limitations of fixed context windows, our work represents a significant advancement toward conversational AI systems capable of maintaining coherent, contextually rich interactions over extended periods, much like their human counterparts.
+
+
+\section{Acknowledgments}
+We would like to express our sincere gratitude to Harsh Agarwal, Shyamal Anadkat, Prithvijit Chattopadhyay, Siddesh Choudhary, Rishabh Jain, and Vaibhav Pandey for their invaluable insights and thorough reviews of early drafts. Their constructive comments and detailed suggestions helped refine the manuscript, enhancing both its clarity and overall quality. We deeply appreciate their generosity in dedicating time and expertise to this work.
+
+

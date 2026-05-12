@@ -61,17 +61,16 @@ reader to guess.
   lightweight LLM linker with a cheap subject--predicate gate, and an
   intent-gated hybrid reader that prefers claims for temporal
   questions and raw turns as a fallback on everything else. On a
-  150-question stratified slice of LongMemEval-S, TTMG achieves
-  paired set-inclusion wins over a strong flat hybrid-RAG baseline on
-  two capability slices: \textbf{abstention} accuracy
-  (\TTMGLMEAccABS\% vs \FlatLMEAccABS\%, +\DeltaLMEABS~pp, $n{=}9$,
-  paired $b{=}4, c{=}0$; exact McNemar one-sided
-  $p{=}$\McnemarABSonesided) and \textbf{single-session-user} accuracy
-  (\TTMGLMEAccSSU\% vs \FlatLMEAccSSU\%, $n{=}21$, paired 2--0).
-  Knowledge-update and temporal-reasoning are tied with the baseline
-  at this scale (paired discordance symmetric, McNemar $p{=}1.0$),
-  and we show that TTMG and Flat RAG answer the same slice accuracy
-  through \emph{complementary} subsets of questions (\S\ref{sec:exp}).
+  150-question stratified slice of LongMemEval-S, TTMG matches the
+  flat hybrid-RAG baseline in overall accuracy at statistical parity
+  (\TTMGLMEAcc\% vs \FlatLMEAcc\%, paired McNemar
+  $p{=}$\McnemarOverall); on the \emph{single-session-user} slice
+  TTMG captures every Flat RAG correct answer and two more (paired
+  2--0, $n{=}21$), and on the full 30-question abstention set TTMG
+  \emph{explicitly} abstains on \TTMGABSFullAbstainRate\% of
+  questions (versus 0\% for Flat), delivering the same outcome
+  accuracy via a behaviourally different policy
+  (\S\ref{sec:exp}).
   \item We propose two \emph{inference-time} routers composing TTMG
   with Flat RAG: \textbf{TTMG-Abstain} uses TTMG's own abstain flag
   (no labels, no classifier), and \textbf{TTMG+R-LLM} additionally

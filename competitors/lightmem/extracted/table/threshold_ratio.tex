@@ -1,0 +1,130 @@
+
+\begin{table*}[ht]
+\centering
+\caption{The impact of \textbf{LightMem} compression ratio $r$ and STM buffer threshold $th$ is reported here. Due to space limitations, we only present a subset of representative results of the online soft update results, with more results provided in the Figure~\ref{tab:lightmem_comparison}.}
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{8pt}
+\small
+\scalebox{1.00}{
+\begin{tabular}{c | c c | c c c c c c}
+\toprule
+\textbf{Model} & \textbf{$th$} & \textbf{$r$}  & \textbf{ACC} & \textbf{Input} (k) & \textbf{Output} (k) & \textbf{Total} (k)  & \textbf{Calls} & \textbf{Time}  \\
+\midrule
+
+% ===== GPT-4o-mini =====
+\multirow{9}{*}{\rotatebox{90}{\openailogo\ \textbf{GPT}}}
+% \gptgrayrow{0}{0.5}{64.89}{\textbf{30.84}}{\textbf{9.75}}{\textbf{40.59}}{\textbf{43.56}}{\textbf{550.36}}
+% \gptgrayrow{0}{0.6}{\textbf{70.35}}{33.17}{10.20}{43.37}{45.86}{553.07}
+% \gptgrayrow{0}{0.7}{62.35}{35.36}{9.76}{45.12}{48.08}{573.42}
+% \cdashline{2-9}
+\gptgrayrow{256}{0.5}{64.29}{\textbf{20.80}}{10.01}{\textbf{30.81}}{\textbf{25.67}}{\textbf{302.69}}
+\gptgrayrow{256}{0.6}{\textbf{67.68}}{24.58}{10.53}{35.11}{30.47}{329.61}
+\gptgrayrow{256}{0.7}{65.68}{27.66}{\textbf{9.97}}{37.63}{34.26}{403.59}
+\cdashline{2-9}
+\gptgrayrow{512}{0.6}{63.74}{\textbf{16.23}}{9.45}{\textbf{25.68}}{\textbf{15.63}}{\textbf{266.98}}
+\gptgrayrow{512}{0.7}{\textbf{68.64}}{18.88}{9.37}{28.25}{18.43}{283.76}
+\gptgrayrow{512}{0.8}{66.67}{21.55}{\textbf{8.59}}{30.14}{21.11}{268.97}
+\cdashline{2-9}
+\gptgrayrow{1024}{0.6}{59.68}{\textbf{10.34}}{7.68}{\textbf{18.20}}{\textbf{7.69}}{\textbf{177.45}}
+\gptgrayrow{1024}{0.7}{\textbf{64.68}}{12.93}{6.90}{19.83}{8.25}{209.12}
+\gptgrayrow{1024}{0.8}{64.35}{14.86}{\textbf{6.28}}{21.14}{9.43}{216.08}
+
+\midrule
+
+% ===== Qwen =====
+\multirow{9}{*}{\rotatebox{90}{\qwenlogo\ \textbf{Qwen}}}
+\qwenlavrow{512}{0.4}{58.57}{\textbf{11.03}}{\textbf{17.00}}{\textbf{28.03}}{\textbf{10.11}}{\textbf{421.74}}
+\qwenlavrow{512}{0.6}{66.57}{16.22}{19.50}{35.72}{15.40}{471.09}
+\qwenlavrow{512}{0.8}{\textbf{67.37}}{21.35}{19.36}{40.71}{20.98}{461.02}
+\cdashline{2-9}
+\qwenlavrow{768}{0.4}{61.95}{\textbf{9.01}}{\textbf{16.14}}{\textbf{25.15}}{\textbf{6.54}}{\textbf{357.13}}
+\qwenlavrow{768}{0.6}{\textbf{73.20}}{13.19}{19.21}{32.40}{9.97}{417.13}
+\qwenlavrow{768}{0.8}{64.95}{16.94}{19.06}{36.00}{13.09}{420.14}
+\cdashline{2-9}
+\qwenlavrow{1024}{0.4}{53.91}{\textbf{8.02}}{\textbf{15.44}}{\textbf{23.46}}{\textbf{4.83}}{\textbf{300.56}}
+\qwenlavrow{1024}{0.6}{65.67}{11.50}{18.21}{29.71}{7.18}{396.35}
+\qwenlavrow{1024}{0.8}{\textbf{68.69}}{14.82}{18.49}{33.31}{9.43}{355.71}
+
+\bottomrule
+\end{tabular}}
+\label{tab:r_th}
+\end{table*}
+
+
+
+
+% \begin{table*}[t]
+% \centering
+% \caption{The impact of \textbf{LightMem} compression ratio $r$ and STM buffer threshold $th$ is reported here. Due to space limitations, we only present a subset of representative results of the online soft update results, with more results provided in the Appendix.
+% } 
+% \vspace{0.5ex}
+% \renewcommand{\arraystretch}{1.1}
+% \setlength{\tabcolsep}{10pt}
+% \setlength\dashlinedash{1.0pt}  % 点的长度
+% \setlength\dashlinegap{2pt}     % 间距
+% \small
+% \scalebox{1.00}{
+% % @{\hspace{8pt}}
+% \begin{tabular}{c@{\hspace{15pt}}c@{\hspace{15pt}}c@{\hspace{12pt}}c@{\hspace{10pt}}c@{\hspace{10pt}}c@{\hspace{12pt}}c@{\hspace{12pt}}c}
+% \toprule
+% \textbf{$th$} & \textbf{$r$}  & \textbf{ACC} & \textbf{Input} (k) & \textbf{Output} (k) & \textbf{Total} (k)  & \textbf{Calls} & \textbf{Time}  \\
+% \midrule
+
+% % ===== GPT-4o-mini 分区 =====
+% \rowcolor{gptbar}\multicolumn{8}{c}{\openailogo\ \textbf{GPT-4o-mini}}\\
+% \midrule
+% \rowcolor{gptbar}
+%  0 & 0.5 & 64.89 & \textbf{30.84} & \textbf{9.75} & \textbf{40.59} & \textbf{43.56} & \textbf{550.36} \\
+% \rowcolor{gptbar}
+%  0 & 0.6 & \textbf{70.35}  & 33.17 & 10.20 & 43.37 & 45.86 & 553.07 \\
+% \rowcolor{gptbar}
+%  0 & 0.7 & 62.35 & 35.36 & 9.76 & 45.12 & 48.08 & 573.42 \\
+%  \hdashline
+% \rowcolor{gptbar}
+%  256 & 0.5 & 64.29 & \textbf{20.80} & 10.01 & \textbf{30.81} & \textbf{25.67} & \textbf{302.69} \\
+% \rowcolor{gptbar}
+%  256 & 0.6 & \textbf{67.68} & 24.58 & 10.53 & 35.11 & 30.47 & 329.61 \\
+% \rowcolor{gptbar}
+%  256 & 0.7 & 65.68 & 27.66 & \textbf{9.97} & 37.63 & 34.26 & 403.59 \\
+%  \hdashline
+% \rowcolor{gptbar}
+%  512 & 0.5 & 62.44 & \textbf{13.49} & \textbf{8.89} & \textbf{22.38} & \textbf{12.70} & \textbf{250.36} \\
+% \rowcolor{gptbar}
+%  512 & 0.6 & 63.74 & 16.23 & 9.45 & 25.68 & 15.63 & 266.98 \\
+% \rowcolor{gptbar}
+%  512 & 0.7 & \textbf{68.64} & 18.88 & 9.37 & 28.25 & 18.43 & 283.76 \\
+%  \hdashline
+% \rowcolor{gptbar}
+%  1024 & 0.5 & 50.36  & \textbf{8.34} & 6.97 & \textbf{15.31} & \textbf{6.32} & \textbf{160.35} \\
+% \rowcolor{gptbar}
+%  1024 & 0.6 & 59.68 & 10.34 & 7.68 & 18.20 & 7.69 & 177.45 \\
+% \rowcolor{gptbar}
+%  1024 & 0.7 & \textbf{64.68} & 12.93 & \textbf{6.90} & 19.83 & 8.25 & 209.12 \\
+
+% \midrule
+
+% % ===== Qwen 分区 =====
+% \rowcolor{qwenbar}\multicolumn{8}{c}{\qwenlogo\ \textbf{Qwen3-30B-A3B-Instruct-2507}}\\
+% \midrule
+% % ===== Qwen 分区 =====
+
+% \rowcolor{qwenlav}
+% 512  & 0.4 & 58.57 & 11.03 & 17.00 & 28.03 & 10.11 & 421.74 \\ \rowcolor{qwenlav}
+% 512  & 0.6 & \textbf{66.57} & 16.22 & 19.50 & 35.72 & 15.40 & 471.09 \\ \rowcolor{qwenlav}
+% 512  & 0.8 &  &  &  &  &  &  \\ 
+% \hdashline
+% \rowcolor{qwenlav}
+% 768  & 0.4 & 61.95 &  9.01 & 16.14 & 25.15 &  6.54 & 357.13 \\ \rowcolor{qwenlav}
+% 768  & 0.6 & 73.20 & 13.19 & 19.21 & 32.40 &  9.97 & 417.13 \\ \rowcolor{qwenlav}
+% 768  & 0.8 &  &   &  &  &   &  \\ 
+% \hdashline
+% \rowcolor{qwenlav}
+% 1024 & 0.4 & 53.91 &  8.02 & 15.44 & 23.46 &  4.83 & 300.56 \\ \rowcolor{qwenlav}
+% 1024 & 0.6 & 65.67 & 11.50 & 18.21 & 29.71 &  7.18 & 396.35 \\ \rowcolor{qwenlav}
+% 1024 & 0.8 &  &   &  &  &   &  \\ 
+
+% \bottomrule
+% \end{tabular}}
+% \label{tab:r_th}
+% \end{table*}
+

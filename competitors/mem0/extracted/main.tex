@@ -1,0 +1,115 @@
+\PassOptionsToPackage{dvipsnames}{xcolor}
+\documentclass[11pt,letterpaper]{our}
+\usepackage{mathalfa}
+% Packages specific to this document
+\usepackage[all]{hypcap}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{bm}
+\usepackage{bxcoloremoji}
+\usepackage{mathtools}
+\usepackage{tikz}
+\usepackage{multirow} 
+\usepackage{mathrsfs}
+\usepackage{nicefrac}
+\usepackage{listings}
+\usepackage{mathalfa}
+\usepackage{dsfont}
+\usepackage{fdsymbol}
+\usepackage{wrapfig}
+\usepackage{lipsum}
+\usepackage{stackengine}
+\usepackage{adjustbox}
+\usepackage{colortbl}  
+\usepackage{array}
+\usepackage{multicol}
+\usepackage{multirow}
+\usepackage{gradient-text}
+\usepackage{url}
+\usepackage{algpseudocode}
+\usepackage{fontawesome5}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage[capitalise]{cleveref}
+\usepackage{listings}
+
+% Citation and bibliography setup
+\PassOptionsToPackage{comma,numbers,compress}{natbib}
+\usepackage[comma,authoryear,compress]{natbib}
+\bibliographystyle{plainnat}
+
+% Caption setup
+\usepackage[font=small,labelfont=bf]{caption}
+
+% Color definitions
+\definecolor{lightblue}{rgb}{0.22,0.45,0.70}
+\definecolor{YaleBlue}{rgb}{0.06,0.30,0.56}
+
+% Custom box definition
+\newtcolorbox{AIbox}[2][]{aibox,title=#2,#1}
+
+% Input additional files
+\input{math_commands}
+\input{command}
+
+% Hyperref setup (moved to end of preamble)
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks = true,
+    citecolor = {YaleBlue},
+}
+
+\title{\centering \MEMO: Building Production‑Ready AI Agents with Scalable Long‑Term Memory}
+\author{\centering Prateek Chhikara, Dev Khant, Saket Aryan, Taranjeet Singh, \textnormal{\footnotesize \textit{and}} Deshraj Yadav\\
+\vspace{1em}
+\hspace{0.6cm} \href{mailto:research@mem0.ai}{\texttt{research@mem0.ai}}}
+% \correspondingauthor{Prateek Chhikara, \href{mailto:prateek@mem0.ai}{prateek@mem0.ai}; Deshraj Yadav, \href{mailto:deshraj@mem0.ai}{deshraj@mem0.ai}}
+
+
+% Setup page style
+\pagestyle{fancy}
+\fancyhf{}  % Clear all header and footer fields
+
+% Logo on right for odd pages, left for even pages
+\fancyhead[RO]{\includegraphics[height=0.4cm]{figures/mem0_logo_bw.png}}  % Right on Odd pages
+\fancyhead[LE]{\includegraphics[height=0.4cm]{figures/mem0_logo_bw.png}}  % Left on Even pages
+
+% Title in the center of the header for all pages except the first
+\fancyhead[CO,CE]{\textit{\footnotesize Mem0: Building Production‑Ready AI Agents with Scalable Long‑Term Memory}}  % Center on both Odd and Even pages
+
+\fancyfoot[C]{\thepage}  % Page number at bottom center
+
+% Style for the first page (no logo, no header title)
+\fancypagestyle{firstpage}{
+  \fancyhf{}
+  \fancyfoot[C]{\thepage}
+}
+
+% Document start
+\begin{document}
+\input{sections/abs}
+\maketitle
+
+% Add the logo right after \maketitle
+\vspace{-31.3em} % Adjust this value to move it up closer to the authors
+
+\begin{center}
+\includegraphics[width=0.1\textwidth]{figures/mem0_logo_bw_long.png}
+\end{center}
+
+\vspace{28em}
+
+\input{sections/intro}
+\input{sections/proposed_work}
+\input{sections/experiment_setup}
+\input{sections/result}
+\input{sections/conclusion}
+\bibliography{cite}
+\appendix
+\input{sections/appendix}
+\end{document}

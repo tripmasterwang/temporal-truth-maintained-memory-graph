@@ -1,0 +1,648 @@
+%%%%%%%% ICML 2026 EXAMPLE LATEX SUBMISSION FILE %%%%%%%%%%%%%%%%%
+
+\documentclass{article}
+
+% Recommended, but optional, packages for figures and better typesetting:
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{booktabs} % for professional tables
+
+% hyperref makes hyperlinks in the resulting PDF.
+% If your build breaks (sometimes temporarily if a hyperlink spans a page)
+% please comment out the following usepackage line and replace
+% \usepackage{icml2026} with \usepackage[nohyperref]{icml2026} above.
+\usepackage{hyperref}
+
+
+% Attempt to make hyperref and algorithmic work together better:
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+
+% Use the following line for the initial blind version submitted for review:
+% \usepackage{icml2026}
+
+% For preprint, use
+\usepackage[preprint]{icml2026}
+
+% If accepted, instead use the following line for the camera-ready submission:
+% \usepackage[accepted]{icml2026}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+\usepackage{amsthm}
+
+\usepackage[table]{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage[svgnames]{xcolor}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!10}
+}
+
+\usepackage{enumitem} % For better list control
+\usepackage{multirow,multicol,booktabs,verbatim,wrapfig}
+% \usepackage{geometry}
+% \geometry{margin=1in}
+\newcommand{\ours}{SimpleMem}
+\newcommand{\cmark}{\textcolor{teal}{\bf\ding{51}}}
+\newcommand{\xmark}{\textcolor{red}{\bf\ding{55}}}
+\newcommand{\textev}[1]{\textcolor{blue}{\bf #1}}
+\definecolor{em}{gray}{0.9}
+% \newcommand{}{\cellcolor{em}}
+\newcommand{\best}[1]{{\textbf{#1}}}
+\newcommand{\bs}[1]{{\textbf{#1}}}
+\newcommand{\sbs}[1]{{\uline{#1}}}
+\newcommand{\di}[1]{{ (\small{#1})}}
+\newcommand{\gain}[1]{{\textcolor{teal}{\ ($\uparrow$#1)}}}
+\newcommand{\loss}[1]{{\textcolor{violet}{\ ($\downarrow$#1)}}}
+\renewcommand{\paragraph}[1]{\vspace{0.3em}\noindent\textbf{#1}\hspace{0.5em}}
+\newcommand{\lo}{\textsc{LoCoMo}\xspace}
+\newcommand{\co}{\textsc{Cot}\xspace}
+\newcommand{\fe}{\textsc{FullElicit}\xspace}
+\newcommand{\FUNCTION}[1]{\textbf{function} #1}
+
+% if you use cleveref..
+\usepackage[capitalize,noabbrev]{cleveref}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% THEOREMS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% Todonotes is useful during development; simply uncomment the next line
+%    and comment out the line below the next line to turn off comments
+%\usepackage[disable,textsize=tiny]{todonotes}
+\usepackage[textsize=tiny]{todonotes}
+
+% The \icmltitle you define below is probably too long as a header.
+% Therefore, a short form for the running title is supplied here:
+\icmltitlerunning{SimpleMem: Efficient Lifelong Memory for LLM Agents}
+
+\begin{document}
+
+\twocolumn[
+  \icmltitle{SimpleMem: Efficient Lifelong Memory for LLM Agents}
+
+  % It is OKAY to include author information, even for blind submissions: the
+  % style file will automatically remove it for you unless you've provided
+  % the [accepted] option to the icml2026 package.
+
+  % List of affiliations: The first argument should be a (short) identifier you
+  % will use later to specify author affiliations Academic affiliations
+  % should list Department, University, City, Region, Country Industry
+  % affiliations should list Company, City, Region, Country
+
+  % You can specify symbols, otherwise they are numbered in order. Ideally, you
+  % should not use this facility. Affiliations will be numbered in order of
+  % appearance and this is the preferred way.
+  \icmlsetsymbol{equal}{*}
+
+  \begin{icmlauthorlist}
+    \icmlauthor{Jiaqi Liu}{1,equal}
+    \icmlauthor{Yaofeng Su}{1,equal}
+    \icmlauthor{Peng Xia}{1}
+    \icmlauthor{Siwei Han}{1}\\
+    \icmlauthor{Zeyu Zheng}{2}
+    \icmlauthor{Cihang Xie}{3}
+    \icmlauthor{Mingyu Ding}{1}
+    \icmlauthor{Huaxiu Yao}{1}
+  \end{icmlauthorlist}
+
+  \icmlaffiliation{1}{UNC-Chapel Hill}
+  \icmlaffiliation{2}{University of California, Berkeley}
+  \icmlaffiliation{3}{University of California, Santa Cruz}
+  % \icmlaffiliation{2}{Company Name, Location, Country}
+  % \icmlaffiliation{3}{School of ZZZ, Institute of WWW, Location, Country}
+
+  \icmlcorrespondingauthor{Jiaqi Liu}{jqliu@cs.unc.edu}
+  \icmlcorrespondingauthor{Mingyu Ding}{md@cs.unc.edu}
+  \icmlcorrespondingauthor{Huaxiu Yao}{huaxiu@cs.unc.edu}
+  % \icmlauthornote{*}{Equal contribution.}
+
+  % You may provide any keywords that you find helpful for describing your
+  % paper; these are used to populate the "keywords" metadata in the PDF but
+  % will not be shown in the document
+  \icmlkeywords{Machine Learning, ICML}
+
+  \vskip 0.3in
+]
+
+% this must go after the closing bracket ] following \twocolumn[ ...
+
+% This command actually creates the footnote in the first column listing the
+% affiliations and the copyright notice. The command takes one argument, which
+% is text to display at the start of the footnote. The \icmlEqualContribution
+% command is standard text for equal contribution. Remove it (just {}) if you
+% do not need this facility.
+
+% Use ONE of the following lines. DO NOT remove the command.
+% If you have no special notice, KEEP empty braces:
+% \printAffiliationsAndNotice{}  % no special notice (required even if empty)
+\printAffiliationsAndNotice{\icmlEqualContribution} 
+% Or, if applicable, use the standard equal contribution text:
+% \printAffiliationsAndNotice{\icmlEqualContribution}
+\begin{abstract}
+To support long-term interaction in complex environments, LLM agents require memory systems that manage historical experiences. Existing approaches either retain full interaction histories via passive context extension, leading to substantial redundancy, or rely on iterative reasoning to filter noise, incurring high token costs.
+To address this challenge, we introduce SimpleMem, an efficient memory framework based on semantic lossless compression. We propose a three-stage pipeline designed to maximize information density and token utilization: (1) {Semantic Structured Compression}, which distills unstructured interactions into compact, multi-view indexed memory units; (2) {Online Semantic Synthesis}, an {intra-session} process that instantly integrates related context into unified abstract representations to eliminate redundancy; and (3) {Intent-Aware Retrieval Planning}, which {infers search intent} to dynamically determine retrieval scope and construct precise context efficiently. Experiments on benchmark datasets show that our method consistently outperforms baseline approaches in accuracy, retrieval efficiency, and inference cost, achieving an average F1 improvement of 26.4\% in LoCoMo while reducing inference-time token consumption by up to 30×, demonstrating a superior balance between performance and efficiency.
+Code is available at \href{https://github.com/aiming-lab/SimpleMem}{https://github.com/aiming-lab/SimpleMem}.
+\end{abstract}
+
+\section{Introduction}
+Large Language Model (LLM) agents have recently demonstrated remarkable capabilities across a wide range of tasks~\cite{xia2025agent0,team2025tongyi,qiu2025alita}. However, constrained by fixed context windows, existing agents exhibit significant limitations when engaging in long-context and multi-turn interaction scenarios~\cite{liu2023lost,wang2024aipersona,liu2025agent0,hu2025memory,tu2025position}. To facilitate reliable long-term interaction, LLM agents require robust memory systems to efficiently manage and utilize historical experience~\cite{mem0,fang2025lightmem,wang2025mirix,tang2025agent,yang2025contextagent,ouyang2025reasoningbank}.
+
+While recent research has extensively explored the design of memory modules for LLM agents, current systems still suffer from suboptimal retrieval efficiency and low token utilization~\cite{fang2025lightmem,hu2025memory}. On one hand, many existing systems maintain complete interaction histories through full-context extension~\cite{Li2025MemOSAO,memorybank}. However, this approach introduce substantial redundant information~\cite{hu2025memory}. Specifically, during long-horizon interactions, user inputs and model responses accumulate substantial low-entropy noise (e.g., repetitive logs, non-task-oriented dialogue), which degrades the effective information density of the memory buffer. This redundancy adversely affects memory retrieval and downstream reasoning, often leading to middle-context degradation phenomena~\cite{liu2023lost}, while also incurring significant computational overhead during retrieval and secondary inference.
+On the other hand, some agentic frameworks mitigate noise through online filtering based on iterative reasoning procedures~\cite{yan2025general,Packer2023MemGPTTL}. Although such approaches improve retrieval relevance, they rely on repeated inference cycles, resulting in substantial computational cost, including increased latency and token usage. As a result, neither paradigm achieves efficient allocation of memory and computation resources.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.5\textwidth]{fig/fig1.pdf}
+    \caption{Performance vs. Efficiency Trade-off. Comparison of F1 against Token Cost on the LoCoMo benchmark. SimpleMem achieves high accuracy with minimal token consumption. }
+    \vspace{-2em}
+    \label{fig:tradeoff}
+\end{figure}
+
+To address these limitations, we introduce \textbf{SimpleMem}, an efficient memory framework inspired by the Complementary Learning Systems (CLS) theory~\cite{kumaran2016learning} and built around structured semantic compression.
+The objective of SimpleMem is to improve information efficiency under fixed context and token budgets. We develop a three-stage pipeline that supports dynamic memory compression, organization, and adaptive retrieval:
+(1) \textbf{Semantic Structured Compression}: we apply a {semantic density gating} mechanism via {LLM-based qualitative assessment}. The system uses the foundation model as a semantic judge to estimate information gain relative to history, preserving only content with high downstream utility. Retained information is reformulated into compact memory units and indexed jointly using dense semantic embeddings, sparse lexical features, and symbolic metadata.
+(2) \textbf{Online Semantic Synthesis}: inspired by biological consolidation and optimized for real-time interaction, we introduce an {intra-session} process that reorganizes memory on-the-fly. Related memory units are synthesized into higher-level abstract representations during the write phase, allowing repetitive or structurally similar experiences to be denoised and compressed immediately.
+(3) \textbf{Intent-Aware Retrieval Planning}: we employ a planning-based retrieval strategy that infers {latent search intent} to determine retrieval scope dynamically. The system constructs a precise context by querying multiple indexes (symbolic, semantic, lexical) and unifying results through ID-based deduplication, balancing structural constraints and semantic relevance without complex linear weighting.
+
+Our primary contribution is SimpleMem, an efficient memory framework grounded in structured semantic compression, which improves information efficiency through principled memory organization, online synthesis, and intent-aware planning.
+As shown in Figure~\ref{fig:tradeoff}, our empirical experiments demonstrate that SimpleMem establishes a new state-of-the-art with an F1 score, outperforming strong baselines like Mem0 by 26.4\%, while reducing inference token consumption by 30$\times$ compared to full-context models.
+
+
+\section{The SimpleMem Architecture}
+\label{sec:methodology}
+
+In this section, we present \textbf{SimpleMem}, which operates through a three-stage pipeline (see Figure~\ref{fig:architecture} for the detailed architecture). Specifically, we first describe the \textit{Semantic Structured Compression}, which utilizes implicit semantic gating to filter redundant interaction content and reformulate raw dialogue streams into compact memory units.  
+Next, we describe \emph{Online Semantic Synthesis}, an on-the-fly mechanism that instantly synthesizes related memory units into higher-level abstract representations, ensuring a compact and noise-free memory topology.
+Finally, we present \emph{Intent-Aware Retrieval Planning}, which infers latent search intent to dynamically adjust retrieval scope, constructing precise and token-efficient contexts for downstream reasoning.
+
+% an efficient memory framework for LLM agents designed to improve information utilization under constrained context and token budgets. As shown in Figure~\ref{fig:architecture}, 
+% \section{The SimpleMem Architecture}
+% \label{sec:methodology}
+
+% In this section, we present \textbf{SimpleMem}, an efficient memory framework for LLM agents designed to improve information utilization under constrained context and token budgets through. As shown in Figure~\ref{fig:architecture}, the system operates through a three-stage pipeline. First, we describe \textit{Semantic Structured Compression} process, which filters redundant interaction content and reformulates raw dialogue streams into compact memory units.  
+% Next, we describe \emph{Recursive Consolidation}, an asynchronous process that incrementally integrates related memory units into higher-level abstract representations and maintaining a compact memory topology.
+% Finally, we present \emph{Adaptive Query-Aware Retrieval}, which dynamically adjusts retrieval scope based on estimated query complexity to construct precise and token-efficient contexts for downstream reasoning.
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=1\linewidth]{fig/Fig_framework_v2.pdf}
+    \caption{The SimpleMem Architecture. SimpleMem follows a three-stage pipeline: (1) Semantic Structured Compression filters low-utility dialogue and converts informative windows into compact, context-independent memory units. (2) Online Semantic Synthesis consolidates related fragments during writing, maintaining a compact and coherent memory topology. (3) Intent-Aware Retrieval Planning infers search intent to adapt retrieval scope and query forms, enabling parallel multi-view retrieval and token-efficient context construction.
+    }
+    \label{fig:architecture}
+    \vspace{-1.5em}
+\end{figure*}
+\subsection{Semantic Structured Compression}
+\label{sec:atomization}
+A primary bottleneck in long-term interaction is \emph{context inflation}, the accumulation of raw, low-entropy dialogue. For example, a large portion of interaction segments in the real-world consists of phatic chit-chat or redundant confirmations, which contribute little to downstream reasoning but consume substantial context capacity. To address this, we introduce a mechanism to actively filter and restructure information at the source.
+
+Specifically, first, incoming dialogue is segmented into overlapping sliding windows \(W\) of fixed length, where each window represents a short contiguous span of recent interaction. These windows serve as the basic units for processing.
+
+Unlike traditional approaches that rely on rigid heuristic filters or separate classification models, we employ an implicit semantic density gating mechanism integrated directly into the generation process. We model the information assessment as an instruction-following task performed by the foundation model itself. The system leverages the attention mechanism of the LLM $f$ to identify high-entropy spans within the window $W$ relative to the immediate history $H$.
+
+Formally, we define the gating function $\Phi_{\text{gate}}$ not as a binary classifier, but as a generative filter resulting from the model's extraction capability:
+\begin{equation}
+    \Phi_{\text{gate}}(W) \to \{m_k\} \quad \text{s.t.} \quad |\{m_k\}| \ge 0
+\end{equation}
+Here, the generation of an empty set ($\emptyset$) inherently signifies a low-density window (e.g., pure phatic chitchat), effectively discarding it without explicit threshold tuning. This instruction-driven gating allows the system to capture subtle semantic nuances while naturally filtering redundancy through the model's semantic compression objectives.
+
+
+
+For windows containing valid semantic content, the system performs a unified \textit{De-linearization Transformation} $\mathcal{F}_{\theta}$. Instead of sequential independent modules, we optimize the extraction, coreference resolution, and temporal anchoring as a joint generation task. The transformation projects the raw dialogue window $W$ directly into a set of context-independent memory units $\{m_{k}\}$:
+\begin{equation}
+    \{m_{k}\} = \mathcal{F}_{\theta}(W; H) \approx (g_{\text{time}} \circ g_{\text{coref}} \circ g_{\text{ext}})(W).
+\end{equation}
+In this unified pass, the model follows strict instructional constraints to: (1) resolve ambiguous pronouns to specific entity names ($g_{\text{coref}}$), (2) convert relative temporal expressions into absolute ISO-8601 timestamps ($g_{\text{time}}$), and (3) atomize complex dialogue flows into self-contained factual statements. By aggregating all resulting units $m_k$ across sliding windows, we obtain the complete memory set $\mathcal{M}$.
+
+
+
+
+
+
+
+Following compression, the system organizes the memory units to support storage and retrieval. This stage consists of two synergistic processes: (i) structured multi-view indexing for precise access, and (ii) online semantic synthesis for minimizing redundancy at the point of creation.
+
+To support flexible and high-fidelity retrieval, each memory unit is indexed through three complementary representations.
+First, at the \textit{Semantic Layer}, we map the entry to a dense vector space $s_k$ using embedding models, capturing abstract meaning to enable fuzzy matching (e.g., retrieving "latte" when querying "hot drink").
+Second, the \textit{Lexical Layer} utilizes an inverted index-based sparse representation. This acts as a high-dimensional sparse vector $l_k$ focusing on exact keyword matches and rare proper nouns, ensuring that specific entities are not diluted in dense vector space.
+Third, the \textit{Symbolic Layer} extracts structured metadata, such as timestamps and entity types, to enable deterministic filtering logic.
+Formally, for a given memory unit $m_k$, these projections form the comprehensive indexing $\mathcal{I}$:
+\begin{equation}
+    \mathcal{I}(m_{t,k}) = \begin{cases} 
+    s_{k} = E_{\text{dense}}(m_{k}) & \text{(Semantic Layer)} \\
+    l_{k} = E_\text{sparse}(m_{k})  & \text{(Lexical Layer)} \\
+    r_{k} = E_\text{sym}(m_{k}) & \text{(Symbolic Layer)}
+    \end{cases}
+\end{equation}
+This architecture allows the system to flexibly query information based on conceptual similarity, exact keyword matches, or structured metadata constraints.
+
+
+\subsection{Online Semantic Synthesis}
+\label{sec:consolidation}
+While this multi-view indexing strategy facilitates access, naively accumulating raw extractions leads to fragmentation, causing the memory structure to grow in a purely additive and unregulated manner that fails to adapt in real time to the evolving semantic context of an ongoing interaction.
+To address this, we introduce \textit{Online Semantic Synthesis}, an intra-session consolidation mechanism. Unlike traditional systems that rely on asynchronous background maintenance, SimpleMem performs synthesis on-the-fly during the write phase.
+The model analyzes the stream of extracted facts within the current session scope and synthesizes related fragments into unified, high-density entries before they are committed to the database.
+
+Formally, we define this synthesis as a transformation function $\mathcal{F}_{\text{syn}}$ that maps a set of new observations $O_{\text{session}}$ to a consolidated memory entry $\mathcal{F}_{\text{syn}}(O_{\text{session}}, \mathcal{C}_{\text{context}}; f)$, where $\mathcal{C}_{\text{context}}$ represents the current conversational context. This operation denoises the input by merging scattered details into a coherent whole. For instance, rather than storing three separate fragments like \texttt{"User wants coffee"}, \texttt{"User prefers oat milk"}, and \texttt{"User likes it hot"}, the synthesis layer consolidates them into a single, comprehensive entry: \texttt{"User prefers hot coffee with oat milk"}.
+This proactive synthesis ensures that the memory topology remains compact and free of redundant fragmentation, significantly reducing the burden on the retrieval system during future interactions.
+
+\subsection{Intent-Aware Retrieval Planning}
+\label{sec:retrieval}
+After memory entries are organized, the final challenge is to retrieve relevant information under constrained context budgets. Standard retrieval approaches typically fetch a fixed number of entries, which often results in recall failure for complex queries or token wastage for simple ones. To address this, we introduce \textit{Intent-Aware Retrieval Planning}, a mechanism that dynamically determines the retrieval scope and depth by inferring the user's latent search intent.
+
+Unlike systems that rely on scalar complexity classifiers, SimpleMem leverages the reasoning capabilities of the LLM to generate a comprehensive retrieval plan. Given a query $q$ and history $H$, the planning module $\mathcal{P}$ acts as a reasoner to decompose the information needs and estimate the necessary search depth $d$:
+\begin{equation}
+    \{ q_{\text{sem}}, q_{\text{lex}}, q_{\text{sym}}, d \} \sim \mathcal{P}(q, H)
+\end{equation}
+where $q_{\text{sem}}$, $q_{\text{lex}}$, and $q_{\text{sym}}$ are optimized queries for semantic, lexical, and symbolic retrieval respectively. The parameter $d$ represents the \textit{adaptive retrieval depth}, which reflects the estimated complexity of the query. Based on $d$, the system utilizes a candidate limit $n$ (where $n \propto d$) to balance recall coverage against context window constraints.
+
+Guided by this plan, the system executes a parallel multi-view retrieval. We simultaneously query all three index layers defined in Section \ref{sec:atomization}, imposing the quantity limit $n$ on each path:
+\begin{equation}
+    \begin{aligned}
+    \mathcal{R}_{\text{sem}} &= \operatorname{Top-}n(\cos(E(q_{\text{sem}}), E(m_i)) \mid m_i \in \mathcal{M}) \\
+    \mathcal{R}_{\text{lex}} &= \operatorname{Top-}n(\operatorname{BM25}(q_{\text{lex}}, m_i) \mid m_i \in \mathcal{M}) \\
+    \mathcal{R}_{\text{sym}} &= \operatorname{Top-}n(\{ m_i \in \mathcal{M} \mid \text{Meta}(m_i) \models q_{\text{sym}} \})
+    \end{aligned}
+\end{equation}
+
+Here, each view captures distinct relevance signals: $\mathcal{R}_{\text{sem}}$ retrieves based on dense embedding similarity; $\mathcal{R}_{\text{lex}}$ matches exact keywords or proper nouns; and $\mathcal{R}_{\text{sym}}$ filters entries based on structured metadata constraints.
+
+Finally, we construct the context $\mathcal{C}_{q}$ by merging the results from these three views using a set union operation. This step naturally deduplicates overlapping entries, ensuring a comprehensive yet compact context:
+\begin{equation}
+\mathcal{C}_{q} = \mathcal{R}_{\text{sem}} \cup \mathcal{R}_{\text{lex}} \cup \mathcal{R}_{\text{sym}}
+\end{equation}
+This hybrid approach ensures that strong signals from any view are preserved, allowing the system to adaptively scale its retrieval volume $n$ based on the inferred depth $d$.
+
+
+\section{Experiments}
+\label{sec:experiments}
+In this section, we evaluate \ours{} on the  benchmark to answer the following research questions: (1) Does \ours{} outperform other memory systems in complex long-term reasoning understanding tasks? (2) Can \ours{} achieve a superior trade-off between retrieval accuracy and token consumption? (3) How effective are the proposed components? (4) What factors account for the observed performance and efficiency gains?
+
+\begin{table*}[t]
+\centering
+\caption{Performance on the LoCoMo benchmark with High-Capability Models (GPT-4.1 series and Qwen3-Plus). \ours{}  achieves superior efficiency-performance balance.}
+\label{tab:high_cap_results}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{l|l|cc|cc|cc|cc|cc|r}
+\toprule
+\multirow{2}{*}{\textbf{Model}} & \multirow{2}{*}{\textbf{Method}} & \multicolumn{2}{c|}{\textbf{MultiHop}} & \multicolumn{2}{c|}{\textbf{Temporal}} & \multicolumn{2}{c|}{\textbf{OpenDomain}} & \multicolumn{2}{c|}{\textbf{SingleHop}} & \multicolumn{2}{c|}{\textbf{Average}} & \multicolumn{1}{c}{\textbf{Token}} \\
+ & & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \multicolumn{1}{c}{\textbf{Cost}} \\
+\midrule
+
+% --- GPT 4.1-mini ---
+\multirow{8}{*}{\textbf{GPT-4.1-mini}} 
+ & LoCoMo & 25.02 & 21.62 & 12.04 & 10.63 & 19.05 & 17.07 & 18.68 & 15.87 & 18.70  & 16.30 & 16,910 \\
+ & ReadAgent & 6.48 & 5.6 & 5.31 & 4.23 & 7.66 & 6.62 & 9.18 & 7.91 & 7.16  & 6.09 & 643 \\
+ & MemoryBank & 5.00 & 4.68 & 5.94 & 4.78 & 5.16 & 4.52 & 5.72 & 4.86 & 5.46  & 4.71 & 432 \\
+ & MemGPT & 17.72 & 16.02 & 19.44 & 16.54 & 11.29 & 10.18 & 25.59 & 24.25 & 18.51  & 16.75 & 16,977 \\
+ & A-Mem & 25.06 & 17.32 & 51.01 & 44.75 & 13.22 & 14.75 & 41.02 & 36.99 & 32.58  & 28.45 & 2,520 \\
+ & LightMem & 24.96 & 21.66 & 20.55 & 18.39 & 19.21 & 17.68 & 33.79 & 29.66 & 24.63  & 21.85  & 612 \\
+ & Mem0 & 30.14 & 27.62 & 48.91 & 44.82 & 16.43 & 14.94 & 41.3 & 36.17 & 34.20  & 30.89 & 973 \\
+
+ \rowcolor{gray!9} & \textbf{\ours{}} & \textbf{43.46} & \textbf{38.82} & \textbf{58.62} & \textbf{50.10} & \textbf{19.76} & \textbf{18.04} & \textbf{51.12} & \textbf{43.53} & \textbf{43.24}  & \textbf{37.62} & 531 \\
+\midrule
+
+% --- GPT 4o ---
+\multirow{8}{*}{\textbf{GPT-4o}} 
+ & LoCoMo & 28.00 & 18.47 & 9.09 & 5.78 & 16.47 & 14.80 & 61.56 & 54.19 & 28.78 & 23.31 & 16,910 \\
+ & ReadAgent & 14.61 & 9.95 & 4.16 & 3.19 & 8.84 & 8.37 & 12.46 & 10.29 & 10.02 & 7.95 & 805 \\
+ & MemoryBank & 6.49 & 4.69 & 2.47 & 2.43 & 6.43 & 5.30 & 8.28 & 7.10 & 5.92 & 4.88 & 569 \\
+ & MemGPT & 30.36  & 22.83  & 17.29  & 13.18  & 12.24  & 11.87  & 40.16  & 36.35  & 25.01  & 21.06  & 16,987 \\
+ & A-Mem & 32.86  & 23.76  & 39.41  & 31.23  & 17.10  & 15.84  & 44.43  & 38.97  & 33.45  & 27.45 & 1,216 \\
+ & LightMem & 28.15 & 21.83 & 36.53 & 29.12 & 13.38 & 11.54 & 33.76  & 28.02  & 27.96  & 22.63 & 645 \\
+ & Mem0 & 35.13 & 27.56 & 52.38 & 44.15 & 17.73 & 15.92 & 39.12 & 35.43 & 36.09  & 30.77 & 985 \\
+ \rowcolor{gray!9} & \textbf{\ours{}} & \textbf{35.89} & \textbf{32.83} & \textbf{56.71} & \textbf{20.57} & \textbf{18.23} & \textbf{16.34} & \textbf{45.41} & \textbf{39.25} & \textbf{39.06}  & \textbf{27.25}  & 550 \\
+\midrule
+
+% --- Qwen3-Plus ---
+\multirow{8}{*}{\textbf{Qwen3-Plus}} 
+ & LoCoMo & 24.15 & 18.94 & 16.57 & 13.28 & 11.81 & 10.58 & 38.58 & 28.16 & 22.78 & 17.74 & 16,910 \\
+ & ReadAgent & 9.52 & 6.83 & 11.22 & 8.15 & 5.41 & 5.23 & 9.85 & 7.96 & 9.00 & 7.04 & 742 \\
+ & MemoryBank & 5.25 & 4.94 & 1.77 & 6.26 & 5.88 & 6.00 & 6.90 & 5.57 & 4.95 & 5.69 & 302 \\
+ & MemGPT & 25.80 & 17.50 & 24.10 & 18.50 & 9.50 & 7.80 & 40.20 & 42.10 & 24.90 & 21.48 & 16,958 \\
+ & A-Mem & 26.50 & 19.80 & 46.10 & 35.10 & 11.90 & 11.50 & 43.80 & 36.50 & 32.08 & 25.73 & 1,427 \\
+ & LightMem & 28.95 & 24.13 & 42.58 & 38.52 & 16.54 & 13.23 & 40.78 & 36.52 & 32.21 & 28.10 & 606 \\
+ & Mem0 & 32.42 & 21.24 & 47.53 & 39.82 & 17.18 & 14.53 & 46.25 & 37.52 & 35.85  & 28.28 & 1,020 \\
+ \rowcolor{gray!9} & \textbf{\ours{}} & \textbf{33.74} & \textbf{29.04} & \textbf{50.87} & \textbf{43.31} & \textbf{18.41} & \textbf{16.24} & \textbf{46.94} & \textbf{38.16} & \textbf{37.49}  & \textbf{31.69} & 583 \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-0.5em}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Performance comparison on the LongMemEval benchmark. The evaluation uses \texttt{gpt-4.1-mini} as the judge. \ours{} achieves the best overall performance while maintaining balanced capabilities across different sub-tasks.}
+\label{tab:longmemeval_full}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l|l|ccccccc}
+\toprule
+\textbf{Model} & \textbf{Method} & \textbf{Temporal} & \textbf{Multi-Session} & \textbf{Knowledge-Update} & \textbf{Single-Session-User} & \textbf{Single-Session-Assistant} & \textbf{Single-Session-Preference} & \textbf{Average} \\
+ % & & (n=133) & (n=133) & (n=78) & (n=70) & (n=56) & (n=30) & \\
+\midrule
+% --- GPT 4.1-mini ---
+\multirow{4}{*}{\textbf{GPT-4.1-mini}} 
+ & Full-context & 27.06\% & 30.08\% & 41.03\% & 47.14\% & 32.14\% & 60.00\% & 39.57\% \\
+ & Mem0 & 40.60\% & 50.37\% & 69.23\% & 87.14\% & 48.21\% & 63.33\% & 59.81\% \\
+ & LightMem & \textbf{85.71\%} & 47.37\% & \textbf{92.30\%} & \textbf{88.57\%} & 21.43\% & 76.67\% & 68.67\% \\
+ \rowcolor{gray!10} & \textbf{\ours{}} & 83.46\% & \textbf{60.92\%} & 79.48\% & 85.71\% & \textbf{75.00\%} & \textbf{76.67\%} & \textbf{76.87\%} \\
+\midrule
+% --- GPT 4.1 ---
+\multirow{4}{*}{\textbf{GPT-4.1}} 
+ & Full-context & 51.88\% & 39.10\% & 70.51\% & 65.71\% & 96.43\% & 16.67\% & 56.72\% \\
+ & Mem0 & 43.61\% & 54.89\% & 75.64\% & 54.29\% & 39.29\% & \textbf{83.33\%} & 58.51\% \\
+ & LightMem & 84.96\% & 57.89\% & \textbf{89.74\%} & 87.14\% & 71.43\% & 70.00\% & 76.86\% \\
+ \rowcolor{gray!10} & \textbf{\ours{}} & \textbf{86.47\%} & \textbf{81.20\%} & 80.76\% & \textbf{98.57\%} & \textbf{76.79\%} & 80.00\% & \textbf{83.97\%} \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-1em}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Performance on the LoCoMo benchmark with Efficient Models (Small parameters). \ours{} demonstrates robust performance even on 1.5B/3B models, often surpassing larger models using baseline memory systems.}
+\label{tab:efficient_results}
+\resizebox{0.95\textwidth}{!}{%
+\begin{tabular}{l|l|cc|cc|cc|cc|cc|r}
+\toprule
+\multirow{2}{*}{\textbf{Model}} & \multirow{2}{*}{\textbf{Method}} & \multicolumn{2}{c|}{\textbf{MultiHop}} & \multicolumn{2}{c|}{\textbf{Temporal}} & \multicolumn{2}{c|}{\textbf{OpenDomain}} & \multicolumn{2}{c|}{\textbf{SingleHop}} & \multicolumn{2}{c|}{\textbf{Average}} & \multicolumn{1}{c}{\textbf{Token}} \\
+ & & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \textbf{F1} & \textbf{BLEU} & \multicolumn{1}{c}{\textbf{Cost}} \\
+\midrule
+
+% --- Qwen2.5 1.5b ---
+\multirow{8}{*}{\textbf{Qwen2.5-1.5b}} 
+ & LoCoMo & 9.05 & 6.55 & 4.25 & 4.04 & 9.91 & 8.50 & 11.15 & 8.67 & 8.59 & 6.94 & 16,910 \\
+ & ReadAgent & 6.61 & 4.93 & 2.55 & 2.51 & 5.31 & 12.24 & 10.13 & 7.54 & 6.15 & 6.81 & 752 \\
+ & MemoryBank & 11.14 & 8.25 & 4.46 & 2.87 & 8.05 & 6.21 & 13.42 & 11.01 & 9.27 & 7.09 & 284 \\
+ & MemGPT & 10.44 & 7.61 & 4.21 & 3.89 & 13.42 & 11.64 & 9.56 & 7.34 & 9.41 & 7.62 & 16,953 \\
+ & A-Mem & 18.23 & 11.94 & 24.32 & 19.74 & 16.48 & 14.31 & 23.63 & 19.23 & 20.67 & 16.31 & 1,300 \\
+ & LightMem & 16.43 & 11.39 & 22.92 & 18.56 & 15.06 & 11.23 & 23.28 & 19.24 & 19.42 & 15.11 & 605 \\
+ & Mem0 & 20.18 & 14.53 & 27.42 & 22.14 & 19.83 & 15.68 & 27.63 & 23.42 & 23.77 & 18.94 & 942 \\
+ \rowcolor{gray!10} & \textbf{\ours{}} & \textbf{21.85} & \textbf{16.10} & \textbf{29.12} & \textbf{23.50} & \textbf{21.05} & \textbf{16.80} & \textbf{28.90} & \textbf{24.50} & \textbf{25.23} & \textbf{20.23} & 678 \\
+\midrule
+
+% --- Qwen2.5 3b ---
+\multirow{8}{*}{\textbf{Qwen2.5-3b}} 
+ & LoCoMo & 4.61 & 4.29 & 3.11 & 2.71 & 4.55 & 5.97 & 7.03 & 5.69 & 4.83 & 4.67 & 16,910 \\
+ & ReadAgent & 2.47 & 1.78 & 3.01 & 3.01 & 5.57 & 5.22 & 3.25 & 2.51 & 3.58 & 3.13 & 776 \\
+ & MemoryBank & 3.60 & 3.39 & 1.72 & 1.97 & 6.63 & 6.58 & 4.11 & 3.32 & 4.02 & 3.82 & 298 \\
+ & MemGPT & 5.07 & 4.31 & 2.94 & 2.95 & 7.04 & 7.10 & 7.26 & 5.52 & 5.58 & 4.97 & 16,961 \\
+ & A-Mem & 12.57 & 9.01 & \textbf{27.59} & \textbf{25.07} & 7.12 & 7.28 & 17.23 & 13.12 & 16.13 & 13.62 & 1,137 \\
+ & LightMem & 16.43 & 11.39 & 6.92 & 4.56 & 8.06 & 7.23 & 18.28 & 15.24 & 12.42  & 9.61 & 605 \\
+ & Mem0 & 16.89 & 11.54 & 8.52 & 6.23 & 10.24 & 8.82 & 16.47 & 12.43 & 13.03  & 9.76 & 965 \\
+ \rowcolor{gray!10} & \textbf{\ours{}} & \textbf{17.03}  & \textbf{11.87}  & 21.47  & 19.50  & \textbf{12.52} & \textbf{10.19} & \textbf{20.90}  & \textbf{18.01}  & \textbf{17.98}  & \textbf{14.89} & 572 \\
+\midrule
+
+
+
+% --- Qwen3-1.7b ---
+\multirow{8}{*}{\textbf{Qwen3-1.7b}} 
+ & LoCoMo & 10.28 & 8.82 & 6.45 & 5.78 & 10.42 & 9.02 & 11.16 & 10.35 & 9.58 & 8.49 & 16,910 \\
+ & ReadAgent & 7.50 & 5.60 & 3.15 & 2.95 & 6.10 & 12.45 & 10.80 & 8.15 & 6.89 & 7.29 & 784 \\
+ & MemoryBank & 11.50 & 8.65 & 4.95 & 3.20 & 8.55 & 6.80 & 13.90 & 11.50 & 9.73 & 7.54 & 290 \\
+ & MemGPT & 11.50 & 8.20 & 4.65 & 4.10 & 13.85 & 11.90 & 10.25 & 7.85 & 10.06 & 8.01 & 16,954 \\
+ & A-Mem & 18.45  & 11.80  & 25.82  & 18.45  & 10.90  & 9.95  & 21.58  & 16.72  & 19.19  & 14.23  & 1,258 \\
+ & LightMem & 14.84 & 11.56 & 9.35 & 7.85 & 13.76 & 10.59 & 28.14 & 22.89 & 16.52 & 13.22 & 679 \\
+ & Mem0 & 18.23 & 13.44 & 18.54 & 14.22 & 16.82 & 13.54 & 31.15 & 26.42 & 21.19  & 16.91 & 988 \\
+ \rowcolor{gray!10} & \textbf{\ours{}} & \textbf{20.85} & \textbf{15.42} & \textbf{26.75}  & \textbf{18.63}  & \textbf{17.92} & \textbf{14.15} & \textbf{32.85} & \textbf{26.46} & \textbf{24.59}  & \textbf{18.67} & 730 \\
+\midrule
+
+% --- Qwen3-8b ---
+\multirow{8}{*}{\textbf{Qwen3-8b}} 
+ & LoCoMo & 13.50 & 9.20 & 6.80 & 5.50 & 10.10 & 8.80 & 14.50 & 11.20 & 11.23 & 8.68 & 16,910 \\
+ & ReadAgent & 7.20 & 5.10 & 3.50 & 3.10 & 5.50 & 5.40 & 8.10 & 6.20 & 6.08 & 4.95 & 721 \\
+ & MemoryBank & 9.50 & 7.10 & 3.80 & 2.50 & 7.50 & 6.50 & 9.20 & 7.50 & 7.50 & 5.90 & 287 \\
+ & MemGPT & 14.20 & 9.80 & 5.50 & 4.20 & 12.50 & 10.80 & 11.50 & 9.10 & 10.93 & 8.48 & 16,943 \\
+ & A-Mem & 20.50 & 13.80 & 22.50 & 18.20 & 13.20 & 10.50 & 26.80 & 21.50 & 20.75 & 16.00 & 1,087 \\
+ & LightMem & 18.53 & 14.23 & 26.78 & 21.52 & 14.12 & 11.24 & 29.48 & 23.83 & 22.23 & 17.71 & 744 \\
+ & Mem0 & 22.42 & 16.83 & 32.48 & 26.13 & 15.23 & 12.54 & 33.05 & 27.24 & 25.80  & 20.69  & 1,015 \\
+ \rowcolor{gray!10} & \textbf{\ours{}} & \textbf{28.97} & \textbf{24.93} & \textbf{42.85} & \textbf{36.49} & \textbf{15.35} & \textbf{13.90} & \textbf{46.62} & \textbf{40.69} & \textbf{33.45}  & \textbf{29.00} & 621 \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-1.5em}
+\end{table*}
+
+
+
+
+\subsection{Experimental Setup}
+\noindent \textbf{Benchmark Dataset.}
+We evaluate performance on the LoCoMo~\cite{maharana2024eval} and LongMemEval-S~\cite{wu2024longmemeval} benchmarks. Brief descriptions are provided below, with additional details in Appendix~\ref{app:implementation}.
+
+\textit{LoCoMo}~\cite{maharana2024eval} is specifically designed to test the limits of LLMs in processing long-term conversational dependencies.
+The dataset comprises conversation samples ranging from 200 to 400 turns, containing complex temporal shifts and interleaved topics. The evaluation set consists of 1,986 questions categorized into four distinct reasoning types:
+(1) multi-hop reasoning; (2) temporal reasoning; (3) open Domain; (4) single hop.
+
+\textit{LongMemEval-S}~\cite{wu2024longmemeval} features extreme context lengths that pose severe challenges for memory systems. Unlike standard benchmarks, it requires precise answer localization across multiple sub-categories (e.g., temporal events, user preferences) within exceptionally long interaction histories. We use \texttt{gpt-4.1-mini} to evaluate answer correctness against ground-truth references, labeling responses as \textsc{Correct} or \textsc{Wrong} based on semantic and temporal alignment. The full evaluation prompt is provided in Appendix~\ref{sec:longmemeval_prompt}.
+
+
+\noindent \textbf{Baselines.} We compare \ours{} with representative memory-augmented systems: \textsc{LoCoMo}~\cite{maharana2024eval}, \textsc{ReadAgent}~\cite{readagent}, \textsc{MemoryBank}~\cite{memorybank}, \textsc{MemGPT}~\cite{Packer2023MemGPTTL}, \textsc{A-Mem}~\cite{Xu2025AMEMAM}, \textsc{LightMem}~\cite{fang2025lightmem}, and Mem0~\cite{mem0}.
+
+\noindent \textbf{Backbone Models.} To test robustness across capability scales, we instantiate each baseline and \ours{} on multiple LLM backends:  GPT-4o, GPT-4.1-mini, Qwen-Plus, Qwen2.5 (1.5B/3B), and Qwen3 (1.7B/8B).
+
+
+\noindent \textbf{Implementation Details.}
+For semantic structured compression, we use a sliding window of size $W=20$.
+Memory indexing is implemented using LanceDB with a multi-view design: \texttt{Qwen3-embedding-0.6b} (1024 dimensions) for dense semantic embeddings, BM25 for sparse lexical indexing, and SQL-based metadata storage for symbolic attributes. During retrieval, we employ adaptive query-aware retrieval, where the retrieval depth is dynamically adjusted based on estimated query complexity, ranging from $k_{\min}=3$ for simple lookups to $k_{\max}=20$ for complex reasoning queries.
+
+
+\noindent \textbf{Evaluation Metrics.} For LoCoMo, we report F1 and BLEU-1 (accuracy), Adversarial Success Rate (robustness to distractors), and Token Cost (retrieval efficiency). For LongMemEval-S, we use its standard accuracy-style metric.
+
+\subsection{Results and Analysis}
+\label{sec:results}
+Tables~\ref{tab:high_cap_results} and~\ref{tab:efficient_results} present detailed performance comparisons on the LoCoMo benchmark across different model scales, while Table~\ref{tab:longmemeval_full} reports results on LongMemEval-S.
+
+\noindent \textbf{Performance on High-Capability Models.}
+Across LoCoMo and LongMemEval-S, \ours{} consistently outperforms existing memory systems across model scales, achieving strong and robust gains in accuracy.
+
+On LoCoMo (Table~\ref{tab:high_cap_results}), \ours{} leads all baselines. Using GPT-4.1-mini, it achieves an Average F1 of 43.24, substantially exceeding Mem0 (34.20) and the full-context baseline (18.70). The largest gains are observed in Temporal Reasoning, where \ours{} reaches 58.62 F1 compared to 48.91 for Mem0, underscoring the effectiveness of semantic structured compression in resolving complex temporal dependencies. These improvements persist at larger scales: on GPT-4o, \ours{} attains the highest Average F1 (39.06), outperforming Mem0 (36.09) and A-Mem (33.45).
+
+A task-level breakdown on LoCoMo further highlights the balanced capabilities of \ours{}. In SingleHop QA, \ours{} consistently achieves the best performance (e.g., 51.12 F1 on GPT-4.1-mini), demonstrating precise factual retrieval. In more challenging MultiHop settings, \ours{} significantly outperforms Mem0 and LightMem on GPT-4.1-mini, indicating its ability to bridge disconnected facts and support deep reasoning without relying on expensive iterative retrieval loops.
+
+Results on LongMemEval-S (Table~\ref{tab:longmemeval_full}) further demonstrate the robustness of \ours{} under extreme context lengths. Using the \texttt{gpt-4.1-mini} backbone, \ours{} achieves the highest average accuracy of 76.87\%, outperforming LightMem (68.67\%) and substantially exceeding Mem0 (59.81\%) and the full-context baseline (39.57\%). Gains are most pronounced in the challenging \textit{Multi-Session} category, where \ours{} attains 60.92\% accuracy, compared to 47.37\% for LightMem and 30.08\% for full-context, highlighting its effectiveness in cross-session information integration under severe context constraints.
+
+When scaled to the more capable \texttt{gpt-4.1} backbone, \ours{} maintains its state-of-the-art performance with an average accuracy of 83.97\%. It is particularly strong in the \textit{Single-Session User} task (98.57\%), demonstrating near-perfect recall of immediate user-provided details. While LightMem exhibits strong performance on temporally specific queries, \ours{} offers a more balanced profile: it avoids catastrophic failures in assistant-focused recall (where LightMem drop significantly on the mini model) while maintaining high accuracy in complex multi-session retrieval. This balance suggests that \ours{}’s structured indexing strategy effectively disentangles episodic noise from salient facts, providing a reliable memory substrate for long-term interaction.
+% These results confirm that \textit{Recursive Consolidation} mechanism effectively distills high-density knowledge, enabling even smaller models equipped with \ours{} to outperform larger models using traditional memory systems.
+
+
+
+\noindent \textbf{Token Efficiency.}
+A key strength of \ours{} lies in its inference-time efficiency. As reported in the rightmost columns of Tables~\ref{tab:high_cap_results} and~\ref{tab:efficient_results}, full-context approaches such as \textsc{LoCoMo} and \textsc{MemGPT} consume approximately 16,900 tokens per query.
+In contrast, \ours{} reduces token usage by roughly $30\times$, averaging 530-580 tokens per query.
+Furthermore, compared to optimized retrieval baselines like Mem0 ($\sim$980 tokens) and A-Mem ($\sim$1,200+ tokens), \ours{} reduces token usage by 40-50\% while delivering superior accuracy. 
+For instance, on GPT-4.1-mini, \ours{} uses only 531 tokens to achieve state-of-the-art performance, whereas ReadAgent consumes more (643 tokens) but achieves far lower accuracy (7.16 F1). This validates the effectiveness of \ours{} in strictly controlling context bandwidth without sacrificing information density.
+
+\noindent \textbf{Performance on Smaller Models.}
+Table \ref{tab:efficient_results} highlights the ability of \ours{} to empower smaller parameter models.
+On Qwen3-8b, \ours{} achieves an impressive Average F1 of 33.45, significantly surpassing Mem0 (25.80) and LightMem (22.23). 
+Crucially, a 3B-parameter model (Qwen2.5-3b) paired with \ours{} achieves 17.98 F1, outperforming the same model with Mem0 (13.03) by nearly 5 points.
+Even on the extremely lightweight Qwen2.5-1.5b, \ours{} maintains robust performance (25.23 F1), beating larger models using inferior memory strategies (e.g., Qwen3-1.7b with Mem0 scores 21.19). 
+
+
+% \noindent \textbf{Robustness Across Task Types.}
+
+\vspace{-0.3em}
+\subsection{Efficiency Analysis}
+\vspace{-0.3em}
+\label{sec:efficiency}
+We conduct a comprehensive evaluation of computational efficiency, examining both end-to-end system latency and the scalability of memory indexing and retrieval. To assess practical deployment viability, we measured the full lifecycle costs on the LoCoMo-10 dataset using GPT-4.1-mini.
+
+As illustrated in Table \ref{tab:mem_times_acc}, \ours{} exhibits superior efficiency across all operational phases. In terms of memory construction, our system achieves the fastest processing speed at 92.6 seconds per sample. This represents a dramatic improvement over existing baselines, outperforming Mem0 by approximately 14$\times$ (1350.9s) and A-Mem by over 50$\times$ (5140.5s). This massive speedup is directly attributable to our semantic structured compression, which processes data in a streamlined single pass, thereby avoiding the complex graph updates required by Mem0 or the iterative summarization overheads inherent to A-Mem.
+
+Beyond construction, \ours{} also maintains the lowest retrieval latency at 388.3 seconds per sample, which is approximately 33\% faster than LightMem and Mem0. This gain arises from the \emph{adaptive retrieval} mechanism, which dynamically limits retrieval scope and prioritizes high-level abstract representations before accessing fine-grained details. By restricting retrieval to only the most relevant memory entries, the system avoids the expensive neighbor traversal and expansion operations that commonly dominate the latency of graph-based memory systems.
+
+When considering the total time-to-insight, \ours{} achieves a 4$\times$ speedup over Mem0 and a 12$\times$ speedup over A-Mem. Crucially, this efficiency does not come at the expense of performance. On the contrary, \ours{} achieves the highest Average F1 among all compared methods. These results support our central claim that structured semantic compression and adaptive retrieval produce a more compact and effective reasoning substrate than raw context retention or graph-centric memory designs, enabling a superior balance between accuracy and computational efficiency.
+
+\begin{table}[h]
+\centering
+\vspace{-0.5em}
+\caption{Comparison of construction time, retrieval time, total experiment time, and average F1 score across different memory systems (tested on LoCoMo-10 with GPT-4.1-mini; time values are reported as per-sample averages on LoCoMo-10).}
+\label{tab:mem_times_acc}
+\resizebox{1\linewidth}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Model} & 
+\textbf{Construction Time} & 
+\textbf{Retrieval Time} & 
+\textbf{Total Time} & 
+\textbf{Average F1} \\
+\midrule
+A-mem       & 5140.5s & 796.7s & 5937.2s & 32.58 \\
+Lightmem    & 97.8s   & 577.1s & 675.9s  & 24.63 \\
+Mem0        & 1350.9s & 583.4s & 1934.3s & 34.20 \\\midrule
+\textbf{SimpleMem}   & \textbf{92.6s}   & \textbf{388.3s} & \textbf{480.9s}  & \textbf{43.24} \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-1.5em}
+\end{table}
+
+
+\subsection{Ablation Study}
+\label{sec:ablation}
+In addition, we conduct an ablation study using the GPT-4.1-mini backend. We investigate the contribution of three key components. The results are summarized in Table \ref{tab:ablation}.
+
+\begin{table*}[h]
+\centering
+\caption{Full ablation analysis with GPT-4.1-mini backend. The "Diff" columns indicate the percentage drop relative to the full \ours{} model. The results confirm that each stage contributes significantly to specific reasoning capabilities.}
+\label{tab:ablation}
+\resizebox{0.93\linewidth}{!}{
+\begin{tabular}{l|cc|cc|cc|cc|cc}
+\toprule
+\multirow{2}{*}{\textbf{Configuration}} & \multicolumn{2}{c|}{\textbf{Multi-hop}} & \multicolumn{2}{c|}{\textbf{Temporal}} & \multicolumn{2}{c|}{\textbf{Open Domain}} & \multicolumn{2}{c|}{\textbf{Single Hop}} & \multicolumn{2}{c}{\textbf{Average}} \\
+ & \textbf{F1} & \textbf{Diff} & \textbf{F1} & \textbf{Diff} & \textbf{F1} & \textbf{Diff} & \textbf{F1} & \textbf{Diff} & \textbf{F1} & \textbf{Diff} \\
+\midrule
+\rowcolor{gray!10} \textbf{Full \ours} & \textbf{43.46} & - & \textbf{58.62} & - & \textbf{19.76} & - & \textbf{51.12} & - & \textbf{43.24} & - \\
+\midrule
+\quad w/o Semantic Compression & 34.20 & \loss{21.3\%} & 25.40 & \loss{56.7\%} & 17.50 & \loss{11.4\%} & 48.05 & \loss{6.0\%} & 31.29 & \loss{27.6\%} \\
+\quad w/o Online Synthesis & 29.85 & \loss{31.3\%} & 55.10 & \loss{6.0\%} & 18.20 & \loss{7.9\%} & 49.80 & \loss{2.6\%} & 38.24 & \loss{11.6\%} \\
+\quad w/o Intent-Aware Retrieval & 38.60 & \loss{11.2\%} & 56.80 & \loss{3.1\%} & 14.50 & \loss{26.6\%} & 41.20 & \loss{19.4\%} & 37.78 & \loss{12.6\%} \\
+\bottomrule
+\end{tabular}
+}
+\vspace{-0.5em}
+\end{table*}
+
+\begin{figure*}
+    \centering
+    \includegraphics[width=0.95\linewidth]{fig/Fig_example.pdf}
+    \caption{A Case of SimpleMem for Long-Term Multi-Session Dialogues. SimpleMem processes multi-session dialogues by filtering redundant content, normalizing temporal references, and organizing memories into compact representations. During retrieval, it adaptively combines semantic, lexical, and symbolic signals to select relevant entries.}
+    \label{fig:case_study}
+    \vspace{-1.5em}
+\end{figure*}
+
+\noindent \textbf{Impact of Semantic Structured Compression.}
+Replacing the proposed compression pipeline with standard chunk-based storage leads to a substantial degradation in temporal reasoning performance.
+Specifically, removing semantic structured compression reduces the Temporal F1 by 56.7\%, from 58.62 to 25.40.
+This drop indicates that without context normalization steps such as resolving coreferences and converting relative temporal expressions into absolute timestamps, the retriever struggles to disambiguate events along the timeline.
+As a result, performance regresses to levels comparable to conventional retrieval-augmented generation systems that rely on raw or weakly structured context.
+
+\noindent \textbf{Impact of Online Semantic Synthesis.}
+Disabling online semantic synthesis results in a 31.3\% decrease in multi-hop reasoning performance. Without on-the-fly consolidation during the write phase, semantically related facts accumulate as fragmented entries, forcing the retriever to assemble dispersed evidence at query time. This fragmentation inflates contextual redundancy and rapidly exhausts the available context window in complex queries. The observed degradation demonstrates that proactive, intra-session synthesis is essential for maintaining a compact and semantically coherent memory topology, and for transforming local observations into reusable, high-density abstractions.
+
+\noindent \textbf{Intent-Aware Retrieval Planning.}
+Removing intent-aware retrieval planning and reverting to a fixed-depth retrieval strategy primarily degrades performance on open-domain and single-hop tasks, with drops of 26.6\% and 19.4\%, respectively.
+In the absence of query-aware adjustment, the system either retrieves insufficient context for entity-specific queries or introduces excessive irrelevant information for simple queries.
+These results highlight the importance of dynamically modulating retrieval scope to balance relevance and efficiency during inference.
+
+\vspace{-0.3em}
+\subsection{Case Study: Long-Term Temporal Grounding}
+\vspace{-0.3em}
+\label{sec:case_study}
+To illustrate how \ours{} handles long-horizon conversational history, Figure~\ref{fig:case_study} presents a representative multi-session example spanning two weeks and approximately 24,000 raw tokens.
+\ours{} filters low-information dialogue during ingestion and retains only high-utility memory entries, reducing the stored memory to about 800 tokens without losing task-relevant content.
+
+\noindent \textbf{Temporal Normalization.}
+Relative temporal expressions such as last week'' and yesterday'' refer to different absolute times across sessions.
+\ours{} resolves it into absolute timestamps at memory construction time, ensuring consistent temporal grounding over long interaction gaps.
+
+\noindent \textbf{Precise Retrieval.}
+When queried about Sarah’s past artworks, the intent-aware retrieval planner infers both the semantic focus (art-related activities) and the temporal constraints implied by the query. 
+The system then performs parallel multi-view retrieval, combining semantic similarity with symbolic filtering to exclude unrelated activities and return only temporally valid entries.
+This example demonstrates how structured compression, temporal normalization, and adaptive retrieval jointly enable reliable long-term reasoning under extended interaction histories.
+
+
+
+% \subsection{Additional Analysis on LongMemEval-S}
+% \label{sec:longmemeval_analysis}
+
+
+
+\vspace{-0.3em}
+\section{Related Work}
+\vspace{-0.3em}
+\label{sec:related_work}
+
+\textbf{Memory Systems for LLM Agents.} Recent approaches manage memory through virtual context or structured representations. Virtual context methods, including \textsc{MemGPT} \cite{Packer2023MemGPTTL}, \textsc{MemoryOS} \cite{memoryos}, and \textsc{SCM} \cite{wang2023enhancing}, extend interaction length via paging or stream-based controllers~\cite{wang2024agent} but typically store raw conversation logs, leading to redundancy and increasing processing costs. In parallel, structured and graph-based systems, such as \textsc{MemoryBank} \cite{memorybank}, \textsc{Mem0} \cite{mem0}, \textsc{Zep} \cite{rasmussen2025zep}, \textsc{A-Mem} \cite{Xu2025AMEMAM}, and \textsc{O-Mem} \cite{omem}, impose structural priors to improve coherence but still rely on raw or minimally processed text, preserving referential and temporal ambiguities that degrade long-term retrieval. In contrast, \ours{} adopts a semantic compression mechanism that converts dialogue into independent, self-contained facts, explicitly resolving referential and temporal ambiguities prior to storage.
+
+\textbf{Context Management and Retrieval Efficiency.} Beyond memory storage, efficient access to historical information remains a core challenge. Existing approaches primarily rely on either long-context models or retrieval-augmented generation (RAG). Although recent LLMs support extended context windows \cite{gpt5,blogGemini25,claude37}, and prompt compression methods aim to reduce costs \cite{jiang2023llmlingua,liskavetsky2025compressor}, empirical studies reveal the “Lost-in-the-Middle” effect \cite{liu2023lost,kuratov2024case}, where reasoning performance degrades as context length increases, alongside prohibitive computational overhead for lifelong agents. RAG-based methods \cite{lewis2020retrieval,asai2023self,jiang2023active}, including structurally enhanced variants such as \textsc{GraphRAG} \cite{graphrag,zhao20252graphrag} and \textsc{LightRAG} \cite{guo2024lightrag}, decouple memory from inference but are largely optimized for static knowledge bases, limiting their effectiveness for dynamic, time-sensitive episodic memory. 
+In contrast, \ours{} improves retrieval efficiency through \emph{Intent-Aware Retrieval Planning}, jointly leveraging semantic, lexical, and symbolic signals to construct query-specific retrieval plans and dynamically adapt the retrieval budget, achieving token-efficient reasoning under constrained context budgets.
+% In contrast, \ours{} improves retrieval efficiency through  Adaptive Pruning and Retrieval, jointly leveraging semantic, lexical, and metadata signals to enable precise filtering by entities and timestamps, while dynamically adjusting retrieval depth based on query complexity to minimize token usage.
+
+\vspace{-0.5em}
+\section{Conclusion}
+\vspace{-0.5em}
+We introduce SimpleMem, an efficient agent memory architecture grounded in the principle of semantic lossless compression. By treating memory as an active process rather than passive storage, SimpleMem integrates \textit{Semantic Structured Compression} to filter noise at the source, \textit{Online Semantic Synthesis} to consolidate fragmented observations during writing, and \textit{Intent-Aware Retrieval Planning} to dynamically adapt retrieval scope. 
+Empirical evaluation on the LoCoMo and LongMemEval-S benchmark demonstrates the effectiveness and efficiency of our method.
+
+\section*{Acknowledgement}
+This work is partially supported by Amazon Research Award, Cisco Faculty Research Award, and Coefficient Giving. This work is also partly supported by the National Center for Transportation Cybersecurity and Resiliency (TraCR) (a U.S. Department of Transportation National University Transportation Center) headquartered at Clemson University, Clemson, South Carolina, USA (USDOT Grant \#69A3552344812). Any opinions, findings, conclusions, and recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of TraCR, and the U.S. Government assumes no liability for the contents or use thereof.
+
+\bibliography{reference}
+\bibliographystyle{icml2026}
+
+
+% \newpage
+\input{appendix-icml}
+
+
+\end{document}

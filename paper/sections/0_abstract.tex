@@ -1,4 +1,4 @@
-% Abstract (<=250 words). N=150 headline: ABS +44.4pp paired 4-0, SSU +9.5pp paired 2-0, TTMG+R matches Flat overall.
+% Abstract. N=150 stratified + N=30 full abstention + N=21 SSU + efficiency.
 Long-horizon conversational agents need a memory that is not only
 \emph{searchable} but also \emph{truthful}: when the relevant fact was
 never stated, the agent should abstain; when a preference was updated,
@@ -11,26 +11,27 @@ graph with validity intervals, provenance, polarity, and explicit
 linker gated by a subject--predicate lexical check writes these
 edges; an intent-gated retriever returns a truth-consistent subgraph
 of active claims, with a compute-free raw-turn fallback for
-non-temporal questions. On a 150-question stratified slice of
-LongMemEval-S with a DeepSeek-V3.2 reader, a MiniLM-L6 embedding
-model, and an identical retrieval budget, TTMG captures every
-Flat RAG correct answer on two capability slices and then some:
-on \textbf{abstention} questions ($n{=}9$), it reaches
-\TTMGLMEAccABS\% against \FlatLMEAccABS\% (paired $b{=}4, c{=}0$;
-exact McNemar one-sided $p{=}$\McnemarABSonesided), and on
-\textbf{single-session-user} questions ($n{=}21$) it reaches 100\%
-against 90.5\% (paired 2--0). Because the mechanisms that buy these
-gains (claim schema, consistent subgraph) narrow the reader's
-context on other slices, the overall accuracy of stand-alone TTMG
-(\TTMGLMEAcc\%) is statistically indistinguishable from Flat RAG's
-(\FlatLMEAcc\%, paired McNemar $p{=}$\McnemarOverall). Composing TTMG with Flat RAG at inference time --
-using only TTMG's own abstention flag or a zero-shot LLM intent
-classifier, \emph{without} any benchmark labels -- recovers
-Flat RAG's overall accuracy
-(TTMG-Abstain \AbstainRouterAcc\%, TTMG+R-LLM \LLMRouterAcc\%)
-while retaining TTMG's truth-maintenance behaviours whenever
-the router sends a question to TTMG.
-Ablating only the LLM linker drops overall accuracy by 2.6~pp and
-every targeted slice, confirming the linker's causal role. TTMG
-also runs at \TTMGTokens\ tokens per question versus \AmemTokens\
-for A-Mem (\TokensOverhead\% relative).
+non-temporal questions. We evaluate TTMG against a flat hybrid-RAG
+baseline and our A-Mem reimplementation on LongMemEval-S
+(DeepSeek-V3.2 reader, MiniLM-L6 embeddings, identical retrieval
+budget).  On the \textbf{single-session-user} capability slice
+($n{=}21$), TTMG answers 100\% of questions correctly (paired 2--0
+against Flat RAG's \FlatLMEAccSSU\%), a strict set-inclusion
+improvement bought directly by the claim schema's subject/
+\texttt{valid\_from} framing. Ablating only the LLM linker drops
+\emph{every} measured slice: overall falls from \TTMGLMEAcc\% to
+\AblContradict\% ($-$2.6~pp), abstention by $-$22~pp,
+knowledge-update by $-$9~pp, and single-session-user by $-$5~pp,
+confirming the linker's causal role. On the full 30-question abstention set, TTMG
+\emph{explicitly abstains} on \TTMGABSFullAbstainRate\% of
+questions while Flat RAG never does, delivering the same outcome
+accuracy (\TTMGABSFull\% each) via a behaviourally different
+policy. Overall accuracy on the 150-question stratified slice is
+statistically indistinguishable from Flat RAG's (paired McNemar
+$p{=}$\McnemarOverall); composing TTMG with Flat RAG via the
+inference-time TTMG-Abstain router (\AbstainRouterAcc\%) or the
+Kimi-K2 zero-shot-intent TTMG+R-LLM router (\LLMRouterAcc\%) places
+TTMG's truth-maintenance behaviours into a system that matches Flat
+RAG overall. TTMG runs at \TTMGTokens{} tokens per question versus
+\AmemTokens{} for A-Mem (\TokensOverhead\% relative), so the added
+semantics come at strictly lower cost.

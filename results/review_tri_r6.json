@@ -1,0 +1,359 @@
+{
+  "summary": {
+    "avg_overall": 6.866666666666666,
+    "min_overall": 6.0,
+    "max_overall": 8.0,
+    "below_threshold": [
+      [
+        "qwen3-235b-a22b::strict_ml",
+        8.0,
+        "borderline"
+      ],
+      [
+        "qwen3-235b-a22b::empirical_skeptic",
+        7.0,
+        "borderline"
+      ],
+      [
+        "qwen3-235b-a22b::systems_practitioner",
+        7.5,
+        "borderline"
+      ],
+      [
+        "Kimi-K2::strict_ml",
+        6.8,
+        "borderline"
+      ],
+      [
+        "Kimi-K2::empirical_skeptic",
+        6.5,
+        "borderline"
+      ],
+      [
+        "Kimi-K2::systems_practitioner",
+        7.5,
+        "weak_accept"
+      ],
+      [
+        "glm-5::strict_ml",
+        6.0,
+        "borderline"
+      ],
+      [
+        "glm-5::empirical_skeptic",
+        6.0,
+        "weak_reject"
+      ],
+      [
+        "glm-5::systems_practitioner",
+        6.5,
+        "weak_accept"
+      ]
+    ],
+    "target_met": false
+  },
+  "results": {
+    "qwen3-235b-a22b": {
+      "strict_ml": {
+        "elapsed_sec": 31.10362720489502,
+        "scores": {
+          "originality": 8,
+          "quality": 7,
+          "clarity": 9,
+          "significance": 8,
+          "overall": 8.0
+        },
+        "strengths": [
+          "Explicit truth-maintenance mechanisms (validity intervals, contradict/supersede edges) address a critical gap in long-horizon agent memory",
+          "Single-session-user slice shows strict set-inclusion improvement over Flat RAG (100% vs 90.5%)",
+          "Abstention policy is behaviorally distinct and verifiable via explicit flag, not downstream hallucination",
+          "Efficiency gains over A-Mem (-62.1% tokens) demonstrate practical deployability"
+        ],
+        "weaknesses": [
+          "Overall accuracy statistically indistinguishable from baseline despite targeted improvements",
+          "Paired tests on capability slices (SSU, ABS) underpowered due to small n (21 and 9 questions)",
+          "Structural limitations in handling assistant-authored content (F1), preference reasoning (F2), and multi-session aggregation (F3)",
+          "Intent classifier for TTMG+R-LLM has low recall on multi-session (42.5%) and knowledge-update (39.1%) slices"
+        ],
+        "required_revisions": [
+          "Improve assistant-side claim extraction to address F1 failures",
+          "Add multi-claim composition in reader prompt to handle F3-style aggregation",
+          "Replace zero-shot Kimi-K2 intent classifier with a fine-tuned model to boost router recall",
+          "Clarify that non-significant overall accuracy (p=0.21) reflects complementary strengths, not inferiority"
+        ],
+        "verdict": "borderline"
+      },
+      "empirical_skeptic": {
+        "elapsed_sec": 31.655064582824707,
+        "scores": {
+          "originality": 8,
+          "quality": 7,
+          "clarity": 8,
+          "significance": 7,
+          "overall": 7.0
+        },
+        "strengths": [
+          "Novel claim-level memory schema with explicit validity intervals and truth-maintenance edges",
+          "Explicit abstention mechanism with 80% abstention rate on full abstention slice",
+          "Ablation confirms LLM linker's causal role in all measured gains",
+          "Efficiency gains over A-Mem (-62.1% tokens, -27.4% latency)"
+        ],
+        "weaknesses": [
+          "Overall accuracy not statistically distinguishable from Flat RAG (p=0.21)",
+          "Low power in SSU (n=21) and abstention (n=9) slices (McNemar p≥0.0625)",
+          "Structural regressions on assistant-authored (SSA), preference (SSP), and multi-session (MS) slices",
+          "Zero-shot intent classifier has low recall on MS (42.5%) and KU (39.1%) slices"
+        ],
+        "required_revisions": [
+          "Increase sample size for SSU and abstention slices to achieve conventional statistical power",
+          "Address structural failure modes (F1-F3) via denser assistant-side claim extraction and multi-claim composition",
+          "Improve intent classifier recall on MS and KU slices to close oracle gap",
+          "Clarify how session-batched writing resolves cross-session coreference for MS questions"
+        ],
+        "verdict": "borderline"
+      },
+      "systems_practitioner": {
+        "elapsed_sec": 30.05423855781555,
+        "scores": {
+          "originality": 8,
+          "quality": 7,
+          "clarity": 8,
+          "significance": 8,
+          "overall": 7.5
+        },
+        "strengths": [
+          "Explicit truth-maintenance edges (contradict/supersede) enable precise temporal reasoning and abstention policies",
+          "Session-batched writer reduces LLM call overhead compared to per-turn analysis",
+          "Greedy maximum-consistent-subgraph algorithm provides efficient deterministic retrieval with near-optimal guarantees",
+          "Hybrid reader context preserves flat retrieval's strengths while adding structured truth filtering",
+          "Ablation isolates the LLM linker as the causal mechanism for gains on targeted slices"
+        ],
+        "weaknesses": [
+          "Overall accuracy statistically indistinguishable from Flat RAG despite structured claims",
+          "Explicit abstention policy only behaviorally different, not accuracy-improved, on full abstention slice",
+          "Regression on assistant-authored, preference, and multi-session questions not fully addressed",
+          "Intent classifier for TTMG+R-LLM has low recall on multi-session (42.5%) and knowledge-update (39.1%) slices",
+          "Bootstrap CIs for TTMG overall accuracy [53.3,69.3] overlap with Flat RAG [60.7,75.3]"
+        ],
+        "required_revisions": [
+          "Clarify how the session-batched writer resolves cross-turn coreference before claim extraction",
+          "Quantify the cost of the Kimi-K2 zero-shot intent classifier in the TTMG+R-LLM router",
+          "Explain why the TTMG-Abstain router's abstention behavior doesn't propagate to higher accuracy on the abstention slice",
+          "Provide more details on the temporal parser's handling of implicit time anchors like 'last Friday'",
+          "Justify the choice of 3 LLM models (Kimi-K2 for writer/linker/parser vs DeepSeek for reader)"
+        ],
+        "verdict": "borderline"
+      }
+    },
+    "Kimi-K2": {
+      "strict_ml": {
+        "elapsed_sec": 13.58073377609253,
+        "scores": {
+          "originality": 7,
+          "quality": 7,
+          "clarity": 8,
+          "significance": 6,
+          "overall": 6.8
+        },
+        "strengths": [
+          "Novel claim-level memory schema with explicit validity intervals and truth-maintenance edges (contradict/supersede)",
+          "Rigorous empirical protocol: paired McNemar tests, bootstrap CIs, stratified sampling, ablation study",
+          "Clear efficiency win: −62 % tokens vs A-Mem with lower latency",
+          "Open-source release of prompts, code, and per-question outputs ensures reproducibility",
+          "Ablation cleanly isolates the LLM linker as the causal driver of gains on abstention & knowledge-update"
+        ],
+        "weaknesses": [
+          "Overall accuracy statistically ties Flat RAG (61.3 % vs 68.0 %, p=0.21) while regressing on three slices (SSA, SSP, MS)",
+          "Small-slice paired wins (ABS n=9, SSU n=21) are under-powered (McNemar p≥0.06) and do not generalise to the full 30-question abstention set",
+          "Intent classifier recall on multi-session is only 42.5 %, leaving a 12–15 pp gap to the oracle upper bound",
+          "Writer under-extracts assistant-authored claims (F1 failure mode), causing over-abstention",
+          "Evaluation limited to 150-question subset; authors defer full 500-question replication to camera-ready"
+        ],
+        "required_revisions": [
+          "Run and report the full LongMemEval-S 500-question evaluation to remove subset-representativeness concerns",
+          "Provide power analysis or increase sample size for the small slices (ABS, SSU) to turn directional trends into significant wins",
+          "Ablate or improve the intent classifier to close the 12–15 pp gap between deployable routers and the oracle",
+          "Address writer gap for assistant-authored turns (F1) via denser extraction or joint user/assistant claim generation",
+          "Clarify why overall accuracy drops despite slice-level wins—discuss error propagation and trade-offs explicitly"
+        ],
+        "verdict": "borderline"
+      },
+      "empirical_skeptic": {
+        "elapsed_sec": 11.334728002548218,
+        "scores": {
+          "originality": 7,
+          "quality": 6,
+          "clarity": 8,
+          "significance": 6,
+          "overall": 6.5
+        },
+        "strengths": [
+          "Novel claim-level schema with validity intervals and truth-maintenance edges",
+          "Explicit abstention mechanism with 80% trigger rate vs 0% for flat RAG",
+          "Thorough ablation showing LLM linker is causal for all measured gains",
+          "Efficiency win: -62% tokens vs A-Mem with lower latency",
+          "Full reproducibility package: prompts, seeds, per-question outputs, scripts"
+        ],
+        "weaknesses": [
+          "Under-powered slices: n=9 abstention & n=21 SSU lack statistical significance (p>0.05)",
+          "No error bars or variance on per-slice numbers",
+          "Only 150-question subset evaluated for TTMG; 500-question run promised for camera-ready",
+          "Router variants lose TTMG abstention benefit on ABS questions by construction",
+          "Intent classifier recall on MS/KU only 42%/39%, limiting router ceiling"
+        ],
+        "required_revisions": [
+          "Run full 500-question LongMemEval-S for TTMG and report 95% CIs on every slice",
+          "Provide exact counts (b,c) and two-sided McNemar p-values for all paired comparisons",
+          "Add bootstrap or jackknife variance estimates for per-slice accuracies",
+          "Include a significance test for the –contradict ablation drops (-2.6pp overall, -22pp ABS)",
+          "Clarify why routers default to Flat RAG on ABS instead of preserving TTMG abstention"
+        ],
+        "verdict": "borderline"
+      },
+      "systems_practitioner": {
+        "elapsed_sec": 14.864785432815552,
+        "scores": {
+          "originality": 7,
+          "quality": 8,
+          "clarity": 8,
+          "significance": 7,
+          "overall": 7.5
+        },
+        "strengths": [
+          "Claim-level schema with validity intervals and explicit contradict/supersede edges is a clean, practical abstraction for truth maintenance",
+          "Session-batched writer + lexical gate keeps write-time cost low (62 % token reduction vs A-Mem)",
+          "Ablation shows LLM linker is causal: -22 pp abstention, -9 pp knowledge-update when removed",
+          "Router composition recovers Flat-RAG overall accuracy while preserving abstention behaviour",
+          "Full reproducibility: code, prompts, seeds, per-question outputs released"
+        ],
+        "weaknesses": [
+          "Overall accuracy statistically ties Flat RAG (61.3 % vs 68.0 %, p=0.21) so headline gain is narrow",
+          "Intent classifier recall low on multi-session (42.5 %) and knowledge-update (39.1 %) slices",
+          "Evaluation powered only for large deltas; SSU n=21 and ABS n=9 trends are under-powered",
+          "Writer under-extracts assistant-authored claims (7/7 SSA errors) – systematic coverage gap",
+          "No cross-encoder reranker or latency breakdown; 85 s E2E latency may still be too high for chat",
+          "Only one benchmark (LongMemEval-S); no test on real multi-week deployment or user study"
+        ],
+        "required_revisions": [
+          "Run the promised N=500 full-set TTMG replication and report exact McNemar p-value",
+          "Add latency breakdown: writer, linker, parser, reader per question; quantify linker hit-rate",
+          "Provide confidence intervals for per-slice accuracies (currently only overall CI given)",
+          "Include a micro-benchmark of write-time throughput: claims/second vs conversation turns/second",
+          "Discuss failure-mode mitigation: denser assistant extraction, multi-claim reader composition",
+          "Clarify cost model: token price per 1k questions and CPU/memory overhead vs baseline RAG"
+        ],
+        "verdict": "weak_accept"
+      }
+    },
+    "glm-5": {
+      "strict_ml": {
+        "elapsed_sec": 73.05989193916321,
+        "scores": {
+          "originality": 7,
+          "quality": 6,
+          "clarity": 8,
+          "significance": 6,
+          "overall": 6.0
+        },
+        "strengths": [
+          "Novel problem framing: truth maintenance for long-horizon agent memory is under-studied and well-motivated",
+          "Clean methodological contribution: claim-level schema with validity intervals, provenance, and explicit contradict/supersede edges",
+          "Thorough ablation study demonstrating causal role of LLM linker across all measured slices",
+          "Honest reporting of regressions, underpowered tests, and detailed failure mode taxonomy (F1-F3)",
+          "Meaningful efficiency gains: 62% token reduction vs A-Mem baseline with session-batched writing",
+          "Practical router composition approach for deployment (TTMG-Abstain, TTMG+R-LLM)"
+        ],
+        "weaknesses": [
+          "Overall accuracy numerically regresses (61.3% vs 68.0%) even if not statistically significant (p=0.21)",
+          "Key capability claims rely on underpowered tests: SSU n=21 (p=0.50), abstention n=9 (p=0.125)",
+          "Full abstention set (n=30) shows no accuracy difference between TTMG and Flat RAG (both 76.7%)",
+          "Main evaluation on 150/500 question subset; N=500 TTMG results deferred to camera-ready",
+          "A-Mem baseline row in Table 1 has missing values (--), incomplete comparison",
+          "Router compositions do not preserve abstention benefit (ABS accuracy equals Flat's 44.4%)",
+          "Intent classifier weak (64.7% overall), limiting router effectiveness",
+          "No comparison to other structured memory baselines (MemGPT, MemoryBank, MemoryAgentBench)"
+        ],
+        "required_revisions": [
+          "Complete N=500 evaluation for TTMG to match the full LongMemEval-S scale verification done for Flat RAG",
+          "Fill missing A-Mem values in Table 1 (SSA, SSP, SSU columns) or remove the row entirely",
+          "Increase sample size for abstention and SSU slices to achieve adequate statistical power (current n=9, n=21 are underpowered)",
+          "Add comparison to at least one additional structured memory baseline beyond A-Mem (e.g., MemGPT)",
+          "Clarify why explicit abstention behavior (80% vs 0%) does not translate to accuracy gains on full n=30 abstention set",
+          "Report per-question latency breakdown (writer/linker/reader) rather than only end-to-end",
+          "Address or acknowledge that router compositions currently discard TTMG's primary abstention advantage"
+        ],
+        "verdict": "borderline"
+      },
+      "empirical_skeptic": {
+        "elapsed_sec": 82.63041281700134,
+        "scores": {
+          "originality": 7,
+          "quality": 6,
+          "clarity": 8,
+          "significance": 6,
+          "overall": 6.0
+        },
+        "strengths": [
+          "Novel application of truth maintenance concepts to LLM agent memory with claim-level schema and contradict/supersede edges",
+          "Thorough failure-mode analysis categorizing all 18 paired errors into three structural causes (F1-F3)",
+          "Honest reporting of statistical power limitations and underpowered tests on key slices",
+          "Good reproducibility provisions: full prompts, hyper-parameters, seed, and promise to release code and raw outputs",
+          "Meaningful efficiency gains: -62.1% tokens vs A-Mem baseline",
+          "Router composition analysis demonstrates complementary information between claim-level and raw-text retrieval"
+        ],
+        "weaknesses": [
+          "Main improvement claims (SSU 2-0 paired, abstention 4-0) are NOT statistically significant (p=0.50 and p=0.125); paper overstates these as 'wins'",
+          "Overall accuracy regresses from 68.0% to 61.3% (though not significant, p=0.21); framing as 'statistical parity' obscures negative direction",
+          "A-Mem baseline is self-reimplemented rather than using original; shows incomplete evaluation (SSA/SSP columns are '--') and no confidence intervals",
+          "Limited ablation coverage: only linker removal tested; should ablate claim schema, temporal parser, max-consistent-subgraph retriever, and subject-predicate gate",
+          "TTMG not evaluated on full N=500 benchmark; only N=150 stratified subset due to compute cost, limiting generalizability",
+          "Router compositions (67.3%, 66.0%) numerically below Flat RAG (68.0%) despite claiming 'matching' accuracy"
+        ],
+        "required_revisions": [
+          "Report effect sizes with confidence intervals for all paired comparisons, not just p-values",
+          "Use original A-Mem implementation or validate reimplementation against published benchmarks",
+          "Complete A-Mem evaluation on all slices with confidence intervals",
+          "Add ablations for: (a) claim schema vs raw notes, (b) temporal parser, (c) max-consistent-subgraph retriever",
+          "Run TTMG on full N=500 LongMemEval-S to verify subset generalizability",
+          "Tone down claims of 'strict set-inclusion improvement' and 'paired wins' when tests are underpowered and non-significant",
+          "Report standard errors or CIs for all per-slice accuracies, not just overall"
+        ],
+        "verdict": "weak_reject"
+      },
+      "systems_practitioner": {
+        "elapsed_sec": 63.232030391693115,
+        "scores": {
+          "originality": 7,
+          "quality": 7,
+          "clarity": 8,
+          "significance": 6,
+          "overall": 6.5
+        },
+        "strengths": [
+          "Real efficiency gains: -62.1% token cost vs A-Mem (13603 vs 35904 tokens/question)",
+          "Practical integration surface via inference-time routers (TTMG-Abstain, TTMG+R-LLM)",
+          "Explicit abstention mechanism (80% on abstention questions) provides safety benefit",
+          "Well-designed ablation showing causal role of LLM linker across all slices",
+          "Honest reporting of regressions, statistical limitations, and failure mode taxonomy",
+          "Full reproducibility: prompts, hyperparameters, scripts, and per-question outputs"
+        ],
+        "weaknesses": [
+          "Overall accuracy numerically lower than Flat RAG (61.3% vs 68.0%), though not statistically significant (p=0.21)",
+          "Main evaluation on 150-question subset only, not full 500-question benchmark",
+          "Regressions on SSA (-35.3pp), SSP (-33.4pp), MS (-7.5pp) slices not addressed in method",
+          "Intent classifier weak (64.7% overall, 42.5% recall on multi-session) limits router effectiveness",
+          "Key slice results underpowered (SSU n=21, McNemar p=0.50; ABS n=9 in subset)",
+          "Oracle gap (82% vs 67%) shows significant unrealized potential from claim/text complementarity"
+        ],
+        "required_revisions": [
+          "Run full 500-question LongMemEval-S evaluation for TTMG to confirm subset representativeness",
+          "Address SSA/SSP/MS regressions: denser assistant-side extraction, multi-claim reader composition",
+          "Report per-slice confidence intervals in addition to overall CI",
+          "Add comparison of memory footprint and index size between TTMG, Flat RAG, and A-Mem",
+          "Clarify deployment recipe: which router variant is recommended and under what conditions"
+        ],
+        "verdict": "weak_accept"
+      }
+    }
+  }
+}

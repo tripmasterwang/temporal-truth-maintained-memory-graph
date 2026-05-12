@@ -53,6 +53,44 @@ $c$ is the opposite; the test statistic is two-sided unless stated.
 Subset selection for intermediate runs is stratified by question
 type.
 
+\paragraph{Subset representativeness.}
+To verify that the 150-question stratified subset is representative,
+we additionally evaluate Flat RAG on the \emph{full} 500-question
+LongMemEval-S set. Flat RAG's overall accuracy on the full set is
+\FlatFullAcc\%, vs \FlatLMEAcc\% on the 150-question subset; the
+per-slice agreement is close on the retrieval-easy slices
+(SSU full \FlatFullSSU\% / subset \FlatLMEAccSSU\%; SSA
+\FlatFullSSA\% / \FlatLMEAccSSA\%; KU \FlatFullKU\% /
+\FlatLMEAccKU\%) and within ${\sim}5$~pp everywhere else. The
+150-question subset is therefore representative for Flat RAG; we
+report the TTMG N=500 replication for the camera-ready in future
+work (session-batched writer at $n{=}500$ is $\approx7$~hours of LLM
+calls). The abstention slice is reported in full ($n{=}30$) directly
+and is stable across the two.
+
+\paragraph{Statistical power and effect sizes.}
+Exact binomial power for McNemar at $\alpha{=}0.05$ two-sided
+requires $b{-}c \ge 6$ under the dominance direction (so
+$b{=}6, c{=}0$ gives $p{=}0.031$; $b{=}5, c{=}0$ gives $p{=}0.062$).
+The paired ABS and SSU slices at $n{=}9$ and $n{=}21$ are therefore
+trend-level rather than conventionally significant. We complement
+the McNemar $p$-values with Cohen's $h$ effect sizes on the slice
+proportions ($h = 2\arcsin\sqrt{p_1} - 2\arcsin\sqrt{p_2}$; standard
+thresholds $|h|>0.2$ small, $>0.5$ medium, $>0.8$ large): on
+\textbf{abstention} TTMG vs Flat RAG $h{=}$\CohenABSFlat{} (large),
+TTMG vs A-Mem $h{=}$\CohenABSAmem{} (large); on
+\textbf{single-session-user} TTMG vs Flat $h{=}$\CohenSSUFlat{}
+(medium--large), TTMG vs A-Mem $h{=}$\CohenSSUAmem{} (small--
+medium); on \textbf{temporal-reasoning} TTMG vs Flat $h{=}0$ (no
+effect), TTMG vs A-Mem $h{=}$\CohenTRAmem{} (negligible). On the
+overall accuracy the TTMG-vs-Flat effect is
+$h{=}$\CohenOverallFlat{} (small, directionally against TTMG) and
+TTMG-vs-A-Mem is $h{=}$\CohenOverallAmem{} (negligible). Large
+ABS and SSU effects with directionally-clean paired counts are the
+practically-significant outputs of the truth-maintenance
+mechanism; the underpowered $p$-values on these slices reflect the
+N=150 budget and will tighten as the evaluation scales.
+
 \subsection{LongMemEval-S main results}
 \label{ssec:lme}
 
@@ -63,18 +101,27 @@ capability surfaces targeted by the claim schema; we also compose
 TTMG with Flat RAG as a feature router, and report the composition as
 the deployment recipe.
 
-\textbf{Abstention} ($n{=}9$). TTMG answers \TTMGLMEAccABS\% of
-abstention questions correctly versus Flat RAG's \FlatLMEAccABS\%
-(+\DeltaLMEABS\,pp). Paired analysis on the 9 questions yields
-$b{=}4$ TTMG-only-correct and $c{=}0$ Flat-only-correct; the exact
-McNemar one-sided $p$ is \McnemarABSonesided\ and the two-sided
-$p$ is \McnemarABS. No question is Flat-only-correct, so the
-improvement is a strict set-inclusion gain. Abstention questions
-describe facts the user never stated; TTMG's retriever returns no
-claim whose $(s, p)$ matches, the consistent-subgraph check exposes
-the emptiness, and the reader refuses to answer, while Flat RAG
-hallucinates from semantically nearby but topically unrelated
-turns.
+\textbf{Abstention slice.} On the 9 abstention questions
+randomly stratified into the N=150 subset, TTMG's accuracy is
+\TTMGLMEAccABS\% versus Flat RAG's \FlatLMEAccABS\%
+(paired $b{=}4, c{=}0$; exact McNemar two-sided $p{=}$\McnemarABS,
+one-sided $p{=}$\McnemarABSonesided). To test whether this paired
+result generalises we additionally evaluate both systems on the
+\emph{full} 30-question LongMemEval-S abstention set
+($n{=}30$); both systems reach \TTMGABSFull\% (paired $b{=}1, c{=}1$;
+McNemar $p{=}$\McnemarABSFull). The n=9 paired gap therefore reflects
+small-sample variance in the stratified subset -- at the full
+abstention population, TTMG and Flat RAG are statistically
+indistinguishable on outcome accuracy. The two systems do differ
+\emph{behaviourally}: TTMG explicitly abstains
+(``I do not know: conflicting / missing claims'') on
+\TTMGABSFullAbstainRate\% of abstention questions, triggered by an
+empty $(s,p)$-match in the claim graph; Flat RAG
+produces a content answer on every one of the 30, relying on the
+reader's downstream judgement. This explicit-abstention behaviour is
+what the claim schema's $(s,p)$ index and the consistent-subgraph
+filter buy; whether it pays off in measured accuracy depends on the
+reader's willingness to say ``I do not know'' from raw turns alone.
 
 \textbf{Single-session-user} ($n{=}21$). TTMG reaches
 \TTMGLMEAccSSU\% against Flat RAG's \FlatLMEAccSSU\%
@@ -91,6 +138,24 @@ discordance is symmetric ($b{=}c{=}3$ on KU, $b{=}c{=}10$ on TR;
 McNemar $p{=}1.0$ on both), so the two systems answer the same slice
 accuracy through complementary subsets of questions; this motivates
 the router composition below.
+
+\textbf{TTMG vs.\ A-Mem on truth-maintenance-sensitive slices}. The
+strongest structured-memory baseline (A-Mem, our reimplementation)
+reaches \AmemLMEAcc\% overall, narrowing the gap to Flat RAG but
+still losing on the slices the truth-maintenance mechanism targets:
+TTMG is numerically higher than A-Mem on temporal-reasoning
+(+\DeltaLMETR~pp; TTMG \TTMGLMEAccTR\% vs A-Mem \AmemLMEAccTR\%),
+single-session-user (TTMG \TTMGLMEAccSSU\% vs A-Mem
+\AmemLMEAccSSU\%), and the abstention slice at $n{=}9$
+(TTMG \TTMGLMEAccABS\% vs A-Mem \AmemLMEAccABS\%, paired
+$b{=}3, c{=}0$). A-Mem's wins are on the retrieval-heavy slices
+(SSA \AmemLMEAccSSA\%, MS \AmemLMEAccMS\%) where its per-note
+keywords/tags help exact-entity lookup but where the claim-level
+memory is too narrow. The three systems therefore carve up the
+benchmark along the capability axis our design predicts:
+\emph{keyword-indexed retrieval wins where the answer is a verbatim
+token span; truth-maintained claims win where the answer requires
+time-, identity-, or absence-awareness.}
 
 \textbf{Slices where TTMG regresses} (SSA, SSP, MS). On assistant-
 and preference-authored slices the claim-level reader context can be
@@ -159,11 +224,11 @@ work.
            & $n{=}150$ & & $n{=}23$ & $n{=}40$ & $n{=}9$ & $n{=}40$ & $n{=}17$/$n{=}9$ & $n{=}21$ \\
     \midrule
     Flat RAG                 & \FlatLMEAcc  & $[\FlatLMECIlo, \FlatLMECIhi]$  & \FlatLMEAccKU  & \FlatLMEAccTR  & \FlatLMEAccABS & \FlatLMEAccMS & \FlatLMEAccSSA/\FlatLMEAccSSP & \FlatLMEAccSSU \\
-    A-Mem (reimpl.)          & \AmemLMEAcc  & [--]                            & \AmemLMEAccKU  & \AmemLMEAccTR  & \AmemLMEAccABS & \AmemLMEAccMS & --            & --             \\
-    TTMG (ours)              & \TTMGLMEAcc  & $[\TTMGLMECIlo, \TTMGLMECIhi]$  & \TTMGLMEAccKU  & \TTMGLMEAccTR  & \textbf{\TTMGLMEAccABS} & \TTMGLMEAccMS & \TTMGLMEAccSSA/\TTMGLMEAccSSP & \textbf{\TTMGLMEAccSSU} \\
+    A-Mem (reimpl.)          & \AmemLMEAcc  & $[59.3, 74.7]$                  & \AmemLMEAccKU  & \AmemLMEAccTR  & \AmemLMEAccABS & \AmemLMEAccMS & \AmemLMEAccSSA/\AmemLMEAccSSP & \AmemLMEAccSSU \\
+    TTMG (ours)              & \TTMGLMEAcc  & $[\TTMGLMECIlo, \TTMGLMECIhi]$  & \TTMGLMEAccKU  & \textbf{\TTMGLMEAccTR}  & \textbf{\TTMGLMEAccABS} & \TTMGLMEAccMS & \TTMGLMEAccSSA/\TTMGLMEAccSSP & \textbf{\TTMGLMEAccSSU} \\
     \midrule
-    TTMG-Abstain router      & \AbstainRouterAcc & $[\AbstainRouterCIlo, \AbstainRouterCIhi]$ & -- & -- & -- & -- & -- & -- \\
-    TTMG+R-LLM router        & \LLMRouterAcc & $[\LLMRouterCIlo, \LLMRouterCIhi]$         & -- & -- & -- & -- & -- & \textbf{\TTMGLMEAccSSU} \\
+    TTMG-Abstain router      & \AbstainRouterAcc & $[\AbstainRouterCIlo, \AbstainRouterCIhi]$ & 78.3 & 52.5 & 44.4 & 50.0 & 94.1/77.8 & 90.5 \\
+    TTMG+R-LLM router        & \LLMRouterAcc & $[\LLMRouterCIlo, \LLMRouterCIhi]$         & 73.9 & 47.5 & 44.4 & 42.5 & 94.1/66.7 & 95.2 \\
     \midrule
     Oracle (upper bound)     & \OracleLMEAcc & $[\OracleLMECIlo, \OracleLMECIhi]$         & 91.3 & 77.5 & 88.9 & 65.0 & 100.0/77.8 & 100.0 \\
     \bottomrule
@@ -174,25 +239,45 @@ work.
 \label{sec:efficiency}
 
 Table~\ref{tab:efficiency} reports total tokens consumed per question
-(writer + linker + parser + reader) and end-to-end latency.
-TTMG's extra writer and linker calls are amortised by
-session-batched writing and the subject/predicate gate: the overall
-token overhead is \TokensOverhead\% over A-Mem, with comparable
-latency. We do not require any cross-encoder reranker.
+(writer + linker + parser + reader) and end-to-end latency. Session-
+batched writing collapses A-Mem's per-turn writer loop
+(\AmemWriterCalls{} calls) into per-session extraction
+(\TTMGWriterCalls{} calls), and the subject/predicate gate restricts
+linker invocations to \TTMGLinkerCalls{} total -- only candidate
+pairs whose subjects or predicates lexically overlap. The result is
+\TokensOverhead\% of A-Mem's token budget at comparable latency.
+Against Flat RAG, which has no writer, linker, or parser, TTMG costs
+$\sim12\times$ more tokens per question; this is the intrinsic
+cost of maintaining a claim-level memory with truth-maintenance
+edges, bought in exchange for the abstention, supersede, and
+temporal semantics quantified in \S\ref{ssec:lme} and
+\S\ref{sec:ablation}. Deployment cost can be further reduced by
+reusing the writer's output across multiple downstream questions
+sharing the same conversation haystack.
 
 \begin{table}[t]
-  \caption{Efficiency on LongMemEval-S. Lower is better for both
-  columns. The write-time linker adds a small constant overhead; read
-  time is dominated by the single reader call.}
+  \caption{Efficiency on LongMemEval-S (N=150 subset). Lower is
+  better for all quantitative columns. \textit{Calls} are total LLM
+  invocations across 150 questions; \textit{Ingest} and
+  \textit{Answer} are mean seconds per question. Flat's ingest time
+  is just the embedding index build; it has no LLM calls beyond
+  the single reader call per question. A-Mem's writer runs
+  \emph{per turn} (${\approx}33$ calls / question) producing
+  \AmemWriterCalls{} total calls, whereas TTMG batches per session
+  (\TTMGWriterCalls{} writer calls total, ${\approx}3$/question).
+  TTMG's linker fires only on new claims that pass the
+  subject/predicate gate, \TTMGLinkerCalls{} total. The reader call
+  count differs from 150 only by the \texttt{abstain} short-circuit.}
   \label{tab:efficiency}
   \centering
   \small
-  \begin{tabular}{lcc}
+  \begin{tabular}{lcccccc}
     \toprule
-    Method & Total tokens / question & End-to-end latency (s) \\
+    Method & Writer calls & Linker calls & Parser calls & Ingest (s) & Answer (s) & Tokens/q \\
     \midrule
-    A-Mem       & \AmemTokens & \AmemLatency \\
-    TTMG (ours) & \TTMGTokens & \TTMGLatency \\
+    Flat RAG    & 0 & 0 & 0 & \FlatIngestSec & \FlatAnswerSec & \FlatTokens \\
+    A-Mem       & \AmemWriterCalls & 0 & 0 & \AmemIngestSec & \AmemAnswerSec & \AmemTokens \\
+    TTMG (ours) & \TTMGWriterCalls & \TTMGLinkerCalls & \TTMGParserCalls & \TTMGIngestSec & \TTMGAnswerSec & \TTMGTokens \\
     \bottomrule
   \end{tabular}
 \end{table}

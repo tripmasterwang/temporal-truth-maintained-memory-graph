@@ -1,0 +1,109 @@
+\section{lightmem architecture}
+\label{sec:method}
+Analogous to the human memory, we design LightMem as shown in Figure \ref{fig:architecture}, which consists of three light modules:
+\textit{Light1} implements an efficient \textit{Sensory Memory Module} that selectively preserves salient information from raw input (\S\ref{pre_compress}),
+\textit{Light2} realizes a topic-aware \textit{STM Module} for transient information processing (\S\ref{STM}),
+and \textit{Light3} provides an \textit{LTM module} designed to minimize test time update latency (\S\ref{LTM}) with a sleep time update mechanism. 
+\change{The overall pipeline framework of \textbf{LightMem}, its specific models, and comparisons with other memory frameworks are presented in Appendix~\ref{background_detail}.
+The complexity analysis for LightMem's efficiency gains is in Section~\ref{sec:complexity_analysis}.}
+
+\subsection{Light1: Cognitive-inspired sensory memory}
+\label{pre_compress}
+In long horizon interaction scenarios, such as user–assistant dialogues, a large portion of the information is redundant. 
+Therefore, we design a \textit{Pre-Compressing Submodule} to eliminate redundant tokens, followed by the \textit{Topic Segmentation Submodule} that forms semantic topic-based segments for following faster and more accurate memory construction. 
+
+% \noindent \textbf{Pre-Compressing Submodule.} This module leverages an off-the-shelf prompt compression model $p_{\phi}$ to remove reduntant tokens. The compression process can be modeled as a token-level binary classification problem: 
+
+\noindent \textbf{Pre-Compressing Submodule.} This module leverages a compression model $\theta$ to eliminate redundant tokens, tailored for compatibility with the downstream memory construction phase: 
+\[
+\hat{\mathbf{x}} = \left\{ x_i \in \mathbf{x} \;\middle|\; P(\text{retain } x_i \mid \mathbf{x}; \theta) > \tau \right\}, 
+\tau = \text{Percentile}\left( \{x_j\}, r \right),
+\]
+Following~\citet{xia2025tokenskip}, we use LLMLingua-2~\citep{pan2024llmlingua} as our compression model $\theta$. Let $\mathbf{x}$ be the raw input tokens, $\theta$ the model, and $r$ the compression ratio. The threshold $\tau$ is set to the $r$-th percentile of retention scores, keeping only tokens above $\tau$. 
+For $P(\text{retain } x_i \mid \mathbf{x})$, we treat the compression process as a binary token classification task (``retain'' or ``discard''). For each token $x_i$ in a sequence $\mathbf{x}$, the model $\theta$ outputs a logit vector $\ell_i$, and the retention probability is given by:
+
+\[
+P(\text{retain } x_i \mid \mathbf{x}; \theta) = \mathrm{softmax}(\ell_i)_1,
+\]
+
+where the subscript $1$ denotes the ``retain'' class. Tokens with probabilities above a dynamic threshold are included in the compressed sequence.
+% The compression process is then defined as:
+% \[
+% P(\text{retain } x_i \mid \mathbf{x}; \theta) = \mathrm{softmax}(\ell_i)_{\text{dim1}}, \text{ }\ell_i: x_i \text{ logits}, \text{ dim1 corresponds to retaining class.}
+% \]
+% The model is selected for three main reasons:
+% (1) It is a compact BERT-based model, making it lightweight;
+% (2) Its bidirectional attention captures semantics using full context;
+% (3) It is trained on extensive task-agnostic data, including commonsense reasoning, math, and format-specific constraints, making it suitable for user-agent dialogue. 
+In addition, \textbf{LightMem} can also employ more general generative LLM as the pre-compression model. 
+We further implement a token filtering mechanism based on the cross-entropy between the model’s predicted distribution and the true token labels: 
+\[
+P(\text{retain } x_i \mid \mathbf{x}; \theta) = -\sum_{x_i \in \mathcal{V}} q(x_i) \log P(x_i \mid \mathbf{x}; \theta)
+\]
+where $q(x_i)$ denotes the true token label distribution.
+Tokens with higher conditional entropy under a given context are more uncertain and less predictable, indicating greater informational uniqueness and a more critical role in semantic expression, such distinctive tokens are essential for subsequent memory construction and are therefore retained.
+
+\noindent \textbf{Topic Segmentation Submodule.}
+Existing works indicate that topic-granular input facilitates improved performance in memory systems~\citep{DBLP:conf/iclr/PanWJLCL0LZQ025, tan2025prospectretrospectreflectivememory}. 
+As shown in Figure~\ref{fig:architecture}, \textbf{LightMem} maintains a sensory memory buffer to temporarily store information after pre-compression. 
+When the accumulated information reaches the buffer's maximum capacity, a hybrid topic segmentation operation based on attention and similarity is triggered. 
+We use the compression model $\theta$ and an embedding model to compute attention matrices and semantic similarities, respectively.
+We define the final segmentation boundaries as the intersection of attention-based boundaries $\mathcal{B}_1$ and similarity-based boundaries $\mathcal{B}_2$: 
+\[
+\begin{aligned}
+\mathcal{B}_1 &= \left\{ k \mid M_{k,k-1} > M_{k-1,k-2},\ M_{k,k-1} > M_{k+1,k},\ 1 < k < n \right\}, 
+\end{aligned}
+\]
+\[
+\mathcal{B}_2 = \Bigl\{\, k \;\big|\; \mathrm{sim}(s_{k-1}, s_k) < \tau ,1 \leq k < n\Bigr\}, \quad 
+\mathcal{B} = \mathcal{B}_1 \cap \mathcal{B}_2.
+\]
+Specifically, dialogue scenarios possess natural semantic units, namely the conversational turn. 
+We construct a turn-level attention matrix $M \in \mathbb{R}^{n \times n}$. 
+$\mathcal{B}_1$ are identified as local maxima in the sequence $\{M_{k,k-1}\}$, i.e., the sub-diagonal elements of $M$ corresponding to attention between consecutive sentences. 
+The detailed process of $\mathcal{B}_1$ and illustrative cases are provided in Appendix \ref{appen_topic_seg}. 
+To mitigate attention sinks and dilution in attention-based methods, we compute semantic similarity between adjacent turns near each candidate boundary in $\mathcal{B}_1$. Boundaries with similarity below threshold $\tau$ form set $\mathcal{B}_2$, which helps determine the final topic boundaries $\mathcal{B}$.
+
+\subsection{Light2: Topic-aware short-term memory}
+\label{STM}
+% 输入输出没写好
+% 减少api调用次数，实现一个trade off
+% 得到一个个topic segmentation之后，形成了一个{topic, 具体内容}的索引形式，我们在STM buffer中先基于topic的语义相近程度进行一个聚类，形成了一个{big topic, small topic, 具体内容}的三级索引结构，然后再调用大模型f summary得到这些topic以及具体内容的精简版，有了这些topic的指导，具体内容的summary/extract也会更准确。
+% 如果是直接将多session直接输入确实可以有效减少后续api调用次数，但是会因为信息主题过多而导致后续summary得到的memory entry不准确，导致性能下滑，通过topic约束的输入粒度既将api调用次数减少到了极致，又维持了性能的稳定
+After obtaining individual topic segments, forming an index structure of \{topic, message turns\}, where message turns = \{$user_i$, $model_i$\}. 
+These are first placed into the STM buffer. When the token count in the buffer reaches a preset threshold, we invoke LLM $f_{\text{sum}}$ to generate concise summaries of every structure. 
+The final index structure stored in LTM is \{topic, \{$sum_i$, $user_i$, $model_i$\}\}. 
+\[
+\mathrm{sum}_i = f_{\mathrm{sum}}\!\left(S_i\right), \quad 
+S_i \subseteq \{\, \mathrm{user}_i, \mathrm{model}_i \,\}, \; S_i \neq \varnothing,
+\]
+\[
+\mathrm{Entry}_i = \left\{\, \mathrm{topic},\; \mathbf{e}_i := \operatorname{embedding}(\mathrm{sum}_i),\; \mathrm{user}_i,\; \mathrm{model}_i \,\right\},
+\]
+\noindent where $\mathrm{Entry}_i$ denotes the memory entry to be stored in LTM.
+Compared with inputting at the granularity of a single turn or session, directly feeding multiple sessions can reduce subsequent API calls but often introduces inaccurate memory entries due to excessive topic mixing, leading to performance degradation. 
+In contrast, topic-constrained input granularity minimizes API calls to the greatest extent while preserving summarization accuracy and maintaining stable system performance. 
+
+\subsection{Light3: Long-term Memory with Sleep-time Update}
+\label{LTM}
+% % 在线时软删除，离线更新的并行化
+% and improve upon the previously required serial update procedure by enabling parallelized updates of memory entries. 
+
+\noindent \textbf{Soft Updating at Test Time.} 
+At test time, when memory entries arrive, LightMem directly inserts them into LTM with soft updates, thereby decoupling the update process from online inference. 
+Due to real-time updates being converted to direct insertions, interaction latency is significantly reduced. 
+After all entries are inserted or when an update trigger arrives, we compute an update queue for every entry in LTM. 
+\[
+\mathcal{Q}(e_i) = \operatorname{Top}_{k}\Big\{ (e_j, \mathrm{sim}(v_i, v_j)) \;\mid\; t_j \geq t_i, j \neq i \Big\}_{:n},
+\]
+where $e_i$ denotes the $i$-th memory entry with embedding $v_i$ and timestamp $t_i$, $\mathrm{sim}(\cdot,\cdot)$ is the similarity function, and $\operatorname{Top}_{k}\{\cdot\}_{:n}$ indicates selecting the top-$k$ most similar candidates, with the update queue ${Q}(e_i)$ length fixed at $n$. 
+Consistent with existing work, we select the top-$k$ existing memory entries with the highest semantic similarity as potential update sources. 
+On this basis, we further impose the constraint that only entries with later timestamps are allowed to update earlier ones ($t_j \geq t_i$), which is consistent with realistic temporal dynamics. 
+Here, $\mathcal{Q}(e_i)$ denotes the queue of other entries that may update $e_i$. 
+Since this process involves only similarity retrieval, it is fast and lightweight, and can be executed offline in parallel with online inference. 
+
+\noindent \textbf{Offline Parallel Update.}
+LightMem does not simply transfer online update latency to offline phases, it substantially reduces the overall update latency. 
+The online update mechanism in existing memory frameworks enforces sequential updates, leading to a total latency that accumulates with each update. 
+As shown in Figure~\ref{fig:architecture}, in LightMem, each memory entry maintains a global update queue, with each queue corresponding to a distinct $f_{\text{update}}$ operation. 
+Since the update targets are independent across queues, updates can be executed in parallel, thereby greatly reducing the total latency. 

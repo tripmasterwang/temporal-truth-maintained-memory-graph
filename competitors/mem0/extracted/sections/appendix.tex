@@ -1,0 +1,284 @@
+\newpage
+\appendix
+
+\section*{\center\LARGE Appendix}
+
+\vspace{4mm}
+
+\section{Prompts}
+\label{appendix:llm_judge}
+In developing our LLM-as-a-Judge prompt, we adapt elements from the prompt released by \cite{packer2023memgpt}.
+
+% -----------------------------------  LLM as a judge -------------------------------------------
+\NewTColorBox{EqBox}{ s O {!htbp} m }{%
+  floatplacement={#2},
+  IfBooleanTF={#1}{float*,width=\textwidth}{float},
+  title={\textsc{#3}},
+}
+
+\begin{EqBox}[!htbp]{Prompt Template for LLM as a Judge}
+\vspace{1mm}
+{\tt \footnotesize  
+Your task is to label an answer to a question as "CORRECT" or "WRONG". 
+You will be given the following data:
+    (1) a question (posed by one user to another user), 
+    (2) a `gold' (ground truth) answer, 
+    (3) a generated answer
+which you will score as CORRECT/WRONG.
+
+\vspace{0.5cm}
+The point of the question is to ask about something one user should know about the other user based on their prior conversations.
+The gold answer will usually be a concise and short answer that includes the referenced topic, for example:
+
+Question: Do you remember what I got the last time I went to Hawaii?
+
+Gold answer: A shell necklace
+
+The generated answer might be much longer, but you should be generous with your grading - as long as it touches on the same topic as the gold answer, it should be counted as CORRECT. 
+
+\vspace{0.5cm}
+For time related questions, the gold answer will be a specific date, month, year, etc. The generated answer might be much longer or use relative time references (like `last Tuesday' or `next month'), but you should be generous with your grading - as long as it refers to the same date or time period as the gold answer, it should be counted as CORRECT. Even if the format differs (e.g., `May 7th' vs `7 May'), consider it CORRECT if it's the same date.
+
+\vspace{0.5cm}
+Now it's time for the real question:
+
+Question: \{question\}
+
+Gold answer: \{gold\_answer\}
+
+Generated answer: \{generated\_answer\}
+
+\vspace{0.5cm}
+First, provide a short (one sentence) explanation of your reasoning, then finish with CORRECT or WRONG. 
+Do NOT include both CORRECT and WRONG in your response, or it will break the evaluation script.
+
+\vspace{0.5cm}
+Just return the label CORRECT or WRONG in a json format with the key as "label".
+}
+\end{EqBox}
+
+% -----------------------------------  Results generation prompt -------------------------------------------
+\begin{EqBox}[!htbp]{Prompt Template for Results Generation (\mem)}
+\vspace{1mm}
+{\tt \footnotesize  
+You are an intelligent memory assistant tasked with retrieving accurate information from conversation memories. \vspace{0.5cm}
+
+\# CONTEXT: \vspace{0.5cm}
+
+You have access to memories from two speakers in a conversation. These memories contain timestamped information that may be relevant to answering the question.
+\vspace{0.5cm}
+
+\# INSTRUCTIONS: \vspace{0.5cm}
+
+1. Carefully analyze all provided memories from both speakers
+
+2. Pay special attention to the timestamps to determine the answer
+
+3. If the question asks about a specific event or fact, look for direct evidence in the memories
+
+4. If the memories contain contradictory information, prioritize the most recent memory
+
+5. If there is a question about time references (like "last year", "two months ago", etc.), 
+   calculate the actual date based on the memory timestamp. For example, if a memory from 
+   4 May 2022 mentions "went to India last year," then the trip occurred in 2021.
+   
+6. Always convert relative time references to specific dates, months, or years. For example, 
+   convert "last year" to "2022" or "two months ago" to "March 2023" based on the memory 
+   timestamp. Ignore the reference while answering the question.
+   
+7. Focus only on the content of the memories from both speakers. Do not confuse character 
+   names mentioned in memories with the actual users who created those memories.
+   
+8. The answer should be less than 5-6 words.
+
+\vspace{0.5cm}
+\# APPROACH (Think step by step): \vspace{0.5cm}
+
+1. First, examine all memories that contain information related to the question
+
+2. Examine the timestamps and content of these memories carefully
+
+3. Look for explicit mentions of dates, times, locations, or events that answer the question
+
+4. If the answer requires calculation (e.g., converting relative time references), show your work
+
+5. Formulate a precise, concise answer based solely on the evidence in the memories
+
+6. Double-check that your answer directly addresses the question asked
+
+7. Ensure your final answer is specific and avoids vague time references
+
+\vspace{0.5cm}
+Memories for user \{speaker\_1\_user\_id\}:
+
+\{speaker\_1\_memories\}
+\vspace{0.5cm}
+
+Memories for user \{speaker\_2\_user\_id\}:
+
+\{speaker\_2\_memories\}
+
+\vspace{0.5cm}
+Question: \{question\}
+
+\vspace{0.5cm}
+Answer:
+}
+\end{EqBox}
+
+% ---------------------------------------------------------
+\begin{EqBox}[!htbp]{Prompt Template for Results Generation (\memp)}
+\vspace{1mm}
+{\tt \footnotesize  
+(\textit{same as previous})
+\vspace{0.5cm}
+
+\# APPROACH (Think step by step):\vspace{0.5cm}
+
+1. First, examine all memories that contain information related to the question
+
+2. Examine the timestamps and content of these memories carefully
+
+3. Look for explicit mentions of dates, times, locations, or events that answer the 
+   question
+   
+4. If the answer requires calculation (e.g., converting relative time references), 
+   show your work
+   
+5. Analyze the knowledge graph relations to understand the user's knowledge context
+
+6. Formulate a precise, concise answer based solely on the evidence in the memories
+
+7. Double-check that your answer directly addresses the question asked
+
+8. Ensure your final answer is specific and avoids vague time references
+
+\vspace{0.5cm}
+Memories for user \{speaker\_1\_user\_id\}:
+
+\{speaker\_1\_memories\}
+\vspace{0.5cm}
+
+Relations for user \{speaker\_1\_user\_id\}:
+
+\{speaker\_1\_graph\_memories\}
+\vspace{0.5cm}
+
+Memories for user \{speaker\_2\_user\_id\}:
+
+\{speaker\_2\_memories\}
+\vspace{0.5cm}
+
+Relations for user \{speaker\_2\_user\_id\}:
+
+\{speaker\_2\_graph\_memories\}
+\vspace{0.5cm}
+
+Question: \{question\}
+\vspace{0.5cm}
+
+Answer:
+}
+\end{EqBox}
+
+
+\begin{EqBox}[!htbp]{Prompt Template for OpenAI ChatGPT}
+\vspace{1mm}
+{\tt \footnotesize  
+Can you please extract relevant information from this conversation and create memory entries for each user mentioned? Please store these memories in your knowledge base in addition to the timestamp provided for future reference and personalized interactions.
+\vspace{0.5cm}
+
+(1:56 pm on 8 May, 2023) Caroline: Hey Mel! Good to see you! How have you been?
+
+(1:56 pm on 8 May, 2023) Melanie: Hey Caroline! Good to see you! I'm swamped with the kids \& work. What's up with you? Anything new?
+
+(1:56 pm on 8 May, 2023) Caroline: I went to a LGBTQ support group yesterday and it was so powerful.
+
+...
+}
+\end{EqBox}
+
+
+
+
+\clearpage
+
+\section{Algorithm}
+\label{appendix:algorithm}
+
+\begin{algorithm}[!h]
+\caption{Memory Management System: Update Operations}
+\label{alg:memory_update}
+\begin{algorithmic}[1]
+\smallskip
+\State \textbf{Input:} Set of retrieved memories $F$, Existing memory store $M = \{m_1, m_2, \ldots, m_n\}$
+\State \textbf{Output:} Updated memory store $M'$
+\smallskip
+\hrule
+\smallskip
+\Procedure{UpdateMemory}{$F, M$}
+    \For{each fact $f \in F$}
+        \State $operation \gets \Call{ClassifyOperation}{f, M}$
+        \smallskip
+        \Comment{Execute appropriate operation based on classification}
+        \If{$operation = \text{ADD}$}
+            \State $id \gets \text{GenerateUniqueID}()$
+            \State $M \gets M \cup \{(id, f, \text{"ADD"})\}$
+            \Comment{Add new fact with unique identifier}
+        \ElsIf{$operation = \text{UPDATE}$}
+            \State $m_i \gets \text{FindRelatedMemory}(f, M)$
+            \If{$\text{InformationContent}(f) > \text{InformationContent}(m_i)$}
+                \State $M \gets (M \setminus \{m_i\}) \cup \{(id_i, f, \text{"UPDATE"})\}$
+                \Comment{Replace with richer information}
+            \EndIf
+        \ElsIf{$operation = \text{DELETE}$}
+            \State $m_i \gets \text{FindContradictedMemory}(f, M)$
+            \State $M \gets M \setminus \{m_i\}$
+            \Comment{Remove contradicted information}
+        \ElsIf{$operation = \text{NOOP}$}
+            \State \text{No operation performed}
+            \Comment{Fact already exists or is irrelevant}
+        \EndIf
+        \smallskip
+    \EndFor
+    \State \Return $M$
+\EndProcedure
+\smallskip
+\hrule
+\smallskip
+\Function{ClassifyOperation}{$f, M$}
+    \If{$\lnot \text{SemanticallySimilar}(f, M)$}
+        \State \Return \text{ADD}
+        \Comment{New information not present in memory}
+    \ElsIf{$\text{Contradicts}(f, M)$}
+        \State \Return \text{DELETE}
+        \Comment{Information conflicts with existing memory}
+    \ElsIf{$\text{Augments}(f, M)$}
+        \State \Return \text{UPDATE}
+        \Comment{Enhances existing information in memory}
+    \Else
+        \State \Return \text{NOOP}
+        \Comment{No change required}
+    \EndIf
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+
+
+
+
+\section{Selected Baselines}
+\label{appendix:baselines}
+
+\paragraph{LoCoMo} The LoCoMo framework implements a sophisticated memory pipeline that enables LLM agents to maintain coherent, long-term conversations. At its core, the system divides memory into short-term and long-term components. After each conversation session, agents generate summaries (stored as short-term memory) that distill key information from that interaction. Simultaneously, individual conversation turns are transformed into `\textit{observations}' - factual statements about each speaker's persona and life events that are stored in long-term memory with references to the specific dialog turns that produced them. When generating new responses, agents leverage both the most recent session summary and selectively retrieve relevant observations from their long-term memory. This dual-memory approach is further enhanced by incorporating a temporal event graph that tracks causally connected life events occurring between conversation sessions. By conditioning responses on retrieved memories, current conversation context, persona information, and intervening life events, the system enables agents to maintain consistent personalities and recall important details across conversations spanning hundreds of turns and dozens of sessions.
+
+\paragraph{ReadAgent} ReadAgent addresses the fundamental limitations of LLMs by emulating how humans process lengthy texts through a sophisticated three-stage pipeline. First, in Episode Pagination, the system intelligently segments text at natural cognitive boundaries rather than arbitrary cutoffs. Next, during Memory Gisting, it distills each segment into concise summaries that preserve essential meaning while drastically reducing token count—similar to how human memory retains the substance of information without verbatim recall. Finally, when tasked with answering questions, the Interactive Lookup mechanism examines these gists and strategically retrieves only the most relevant original text segments for detailed processing. This human-inspired approach enables LLMs to effectively manage documents up to 20 times longer than their normal context windows. By balancing global understanding through gists with selective attention to details, ReadAgent achieves both computational efficiency and improved comprehension, demonstrating that mimicking human cognitive processes can significantly enhance AI text processing capabilities.
+
+\paragraph{MemoryBank} The MemoryBank system enhances LLMs with long-term memory through a sophisticated three-part pipeline. At its core, the Memory Storage component warehouses detailed conversation logs, hierarchical event summaries, and evolving user personality profiles. When a new interaction occurs, the Memory Retrieval mechanism employs a dual-tower dense retrieval model to extract contextually relevant past information. The Memory Updating component, provides a human-like forgetting mechanism where memories strengthen when recalled and naturally decay over time if unused. This comprehensive approach enables AI companions to recall pertinent information, maintain contextual awareness across extended interactions, and develop increasingly accurate user portraits, resulting in more personalized and natural long-term conversations.
+
+\paragraph{MemGPT} The MemGPT system introduces an operating system-inspired approach to overcome the context window limitations inherent in LLMs. At its core, MemGPT employs a sophisticated memory management pipeline consisting of three key components: a hierarchical memory system, self-directed memory operations, and an event-based control flow mechanism. The system divides available memory into `\textit{main context}' (analogous to RAM in traditional operating systems) and `\textit{external context}' (analogous to disk storage). The main context—which is bound by the LLM's context window—contains system instructions, recent conversation history, and working memory that can be modified by the model. The external context stores unlimited information outside the model's immediate context window, including complete conversation histories and archival data. When the LLM needs information not present in main context, it can initiate function calls to search, retrieve, or modify content across these memory tiers, effectively `\textit{paging}' relevant information in and out of its limited context window. This OS-inspired architecture enables MemGPT to maintain conversational coherence over extended interactions, manage documents that exceed standard context limits, and perform multi-hop information retrieval tasks—all while operating with fixed-context models. The system's ability to intelligently manage its own memory resources provides the illusion of infinite context, significantly extending what's possible with current LLM technology.
+
+\paragraph{A-Mem} The A-Mem model introduces an agentic memory system designed for LLM agents. This system dynamically structures and evolves memories through interconnected notes. Each note captures interactions enriched with structured attributes like keywords, contextual descriptions, and tags generated by the LLM. Upon creating a new memory, A-MEM uses semantic embeddings to retrieve relevant existing notes, then employs an LLM-driven approach to establish meaningful links based on similarities and shared attributes. Crucially, the memory evolution mechanism updates existing notes dynamically, refining their contextual information and attributes whenever new relevant memories are integrated. Thus, memory structure continually evolves, allowing richer and contextually deeper connections among memories. Retrieval from memory is conducted through semantic similarity, providing relevant historical context during agent interactions
+

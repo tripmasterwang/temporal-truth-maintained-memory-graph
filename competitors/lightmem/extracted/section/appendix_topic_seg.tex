@@ -1,0 +1,80 @@
+\section{Usage of LLMs}
+\label{sec:llm_usage}
+Throughout the preparation of this manuscript, we used LLMs to assist with improving grammar, clarity, and wording in parts of this work. The use of LLMs was limited to language refinement, with all ideas, analyses, and conclusions solely developed by the authors.
+
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=1\textwidth]{figure/lightmem_radar.pdf}
+    \caption{
+Impact of the STM buffer threshold ($th$) on performance and efficiency across different compression ratios ($r$). 
+Each radar chart represents a specific configuration of a model (GPT-4o-mini or Qwen3) and a fixed compression ratio. 
+The axes measure six key metrics: Accuracy (ACC), token consumption (Input, Output, Total), API Calls, and Runtime. 
+To facilitate comparison, all values are normalized for visualization on the chart. 
+}
+\label{fig:lightmem_radar}
+\end{figure*}
+
+
+
+
+
+\section{Methodology Details}
+\label{appendix-setup}
+\subsection{Topic Segmentation}
+\label{appen_topic_seg}
+
+In this part, we present the construction of the attention matrix, the underlying rationale for topic segmentation, and representative illustrative cases.
+%The specific construction method of turn-level attention matrix
+%这里写具体这个矩阵是怎么算的：turn-level、前后三个token去掉、一个turn-level的总注意力是由这个turn所有token的注意力的平均值 balabala
+
+%%%%%%%%%%%%%
+We extract only the user sentences from multi-turn dialogues, as they are generally more concise and the assistant’s responses necessarily remain consistent with the user’s theme within the same turn. Moreover, since the maximum input length of the LLMLingua-2 \cite{pan2024llmlingua} model is 512 tokens, the assistant’s often lengthy sentences cannot be effectively accommodated. Therefore, we sequentially store the user sentences into a buffer and segment them, ensuring that as many sentences as possible are preserved while staying within the token limit. As a practical trick, if a sentence becomes empty after compression, we retain its original uncompressed version; if the token length of a sentence still exceeds the maximum limit, we continue to compress it using the LLMLingua-2 model at a 0.5 compression rate until the token length falls below the threshold. To reduce the effect of attention sinks, we mask out the contributions of the first and last three tokens in each sequence and subsequently normalize the remaining attention values. Attention is derived from the higher layers of LLMLingua-2 (layers 8, 9, 10, and 11). For any two sentences, we first compute token-level pairwise attention and average across tokens to obtain the overall attention of one sentence to the target sentence; we then average across the selected layers to obtain a more robust inter-sentence attention score. For each current sentence, the attention scores directed toward all preceding sentences are normalized within the sentence, yielding the final attention matrix. Residual fragments that remain after segmentation are carried over to the beginning of the next buffer for further processing, and this procedure continues iteratively until the dialogue ends.
+
+%%%%%%%%%%%%%%
+
+
+%the detailed rationale for topic segmentation
+%这个部分就是写具体怎么切割，某个位置出现了一个局部峰值点，就在这个位置切割（这里要写清楚峰值点的下标和分割点下标，数字上可能相差1）；然后要写一下我们为什么要在这个局部峰值点去切割，就是topic转变之后，注意力会怎么怎么变 balabala，这一块我之前口头和你解释过
+
+%%%%%%%%%%%%%%
+Based on the attention pattern, we focus on the sequence formed by each sentence’s attention scores relative to its immediately preceding sentence, which directly reflects the continuity of local semantics. Therefore, we take the attention scores from the outermost layer of the attention map. When the attention score at a given position is higher than both its preceding and following positions, it is regarded as a local peak. If a sentence is identified as a peak, we set a segmentation point immediately before this sentence, making the peak sentence the beginning of a new segment. The rationale is that the peak sentence exhibits consistently low attention to all earlier sentences overall and reflects a clear transition from an old topic to a new one, indicating that the identified sentence marks the initiation of a new topic.
+%%%%%%%%%%%%%%
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.48\textwidth]{figure/Attention_Matrix1.png}
+    \hfill
+    \includegraphics[width=0.48\textwidth]{figure/Attention_Matrix2.png}
+    % \hfill
+    % \includegraphics[width=0.32\textwidth]{figure/Attention_Matrix3.png}
+    \caption{Example of Topic Segment Attention Matrix.}
+    \label{fig:attention_matrix}
+\end{figure}
+
+%illustrative cases
+%就是给个切割得准一点的case，贴一个注意力图，然后标注一下切割点，然后说明我们方法切割得很准
+
+%%%%%%%%%%%%%%%
+Figure \ref{fig:attention_matrix} illustrates three representative examples of reliable segmentation under 50\% compression rate. In the first attention map, local peaks in the adjacent-sentence attention sequence appear at positions 5, 8, and 11, where the actual segmentation boundaries lie between sentences 4–5 and 11–12. In the second attention map, peaks occur at positions 3, 8, 12, and 14, and the actual boundaries are located between sentences 7–8, 11–12, and 13–14. 
+% In the third attention map, local peaks are observed at positions 7, 9, and 13, while the final segmentation boundaries fall between sentences 6–7, 8–9, and 14–15.
+Overall, our method achieves close alignment with the majority of true boundaries while providing finer-grained segmentation. These examples demonstrate that our segmentation approach enables both fine-grained and reliable detection of topic boundaries, thereby validating its effectiveness. 
+%%%%%%%%%%%%%%%
+
+\subsection{Category-wise Accuracy}
+As summarized in Table~\ref{tab:catwise_acc_by_model}, retrieval-augmented and memory-centric methods (e.g., \textit{A-MEM}, \textit{Mem0}, \textit{MemoryOS}) generally outperform \textit{Full Text} on categories that demand information integration or belief revision, such as \emph{Temporal}, \emph{Multi-Session}, and \emph{Knowledge-Update}.
+In contrast, categories such as \emph{Single-User} and \emph{Single-Assistant}, lightweight retrieval like \textit{Naive RAG} is often competitive and can be the most reliable option, while \emph{Single-Preference} shows higher variance due to its smaller sample size. 
+
+\input{table/category_acc}
+% LightMem补充后完善
+% Single-Preference的方差可以稍微分析一下
+
+
+% \subsection{Cost of Retrieval-Augmented Responses}
+% \input{table/cost_appendix}
+
+\subsection{Detailed Parameter Analysis}
+\label{lightmem_results}
+As Table~\ref{tab:lightmem_comparison} shows, we report the numerical results of the effects of LightMem parameters (compression ratio $r$ and STM threshold $th$).
+
+\input{table/threshold_ratio}
+\input{table/lightmem_results}

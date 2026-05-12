@@ -1,0 +1,173 @@
+[
+  {
+    "qid": "activity_todos_156",
+    "task": "remembering",
+    "question": "What tasks remain on my todo list this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "current_to_do_list"
+    },
+    "slot_type": "multi_valued",
+    "asks_truth_of_fact": true,
+    "applicable": false,
+    "canonical_key_str": "user||current_to_do_list"
+  },
+  {
+    "qid": "content_project_proposal_156_project_proposal_1",
+    "task": "remembering",
+    "question": "Write a project proposal for 'Regional Logistics Network Optimization Initiative'",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_project_proposal_156_project_proposal_2",
+    "task": "remembering",
+    "question": "Write a project proposal for 'AI-Driven Credit Risk Scoring Model Enhancement'",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_email_writeup_156_email_writeup_1",
+    "task": "remembering",
+    "question": "Write an email about: To provide a preliminary financial analysis of the regional AI pilot program's performance and outline key considerations for the next phase.",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_meeting_notes_156_meeting_notes_2",
+    "task": "remembering",
+    "question": "Write meeting notes for: Financial Performance Review & Strategic Capital Allocation",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "activity_food_total_156",
+    "task": "reasoning",
+    "question": "What is my total food spending this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "food_spending"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||food_spending"
+  },
+  {
+    "qid": "activity_steps_total_156",
+    "task": "reasoning",
+    "question": "How many total steps have I taken this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "step_count"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||step_count"
+  },
+  {
+    "qid": "goal_food_expenses_lunch_156_0",
+    "task": "reasoning",
+    "question": "Am I meeting my lunch budget goal?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "lunch_budget_goal"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||lunch_budget_goal"
+  },
+  {
+    "qid": "goal_step_tracker_daily_steps_156_0",
+    "task": "reasoning",
+    "question": "Am I meeting my daily step goal?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "daily_step_goal_met"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||daily_step_goal_met"
+  },
+  {
+    "qid": "activity_food_coffee_156",
+    "task": "reasoning",
+    "question": "How much have I spent on coffee this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "coffee_spending"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||coffee_spending"
+  },
+  {
+    "qid": "pref_movies_general_156",
+    "task": "recommending",
+    "question": "Can you suggest me a movie?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_books_general_156",
+    "task": "recommending",
+    "question": "I'm looking for a good book to read. Any suggestions?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_music_general_156",
+    "task": "recommending",
+    "question": "Can you suggest me some music?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_travel_general_156",
+    "task": "recommending",
+    "question": "Where should I travel next?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_books_authors_156",
+    "task": "recommending",
+    "question": "Can you recommend a book by authors I like?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "liked_authors"
+    },
+    "slot_type": "multi_valued",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": "user||liked_authors"
+  }
+]

@@ -1,0 +1,122 @@
+{
+  "args": {
+    "method": "ttmg",
+    "limit": 500,
+    "stratify": false,
+    "types": null,
+    "only_abs": false,
+    "include_abs": true,
+    "max_sessions": 3,
+    "writer_model": "Kimi-K2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "Kimi-K2",
+    "embed_model": "all-MiniLM-L6-v2",
+    "seed": 0,
+    "output": "results/full500_ttmg.json",
+    "progress_every": 1,
+    "disable_temporal": false,
+    "disable_contradict": false,
+    "disable_consistent_subgraph": false,
+    "disable_supersede_flag": false,
+    "disable_writer_claims": false,
+    "disable_abstention": false
+  },
+  "rows": [
+    {
+      "question_id": "e47becba",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "What degree did I graduate with?",
+      "gold": "Business Administration",
+      "pred": "You graduated with a degree in Business Administration.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.4,
+      "abstained": false,
+      "retrieve_time": 1.5346970558166504,
+      "reader_time": 1.4821197986602783,
+      "ingest_time": 52.92084622383118,
+      "answer_time": 3.0278759002685547,
+      "metrics": {
+        "writer_calls": 3,
+        "linker_calls": 4,
+        "parser_calls": 1,
+        "reader_calls": 1,
+        "abstentions": 0
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "118b2229",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "How long is my daily commute to work?",
+      "gold": "45 minutes each way",
+      "pred": "Your daily commute takes 45 minutes each way.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.6666666666666666,
+      "abstained": false,
+      "retrieve_time": 1.4415454864501953,
+      "reader_time": 1.9546897411346436,
+      "ingest_time": 80.53994011878967,
+      "answer_time": 3.405381679534912,
+      "metrics": {
+        "writer_calls": 3,
+        "linker_calls": 6,
+        "parser_calls": 1,
+        "reader_calls": 1,
+        "abstentions": 0
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "51a45a95",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "Where did I redeem a $5 coupon on coffee creamer?",
+      "gold": "Target",
+      "pred": "Based on the provided memory, you redeemed the coupon last Sunday, but the specific location is not mentioned in the claims.",
+      "correct": 0,
+      "judge_reason": "Model abstains, but reference provides a specific location.",
+      "f1": 0.0,
+      "abstained": false,
+      "retrieve_time": 1.4926114082336426,
+      "reader_time": 3.642220973968506,
+      "ingest_time": 358.85611510276794,
+      "answer_time": 5.144845724105835,
+      "metrics": {
+        "writer_calls": 3,
+        "linker_calls": 5,
+        "parser_calls": 1,
+        "reader_calls": 1,
+        "abstentions": 0
+      },
+      "n_sessions": 3
+    },
+    {
+      "question_id": "58bf7951",
+      "question_type": "single-session-user",
+      "is_abstention": false,
+      "question": "What play did I attend at the local community theater?",
+      "gold": "The Glass Menagerie",
+      "pred": "The play you attended was *The Glass Menagerie*.",
+      "correct": 1,
+      "judge_reason": "Model answer matches reference exactly.",
+      "f1": 0.5454545454545454,
+      "abstained": false,
+      "retrieve_time": 1.4413557052612305,
+      "reader_time": 1.1426076889038086,
+      "ingest_time": 51.618401288986206,
+      "answer_time": 2.592703104019165,
+      "metrics": {
+        "writer_calls": 3,
+        "linker_calls": 1,
+        "parser_calls": 1,
+        "reader_calls": 1,
+        "abstentions": 0
+      },
+      "n_sessions": 3
+    }
+  ]
+}

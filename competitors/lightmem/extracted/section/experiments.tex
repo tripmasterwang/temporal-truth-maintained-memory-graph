@@ -1,0 +1,141 @@
+\input{table/main_results}
+\section{experiments}
+
+\subsection{experimental setup}
+\noindent \textbf{Experimental Details.}
+(1) Our experiments adopt a realistic \textbf{\textit{Incremental Dialogue Turn Feeding}} setting, where the entire dialogue history is fed and processed \textbf{at the turn level, one turn at a time}. 
+This reflects practical scenarios where interactions between user and model is incrementally formed turn by turn.~\citep{hu2025evaluatingmemoryllmagents}.
+(2) For considerations of both efficiency and effectiveness, we employ LLMLingua-2 as our pre-compressor throughout all subsequent experiments. 
+(3) The attention scores for topic segmentation are also obtained using LLMLingua-2, the size of the sensory memory buffer is 512 tokens. 
+All specific models used in this paper, can be found in Table~\ref{tab:function_model_map}. 
+
+\noindent \textbf{Datasets \& Baseline Methods.}
+\change{We use two well-known datasets, \textsc{LongMemEval}~\citep{DBLP:conf/iclr/WuWYZCY25} (specifically the LongMemEval-S split) and \textsc{LoCoMo}~\citep{maharana2024evaluatinglongtermconversationalmemory} to evaluate memory ability.}
+We compare \textbf{LightMem} against several representative baselines of conversational memory modeling. 
+\ding{172} \textit{Full Text}, 
+\ding{173} \textit{Naive RAG}, 
+\ding{174} \textit{LangMem}~\citep{LangMemBlog},
+\ding{175} \textit{A-MEM}~\citep{Xu2025AMEMAM}, 
+\ding{176} \textit{MemoryOS}~\citep{Kang2025MemoryOO}, 
+\ding{177} \textit{Mem0}~\citep{Chhikara2025Mem0BP}. 
+In addition, all methods use GPT-4o-mini, Qwen3-30B-A3B-Instruct-2507 and GLM-4.6 as the LLM backbones.
+Details on dataset, baselines, and experimental settings are provided in the Appendix~\ref{experiment_detail}. 
+
+\noindent \textbf{Metrics.}
+We evaluate these methods using both effectiveness and efficiency metrics. 
+For effectiveness, we report \textbf{Accuracy (ACC)}, defined as the proportion of correctly answered questions. 
+The evaluation is conducted with \emph{GPT-4o-mini} as an LLM judge, guided by a detailed evaluation prompt (see Appendix~\ref{prompts:LLM-as-Judge}). 
+For efficiency, we focus on tracking the computational costs of the LLM invocations in memory bank construction stage (see Section~\ref{main_text_preliminary}), all averaged across the entire dataset, as it is the one tied to the design and implementation differences of memory systems. 
+The retrieval and usage stage is not our focus, because for fair comparison, The $f_{\text{retrieve}}()$, $f_{\text{chat}}()$ and number of retrieved entries are same among all methods. As a result, their costs exhibit only minor differences, and this stage is largely orthogonal to the design of memory systems, as shown in the table. 
+Within the memory bank construction stage, only the two sub-processes  \textbf{Summary} and \textbf{Update} involve the use of LLMs, $f_{\text{sum/extract}}()$ and $f_{\text{update}}()$. 
+So for both processes, we report the token consumption from LLM calls, including input tokens, output tokens, and total token usage (in thousands). 
+Additionally, we track \textbf{API Calls} counting the total number of LLM invocations, and \textbf{Runtime} recording the overall execution time for memory bank construction stage. 
+% as indicated in Table~\ref{tab:rag_cost_time}, 
+
+\input{table/main_results_locomo}
+
+\subsection{main results}
+
+As shown in Table~\ref{tab:memory_comparison} and Table~\ref{tab:memory_comparison_locomo}, \textbf{LightMem} demonstrates superior effectiveness and efficiency on both datasets across both GPT and Qwen backbones. 
+For a fair comparison, all efficiency metrics for LightMem in the following analysis refer to the \textbf{combined online and offline} costs.
+
+
+\noindent \textbf{LongMemEval.} 
+On the LongMemEval benchmark, LightMem consistently outperforms the strongest baseline, A-Mem, in the ACC metric, improving accuracy by 2.09\%--6.40\% with GPT and up to 7.67\% with Qwen. In terms of efficiency, for GPT, LightMem reduces total token consumption by 10$\times$--38$\times$ and API calls by 3.6$\times$--30$\times$; for Qwen, it reduces total tokens by 6.9$\times$--21.8$\times$ and API calls by 3.3$\times$--17.1$\times$. Regarding runtime, LightMem achieves 2.9$\times$--12.4$\times$ for GPT and 1.6$\times$--6.3$\times$ for Qwen speedup over other memory baselines. 
+
+If considering only online test-time cost, LightMem shows an even larger efficiency advantage. 
+For GPT, LightMem reduces total token consumption by 31.4$\times$--105.9$\times$ and API calls by 17.1$\times$--159.4$\times$; for Qwen, it reduces total tokens by 30.1$\times$--117.1$\times$ and API calls by 24.8$\times$--309.9$\times$. 
+
+\noindent \textbf{\change{LoCoMo.}} 
+\change{On the LoCoMo dataset, LightMem also demonstrates superior performance over other memory baselines. For the GPT backbone, it improves ACC by 6.10\%--18.12\%, achieves a 2.87$\times$--20.92$\times$ improvement in total token efficiency, reduces API calls by 13.29$\times$--39.78$\times$, and accelerates runtime by 2.63$\times$--8.21$\times$. On the Qwen backbone, LightMem maintains its advantage in both effectiveness and efficiency, with 4.41\%--29.29\% higher ACC, 3.33$\times$--18.02$\times$ reduction in total token consumption, 12.96$\times$--55.48$\times$ fewer API calls, and 1.18$\times$--5.57$\times$ faster runtime.}
+
+\textbf{LightMem achieves superior performance on nearly all metrics and both LLM backbones, while demonstrating robust performance and efficiency on both LongMemEval and LoCoMo, highlighting its generalizability across different models and scenarios.}
+
+\footnotetext{MemoryOS(locomo) is the LoCoMo reproduction script in the MemoryOS library, simplifying the standard version, shown as MemoryOS(regular).}
+
+\begin{figure*}[t]
+    \centering
+    \includegraphics[width=1\textwidth]{figure/figure4.pdf}
+    \caption{
+    Analysis and Ablation Study of Key Modules. 
+    Fig.(a) depicts the QA accuracy when using prompts compressed at different ratios ($r$) as in-contexts to query the LLM directly. 
+    Fig.(b) compares the accuracy of different topic segmentation methods under these varying compression ratios. 
+    Fig.(c1) and Fig.(c2) present the ablation study for the topic segmentation module, evaluating its impact on both performance and efficiency for the GPT and Qwen models.}
+    \label{fig:analysis}
+\end{figure*}
+\subsection{Analysis of Pre-Compressing Submodule}
+\noindent \textbf{Performance and Overhead.}
+LightMem uses an additional model~\citep{pan2024llmlingua,xia2025tokenskip} for pre-compression. 
+We evaluate its performance by randomly sampling 1/5 of \textsc{LongMemEval} and compressing it at ratios shown in Figure~\ref{fig:analysis}(a), then prompting LLMs for in-context QA. 
+When compression ratio $r$ ranges from 50\%--80\%, compressed and uncompressed performance are comparable, demonstrating LLMs can effectively understand compressed content and validating LightMem's approach. 
+The submodule is highly efficient, consuming under 2GB of GPU memory with negligible impact on overall runtime.
+
+\noindent \textbf{Impact of $r$ on Performance.}
+As shown in Tables~\ref{tab:r_th} and ~\ref{tab:lightmem_comparison}, The optimal $r$ for ACC is dependent on the STM buffer threshold $th$. 
+For smaller thresholds ($th \in \{0, 256\}$), an $r$ of 0.6 achieves the highest ACC. 
+In contrast, for larger thresholds ($th \in \{512, 1024\}$), a higher retention rate of $r=0.7$ performs best. 
+This suggests greater buffer capacity enables effective use of richer, less-compressed information, leveraging LLMs' advanced long-context processing to mitigate the ``lost in the middle'' phenomenon.
+On average, the optimal $r$ for ACC is 0.6, reflecting a trade-off between information compression rate and the quantity of information in the STM buffer.
+In terms of efficiency, a lower $r$ generally leads to higher efficiency, as it triggers the buffer threshold less frequently under the same $th$, resulting in fewer API calls and lower token consumption.
+
+\subsection{Analysis of Topic Segmentation Submodule}
+\noindent \textbf{Segmentation Accuracy.}
+To validate the accuracy of our proposed hybrid topic segmentation method, we compare it with segmentation using only a single granularity: attention-only-based and similarity-only-based segmentation. 
+Since the construction process of the \textsc{LongMemEval} indicates that different sessions naturally serve as topic boundaries, we directly use them as ground-truth labels. 
+The final accuracy is calculated as the number of correctly identified segmentation points divided by the total number of labels. 
+The results in Figure~\ref{fig:analysis}(b) validate the effectiveness of our method: it achieves higher accuracy than both individual segmentation methods across all compression ratios, with an absolute accuracy exceeding 80\%.
+
+\noindent \textbf{Ablation Study.}
+As shown in Figure~\ref{fig:analysis}(c), removing the topic segmentation submodule slightly improves efficiency but significantly harms accuracy, causing a 6.3\% drop for GPT and 5.4\% for Qwen. 
+This indicates that the submodule effectively enables models to perceive semantic units in the input, facilitating subsequent memory unit generation. 
+
+\subsection{Analysis of the STM Threshold's Impact}
+
+As illustrated in the Figure~\ref{fig:lightmem_radar}, the STM buffer threshold ($th$) has a distinct but significant impact on both efficiency and performance metrics.
+A consistent trend is: as $th$ increases, there is a marked improvement in efficiency.
+In contrast, the effect on QA accuracy is non-monotonic. 
+The optimal threshold for accuracy varies depending on the model and the compression ratio ($r$), indicating that a larger buffer does not always yield better performance. 
+This highlights a crucial trade-off: 
+while a larger STM threshold is consistently better for reducing computational cost, the ideal setting for maximizing task accuracy requires careful tuning.
+
+\subsection{Analysis of Sleep-Time Update}
+\label{sec:case_study}
+\noindent \textbf{Why Soft Updates Work.}
+A primary challenge in designing memory systems is handling updates. 
+While powerful, LLMs can be unreliable when tasked with complex real-time update operations. 
+For instance, when presented with two related but not contradictory pieces of information, an LLM might incorrectly interpret them as a conflict and delete the older memory entry, leading to irreversible information loss. 
+Instead, the optimal operations might be to merge the information or simply add the new entry. 
+In contrast, \textbf{LightMem} performs only incremental additions through soft updates during test time, which preserves global information and complete semantics.
+\begin{tcolorbox}[
+    title=\textbf{Case Study: Memory Update Mechanism Comparison},
+    colback=gray!5,
+    colframe=black!60,
+    fonttitle=\bfseries,
+]
+\small
+\textbf{History1:} \verb|{'Monday, 2 PM': User is planning a trip to Tokyo.}|
+
+\textbf{History2:} \verb|{'Monday, 4 PM': User asks about trains to Kyoto.}|
+
+\noindent
+\begin{minipage}[t]{0.49\linewidth}
+    \textcolor{red!70!black}{\textbf{Hard Update:}} Overwrites memory
+    \\ \texttt{-> "User plans Kyoto trip"}
+    \\ \textcolor{red!60}{\faExclamationTriangle\, Tokyo context lost}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.49\linewidth}
+    \textcolor{green!60!black}{\textbf{LightMem Soft Update:}} Appends info
+    \\ \texttt{-> "Tokyo trip + Kyoto inquiry"}  
+    \\ \textcolor{green!60}{\faCheckCircle\, Full context preserved}
+\end{minipage}
+\end{tcolorbox}
+
+% \noindent \textbf{The advantages of offline parallel updates.}
+% Table~\ref{tab:lightmem_comparison}  demonstrates the efficiency of our offline update strategy. 
+% The data indicates that memory consolidation is not a constant, high-frequency process; only a modest number of update consolidations ($U_{cnt}$) are typically triggered. 
+% Moreover, the memory state remains stable, with total entries ($E_{bld}$ vs. 
+% $E_{par}$) changing minimally after parallel updates. This signifies that LightMem largely preserves existing memory while efficiently merging relevant information offline. 
+% Critically, the $C_{ser}$ column reveals that a conventional online, serial update process would significantly increase latency, by \textbf{5x for GPT} and \textbf{8x for Qwen}. 
+% Decoupling consolidation from real-time inference thus allows LightMem to maintain a highly responsive experience, which is crucial for interactive agents.
+% \input{table/tree_update}

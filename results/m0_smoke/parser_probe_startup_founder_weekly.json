@@ -1,0 +1,173 @@
+[
+  {
+    "qid": "content_project_proposal_155_project_proposal_1",
+    "task": "remembering",
+    "question": "Write a project proposal for 'Bio-AI Performance Optimization Suite for Gene Sequencing'",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_meeting_notes_155_meeting_notes_1",
+    "task": "remembering",
+    "question": "Write meeting notes for: Strategic Accessibility Integration for Biotech Platform",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_meeting_notes_155_meeting_notes_2",
+    "task": "remembering",
+    "question": "Write meeting notes for: Pilot Cost-Reduction Strategy Review: Biotech North America",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "activity_calendar_155",
+    "task": "remembering",
+    "question": "What upcoming events do I have in my calendar?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "calendar_events"
+    },
+    "slot_type": "multi_valued",
+    "asks_truth_of_fact": true,
+    "applicable": false,
+    "canonical_key_str": "user||calendar_events"
+  },
+  {
+    "qid": "content_email_writeup_155_email_writeup_2",
+    "task": "remembering",
+    "question": "Write an email about: To introduce our AI-driven content personalization solution and explore partnership opportunities that leverage our technology to enhance their user experience.",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "activity_food_total_155",
+    "task": "reasoning",
+    "question": "What is my total food spending this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "food_spending"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||food_spending"
+  },
+  {
+    "qid": "activity_steps_total_155",
+    "task": "reasoning",
+    "question": "How many total steps have I taken this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "step_count"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||step_count"
+  },
+  {
+    "qid": "goal_food_expenses_coffee_155_0",
+    "task": "reasoning",
+    "question": "Am I meeting my coffee budget goal?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "coffee_budget_goal"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||coffee_budget_goal"
+  },
+  {
+    "qid": "goal_step_tracker_daily_steps_155_0",
+    "task": "reasoning",
+    "question": "Am I meeting my daily step goal?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "daily_step_goal_achieved"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||daily_step_goal_achieved"
+  },
+  {
+    "qid": "activity_food_coffee_155",
+    "task": "reasoning",
+    "question": "How much have I spent on coffee this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "coffee_spending"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||coffee_spending"
+  },
+  {
+    "qid": "pref_movies_general_155",
+    "task": "recommending",
+    "question": "Can you suggest me a movie?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_books_general_155",
+    "task": "recommending",
+    "question": "Can you suggest me a book?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_music_general_155",
+    "task": "recommending",
+    "question": "What music would you recommend?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_travel_general_155",
+    "task": "recommending",
+    "question": "I'm planning a trip. Any destination suggestions?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_travel_regions_155",
+    "task": "recommending",
+    "question": "Can you recommend places in regions I like?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "liked_regions"
+    },
+    "slot_type": "multi_valued",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": "user||liked_regions"
+  }
+]

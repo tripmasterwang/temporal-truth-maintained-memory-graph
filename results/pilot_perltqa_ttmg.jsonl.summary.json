@@ -1,0 +1,35 @@
+{
+  "bench": "perltqa",
+  "args": {
+    "bench": "perltqa",
+    "dataset_root": null,
+    "qaconv_split": "test",
+    "method": "ttmg",
+    "out": "results/pilot_perltqa_ttmg.jsonl",
+    "limit": 2,
+    "seed": 0,
+    "callb_model": "results/lb_mlp.json",
+    "callb_crc": "results/lb_crc.json",
+    "callb_alpha": 0.2,
+    "no_crc_threshold": 0.5,
+    "rerank_top_k": 3,
+    "writer_model": "deepseek-v3.2",
+    "reader_model": "deepseek-v3.2",
+    "parser_model": "deepseek-v3.2",
+    "embed_model": "all-MiniLM-L6-v2"
+  },
+  "elapsed_sec": 296.24830865859985,
+  "n_written_this_run": 2,
+  "summary": {
+    "n": 2,
+    "accuracy": 1.0,
+    "f1": 0.27406353722143195,
+    "abstain_rate": 0.0,
+    "per_type": {
+      "perltqa": {
+        "n": 2,
+        "acc": 1.0
+      }
+    }
+  }
+}

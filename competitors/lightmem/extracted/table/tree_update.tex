@@ -1,0 +1,27 @@
+\begin{table}[htbp]
+\centering
+\small
+\caption{Sensitivity of memory pipeline. 
+$r$: compression ratio; $th$: STM buffer threshold; 
+$E_{bld}$: entries after memory build; 
+$U_{cnt}$: update count; 
+$E_{par}$: entries after parallel updates; 
+$C_{ser}$: cost if updates are executed serially (vs.\ parallel).}
+\vspace{1ex}
+\label{tab:mem-abbrev}
+\begin{tabular}{@{}l c c r r r r@{}}
+\toprule
+Model & $r$ & $th$ & $E_{bld}$ & $U_{cnt}$ & $E_{par}$ & $C_{ser}$ \\
+\midrule
+\multirow{3}{*}{\textbf{GPT}}
+ & 0.5 & 256  & --     & --     & --     & 5x \\
+ & 0.6 & 256  & --     & --     & --     & 5x\\
+ & 0.7 & 512  & --     & --     & --     & 5x \\
+\cmidrule(lr){1-7}
+\multirow{3}{*}{\textbf{Qwen}}
+ & 0.4 & 768  & 594.36 & 178.40 & 550.09 & 8x \\
+ & 0.6 & 768  & 541.99 & 152.93 & 527.23 & 8x \\
+ & 0.8 & 1024 & --     & --     & --     & 8x \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -22,8 +22,12 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 from review_via_maas import REVIEWER_PROMPTS, review_paper  # type: ignore
 
 
-# Three models (must match api.py's MAAS_CHAT_MODEL_IDS).
-MODELS = ["qwen3-235b-a22b", "Kimi-K2", "glm-5"]
+# Reviewer models per updated spec
+# (note/prompt/写论文prompt §四 line 195): 3 prompts × {kimi-k2.6, glm-5.1}.
+# kimi-k2.6 returns 403 Forbidden on this MAAS tenancy, so we substitute
+# Kimi-K2 (the closest model we have access to). The persona prompts are
+# unchanged from r1-r7; only the model identifiers change.
+MODELS = ["Kimi-K2", "glm-5.1"]
 
 
 def main() -> None:

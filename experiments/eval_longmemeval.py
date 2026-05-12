@@ -202,6 +202,34 @@ def run_one(
             writer_model=writer_model, reader_model=reader_model, k=8, use_analysis=False
         )
         sys_obj = AMemBaseline(cfg, embed_model=embed_model)
+    elif method == "ttmg_beta":
+        # Pivot β v2: enable_beta + beta writer + 3-call linker + applicability gate
+        # + canonical-key fetch + all-optima MWIS + value-level decision rule + CRC
+        # threshold (when crc_table_path is provided).
+        beta_overrides = {
+            k: v for k, v in ablation_flags.items()
+            if k in ("crc_table_path", "crc_alpha", "score_w_h", "score_w_u",
+                     "score_w_p", "pmi_scale", "pmi_model", "enable_pmi",
+                     "beta_no_groups", "beta_no_canonical_key", "beta_no_3call")
+        }
+        # Path-D ablation flags filtered out for β (they don't apply to β path).
+        cfg = TTMGConfig(
+            writer_model=writer_model,
+            linker_model=writer_model,
+            parser_model=parser_model,
+            reader_model=reader_model,
+            batch_writer_per_session=True,
+            linker_min_similarity=0.55,
+            linker_candidate_k=4,
+            knn_k_read=8,
+            top_keep=3,
+            hard_threshold=0.7,
+            enable_beta=True,
+            enable_beta_writer=True,
+            enable_beta_linker=True,
+            **beta_overrides,
+        )
+        sys_obj = TTMGSystem(cfg, embed_model=embed_model)
     else:
         raise ValueError(f"unknown method {method}")
     print(f"  [ingest] {len(sessions)} sessions, starting...", flush=True)
@@ -279,7 +307,7 @@ def summarise(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--method", choices=["ttmg", "amem", "amem_flat"], required=True)
+    ap.add_argument("--method", choices=["ttmg", "amem", "amem_flat", "ttmg_beta"], required=True)
     ap.add_argument("--limit", type=int, default=30)
     ap.add_argument("--stratify", action="store_true")
     ap.add_argument("--types", nargs="*", default=None)
@@ -293,22 +321,46 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--output", required=True)
     ap.add_argument("--progress-every", type=int, default=1)
-    # Ablation flags
+    # Ablation flags (Path D)
     ap.add_argument("--disable-temporal", action="store_true")
     ap.add_argument("--disable-contradict", action="store_true")
     ap.add_argument("--disable-consistent-subgraph", action="store_true")
     ap.add_argument("--disable-supersede-flag", action="store_true")
     ap.add_argument("--disable-writer-claims", action="store_true")
     ap.add_argument("--disable-abstention", action="store_true")
+    # β-specific knobs
+    ap.add_argument("--crc-table-path", default=None)
+    ap.add_argument("--crc-alpha", type=float, default=0.10)
+    ap.add_argument("--score-w-h", type=float, default=0.5)
+    ap.add_argument("--score-w-u", type=float, default=0.3)
+    ap.add_argument("--score-w-p", type=float, default=0.0)  # 0 until PMI verified
+    ap.add_argument("--pmi-scale", type=float, default=5.0)
+    ap.add_argument("--pmi-model", default=None)
+    ap.add_argument("--enable-pmi", action="store_true")
+    ap.add_argument("--beta-no-groups", action="store_true")
+    ap.add_argument("--beta-no-canonical-key", action="store_true")
+    ap.add_argument("--beta-no-3call", action="store_true")
     args = ap.parse_args()
 
-    ablation_flags: Dict[str, bool] = dict(
+    ablation_flags: Dict[str, Any] = dict(
         disable_temporal=args.disable_temporal,
         disable_contradict=args.disable_contradict,
         disable_consistent_subgraph=args.disable_consistent_subgraph,
         disable_supersede_flag=args.disable_supersede_flag,
         disable_writer_claims=args.disable_writer_claims,
         enable_abstention=not args.disable_abstention,
+        # β-specific (consumed only when method=ttmg_beta)
+        crc_table_path=args.crc_table_path,
+        crc_alpha=args.crc_alpha,
+        score_w_h=args.score_w_h,
+        score_w_u=args.score_w_u,
+        score_w_p=args.score_w_p,
+        pmi_scale=args.pmi_scale,
+        pmi_model=args.pmi_model,
+        enable_pmi=args.enable_pmi,
+        beta_no_groups=args.beta_no_groups,
+        beta_no_canonical_key=args.beta_no_canonical_key,
+        beta_no_3call=args.beta_no_3call,
     )
 
     items = load_dataset(

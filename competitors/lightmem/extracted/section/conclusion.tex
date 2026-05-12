@@ -1,0 +1,25 @@
+\section{conclusion}
+In this work, we introduced LightMem, a lightweight and efficient memory framework designed to address the significant overhead of memory systems for LLM agents.
+Inspired by the multi-stage Atkinson-Shiffrin human memory model, LightMem's architecture effectively filters, organizes, and consolidates information. 
+Our empirical evaluation demonstrates that this approach maintains strong task performance while sharply reducing computational costs. 
+In the near future, we plan to accelerate LightMem’s update phase via offline pre-computed KV caches, reducing runtime overhead. We aim to integrate a lightweight knowledge graph memory for explicit multi-hop reasoning and structured retrieval. A multimodal memory extension will enable adaptation to visual, auditory, and textual inputs in embodied and real-world scenarios.
+
+% 我们后续会进一步将lightmem框架进行扩展，包括在离线更新阶段KV Cache的预计算，使得更新过程进一步加速；为了更好地解决多跳推理难题，我们还会集成一个轻量级的knowledge graph-based memory；以及一个多模态的memory，来适配更多的多模态模型以及适应更多的场景，尤其是agent/具身智能等对多模态和momory需求更高的场景。
+
+% \textbf{Offline Update Acceleration.}
+% We plan to enhance the efficiency of LightMem’s update phase by incorporating pre-computed key–value (KV) caches.
+% This optimization allows KV cache pre-computation to be performed offline, significantly accelerating memory consolidation and reducing runtime overhead during interactive sessions.
+
+% \textbf{Knowledge Graph-based Memory.}
+% To better address complex multi-hop reasoning challenges, we aim to integrate a lightweight knowledge graph-based memory module.
+% This module will support explicit relational reasoning and structured information retrieval, enabling the model to perform more interpretable and compositional reasoning across interconnected knowledge entities.
+
+% \textbf{Multimodal Memory Extension.}
+% We further plan to develop a multimodal memory mechanism that allows LightMem to adapt to multimodal models and scenarios.
+% Such an extension is crucial for embodied agents and real-world applications where visual, auditory, and textual information jointly contribute to memory formation and retrieval.
+
+% \textbf{Parametric–Nonparametric Synergy.}
+% We will explore the collaborative mechanisms between parametric and non-parametric memory components.
+% To bridge the gap between the two paradigms, we aim to enable more flexible, synergistic knowledge utilization, combining the efficiency of parametric representations with the interpretability and adaptability of non-parametric storage.
+
+

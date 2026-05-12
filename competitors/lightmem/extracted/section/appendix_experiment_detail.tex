@@ -1,0 +1,37 @@
+\section{Experiment Details}
+\label{experiment_detail}
+
+% 两个paragraph
+% 数据集和baseline的介绍
+\subsection{Datasets and Baselines}
+\paragraph{Datasets} 
+The LongMemEval dataset~\citep{DBLP:conf/iclr/WuWYZCY25} is designed to benchmark long-term interactive memory in conversational agents. 
+It comprises 500 evaluation questions built upon extended user-assistant dialogues. 
+It has two different versions with different lengths: the \textsc{LongMemEval-S} setting contains approximately 115k tokens per problem, while the \textsc{LongMemEval-M} setting extends up to 1.5 million tokens across 500 sessions. 
+In our work, we adopt the \textsc{LongMemEval-S} version due to its balance between dialogue length and computational feasibility.
+The questions are categorized into multiple types: 
+information extraction, multi-session reasoning, knowledge updates, temporal reasoning, and abstention. 
+Overall, the dataset is characterized by extremely long histories, wide temporal spans, and diverse question types, making it a comprehensive benchmark for evaluating conversational agents' memory capabilities. 
+During the experiments, five samples from this dataset contained corrupted characters, which caused LightMem’s compression model to fail to run properly. Consequently, LightMem directly discarded these five samples when processing the dataset. 
+However, their accuracy results were uniformly treated as false. The indices of these five samples in the dataset are 74, 183, 278, 351, and 380. 
+
+The \textsc{LoCoMo} benchmark targets the evaluation of long-range conversational memory. It features extremely long dialogues, with each conversation spanning roughly 300 turns and around 9K tokens on average. The accompanying questions fall into four categories—Single-hop, Multi-hop, Temporal, and Open-domain—providing a comprehensive assessment of different dimensions of memory in LLMs.
+
+
+% LangMem、A-MEM、MemoryOS、Mem0
+\paragraph{Baselines}
+We compare our approach against several representative baselines of conversational memory modeling. 
+\ding{172} \textsc{LangMem}~\citep{LangMemBlog}: The Langchain's long-term memory module.
+\ding{173} \textsc{A-MEM}~\citep{Xu2025AMEMAM}: Constructs a memory-centric knowledge graph, encoding each interaction as a structured memory note and linking these notes via LLM-driven reasoning.
+\ding{174} \textsc{MemoryOS}~\citep{Kang2025MemoryOO}: Organizes conversational memory in an OS-inspired hierarchy, structuring interactions into short-term, mid-term, and long-term layers via paging and heat-based updating.
+\ding{175} \textsc{Mem0}~\citep{Chhikara2025Mem0BP}: Extracts memories from dialogue turns through a combination of global summaries and recent context, maintaining them via LLM-guided operations.
+
+% : Organizes conversational memory in an OS-inspired hierarchy, structuring interactions into short-term, mid-term, and long-term layers via paging and heat-based updating
+
+% : Extracts memories from dialogue turns through a combination of global summaries and recent context, maintaining them via LLM-guided operations
+
+
+% 具体实验设定的细节组件：
+\subsection{Implementation Details}
+All the experiments are conducted on hardware equipped with 4×NVIDIA RTX 3090 GPUs, dual Intel Xeon Gold 6133 CPUs (40 cores, 80 threads), and 256 GB of RAM.
+% Lightmem 细节

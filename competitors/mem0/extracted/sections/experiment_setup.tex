@@ -1,0 +1,80 @@
+\section{Experimental Setup}
+\label{sec:experiment_setup}
+
+
+\subsection{Dataset}
+The \texttt{LOCOMO} \citep{maharana2024evaluating} dataset is designed to evaluate long-term conversational memory in dialogue systems. It comprises 10 extended conversations, each containing approximately 600 dialogues and 26000 tokens on average, distributed across multiple sessions. Each conversation captures two individuals discussing daily experiences or past events. Following these multi-session dialogues, each conversation is accompanied by 200 questions on an average with corresponding ground truth answers. These questions are categorized into multiple types: single-hop, multi-hop, temporal, and open-domain. The dataset originally included an adversarial question category, which was designed to test systems' ability to recognize unanswerable questions. However, this category was excluded from our evaluation because ground truth answers were unavailable, and the expected behavior for this question type is that the agent should recognize them as unanswerable.
+
+\subsection{Evaluation Metrics}
+Our evaluation framework implements a comprehensive approach to assess long-term memory capabilities in dialogue systems, considering both response quality and operational efficiency. We categorize our metrics into two distinct groups that together provide a holistic understanding of system performance.
+
+\paragraph{\texttt{(1)} Performance Metrics}
+Previous research in conversational AI \citep{goswami2025dissecting, soni2024evaluating, singh2020ensemble} has predominantly relied on lexical similarity metrics such as \textbf{F1 Score} (\Fone) and \textbf{BLEU-1} (\Bone). However, these metrics exhibit significant limitations when evaluating factual accuracy in conversational contexts. Consider a scenario where the ground truth answer is `\textit{Alice was born in March}' and a system generates `\textit{Alice is born in July}.' Despite containing a critical factual error regarding the birth month, traditional metrics would assign relatively high scores due to lexical overlap in the remaining tokens (`\textit{Alice},' `\textit{born},' etc.). This fundamental limitation can lead to misleading evaluations that fail to capture semantic correctness.
+To address these shortcomings, we use \textbf{LLM-as-a-Judge} (\Judge) as a complementary evaluation metric. This approach leverages a separate, more capable LLM to assess response quality across multiple dimensions, including factual accuracy, relevance, completeness, and contextual appropriateness. The judge model analyzes the question, ground truth answer and the generated answer, providing a more nuanced evaluation that aligns better with human judgment. Due to the stochastic nature of \Judge~evaluations, we conducted 10 independent runs for each method on the entire dataset and report the mean scores along with $\pm$1 standard deviation. More details about the \Judge~is present in Appendix \ref{appendix:llm_judge}.
+
+\paragraph{\texttt{(2)} Deployment Metrics}
+Beyond response quality, practical deployment considerations are crucial for real-world applications of long-term memory in AI agents. We systematically track \textbf{Token Consumption}, using `\texttt{cl100k\_base}' encoding from \texttt{tiktoken}, measuring the number of tokens extracted during retrieval that serve as context for answering queries. For our memory-based models, these tokens represent the memories retrieved from the knowledge base, while for RAG-based models, they correspond to the total number of tokens in the retrieved text chunks. This distinction is important as it directly affects operational costs and system efficiency—whether processing concise memory facts or larger raw text segments. We further monitor \textbf{Latency}, (i) \emph{search latency}: which captures the total time required to search the memory (in memory-based solutions) or chunk (in RAG-based solutions) and (ii) \emph{total latency:} time to generate appropriate responses, consisting of both retrieval time (accessing memories or chunks) and answer generation time using the LLM.
+
+The relationship between these metrics reveals important trade-offs in system design. For instance, more sophisticated memory architectures might achieve higher factual accuracy but at the cost of increased token consumption and latency. Our multi-dimensional evaluation methodology enables researchers and practitioners to make informed decisions based on their specific requirements, whether prioritizing response quality for critical applications or computational efficiency for real-time deployment scenarios. 
+
+\subsection{Baselines}
+To comprehensively evaluate our approach, we compare against six distinct categories of baselines that represent the current state of conversational memory systems. These diverse baselines collectively provide a robust framework for evaluating the effectiveness of different memory architectures across various dimensions, including factual accuracy, computational efficiency, and scalability to extended conversations. Where applicable, unless otherwise specified, we set the temperature to 0 to ensure the runs are as reproducible as possible.
+
+\paragraph{Established \texttt{LOCOMO} Benchmarks}
+We first establish a comparative foundation by evaluating previously benchmarked methods on the \texttt{LOCOMO} dataset. These include five established approaches: LoCoMo \citep{maharana2024evaluating}, ReadAgent \citep{lee2024human}, MemoryBank \citep{zhong2024memorybank}, MemGPT \citep{packer2023memgpt}, and A-Mem \citep{xu2025mem}. These established benchmarks not only provide direct comparison points with published results but also represent the evolution of conversational memory architectures across different algorithmic paradigms. For our evaluation, we select the metrics where \texttt{gpt-4o-mini} was used for the evaluation. More details about these benchmarks are mentioned in Appendix \ref{appendix:baselines}.
+
+\paragraph{Open-Source Memory Solutions}
+Our second category consists of promising open-source memory architectures such as LangMem\footnote{\url{https://langchain-ai.github.io/langmem/}} (Hot Path) that have demonstrated effectiveness in related conversational tasks but have not yet been evaluated on the \texttt{LOCOMO} dataset. By adapting these systems to our evaluation framework, we broaden the comparative landscape and identify potential alternative approaches that may offer competitive performance. We initialized the LLM with \texttt{gpt-4o-mini} and used \texttt{text-embedding-small-3} as the embedding model.
+
+\paragraph{Retrieval-Augmented Generation (RAG)}
+As a baseline, we treat the entire conversation history as a document collection and apply a standard RAG pipeline. We first segment each conversation into fixed‐length chunks (128, 256, 512, 1024, 2048, 4096, and 8192 tokens), where 8192 is the maximum chunk size supported by our embedding model. All chunks are embedded using OpenAI’s \texttt{text-embedding-small-3} to ensure consistent vector quality across configurations. At query time, we retrieve the top $k$ chunks by semantic similarity and concatenate them as context for answer generation. Throughout our experiments we set $k$$\in$\{1,2\}: with $k$=1 only the single most relevant chunk is used, and with $k$=2 the two most relevant chunks (up to 16384 tokens) are concatenated. We avoid \(k>2\) since the average conversation length (26000 tokens) would be fully covered, negating the benefits of selective retrieval. By varying chunk size and \(k\), we systematically evaluate RAG performance on long‐term conversational memory tasks.
+
+
+\paragraph{Full-Context Processing}
+We adopt a straightforward approach by passing the entire conversation history within the context window of the LLM. This method leverages the model's inherent ability to process sequential information without additional architectural components. While conceptually simple, this approach faces practical limitations as conversation length increases, eventually increasing token cost and latency. Nevertheless, it establishes an important reference point for understanding the value of more sophisticated memory mechanisms compared to direct processing of available context.
+
+
+\paragraph{Proprietary Models} We evaluate OpenAI's memory\footnote{\url{https://openai.com/index/memory-and-new-controls-for-chatgpt/}} feature available in their ChatGPT interface, specifically using \texttt{gpt-4o-mini} for consistency. We ingest entire \texttt{LOCOMO} conversations with a prompt (see Appendix \ref{appendix:llm_judge}) into single chat sessions, prompting memory generation with timestamps, participant names, and conversation text. These generated memories are then used as complete context for answering questions about each conversation, intentionally granting the OpenAI approach privileged access to all memories rather than only question-relevant ones. This methodology accommodates the lack of external API access for selective memory retrieval in OpenAI's system for benchmarking.
+
+\paragraph{Memory Providers} We incorporate Zep \citep{rasmussen2025zep}, a memory management platform designed for AI agents. Using their platform version, we conduct systematic evaluations across the \texttt{LOCOMO} dataset, maintaining temporal fidelity by preserving timestamp information alongside conversational content. This temporal anchoring ensures that time-sensitive queries can be addressed through appropriately contextualized memory retrieval, particularly important for evaluating questions that require chronological awareness. This baseline represents an important commercial implementation of memory management specifically engineered for AI agents.
+
+
+\begin{table*}[!t]
+\centering
+\caption{Performance comparison of memory-enabled systems across different question types in the \texttt{LOCOMO} dataset. Evaluation metrics include F1 score (\Fone), BLEU-1 (\Bone), and LLM-as-a-Judge score (\Judge), with higher values indicating better performance. $\text{A-Mem}^{*}$ represents results from our re-run of A-Mem to generate LLM-as-a-Judge scores by setting temperature as 0. \memp~indicates our proposed architecture enhanced with graph memory. \textbf{Bold} denotes the best performance for each metric across all methods. ($\uparrow$) represents higher score is better.}
+\label{tab:results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l|ccc|ccc|ccc|ccc}
+\toprule
+\multirow{2}{*}{\textbf{Method}}
+  & \multicolumn{3}{c|}{\textbf{Single Hop}}
+  & \multicolumn{3}{c|}{\textbf{Multi-Hop}}
+  & \multicolumn{3}{c|}{\textbf{Open Domain}}
+  & \multicolumn{3}{c}{\textbf{Temporal}} \\
+  & \Fone~$\uparrow$ & \Bone~$\uparrow$ & \Judge~$\uparrow$
+  & \Fone~$\uparrow$ & \Bone~$\uparrow$ & \Judge~$\uparrow$
+  & \Fone~$\uparrow$ & \Bone~$\uparrow$ & \Judge~$\uparrow$
+  & \Fone~$\uparrow$ & \Bone~$\uparrow$ & \Judge~$\uparrow$ \\
+\midrule
+LoCoMo      & 25.02 & 19.75 & --    & 12.04 & 11.16 & --    & 40.36 & 29.05 & --    & 18.41 & 14.77 & --    \\
+ReadAgent   &  9.15 &  6.48 & --    &  5.31 &  5.12 & --    &  9.67 &  7.66 & --    & 12.60 &  8.87 & --    \\
+MemoryBank  &  5.00 &  4.77 & --    &  5.56 &  5.94 & --    &  6.61 &  5.16 & --    &  9.68 &  6.99 & --    \\
+MemGPT      & 26.65 & 17.72 & --    &  9.15 &  7.44 & --    & 41.04 & 34.34 & --    & 25.52 & 19.44 & --    \\
+A-Mem       & 27.02 & 20.09 & --    & 12.14 & 12.00 & --    & 44.65 & 37.06 & --    & 45.85 & 36.67 & --    \\
+A-Mem*      & 20.76 & 14.90 & 39.79 ± 0.38 &  9.22 &  8.81 & 18.85 ± 0.31 & 33.34 & 27.58 & 54.05 ± 0.22 & 35.40 & 31.08 & 49.91 ± 0.31 \\
+LangMem     & 35.51 & 26.86 & 62.23 ± 0.75 & 26.04 & \textbf{22.32} & 47.92 ± 0.47 & 40.91 & 33.63 & 71.12 ± 0.20 & 30.75 & 25.84 & 23.43 ± 0.39 \\
+Zep         & 35.74 & 23.30 & 61.70 ± 0.32 & 19.37 & 14.82 & 41.35 ± 0.48 & \textbf{49.56} & 38.92 & \textbf{76.60 ± 0.13} & 42.00 & 34.53 & 49.31 ± 0.50 \\
+OpenAI      & 34.30 & 23.72 & 63.79 ± 0.46 & 20.09 & 15.42 & 42.92 ± 0.63 & 39.31 & 31.16 & 62.29 ± 0.12 & 14.04 & 11.25 & 21.71 ± 0.20 \\
+\midrule
+\mem        & \textbf{38.72} & \textbf{27.13} & \textbf{67.13 ± 0.65}
+            & \textbf{28.64} & 21.58 & \textbf{51.15 ± 0.31}
+            & 47.65 & 38.72 & 72.93 ± 0.11
+            & 48.93 & \textbf{40.51} & 55.51 ± 0.34 \\
+\memp       & 38.09 & 26.03 & 65.71 ± 0.45
+            & 24.32 & 18.82 & 47.19 ± 0.67
+            & 49.27 & \textbf{40.30} & 75.71 ± 0.21
+            & \textbf{51.55} & 40.28 & \textbf{58.13 ± 0.44} \\
+\bottomrule
+\end{tabular}%
+}
+\end{table*}

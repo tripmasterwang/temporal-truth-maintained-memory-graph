@@ -1,0 +1,148 @@
+\section{\change{Background Details}}
+
+
+\subsection{\change{background about current memory systems}}
+\label{background_detail}
+\change{We describe both the mainstream memory architectures and the \textbf{LightMem} pipeline in terms of two major stages. 
+The first is the memory bank construction stage, which can be further decomposed into the three sub-stages (I), (II), and (III) described in the Section~\ref{main_text_preliminary}. 
+The second major stage concerns the usage of the memory system, which consists of retrieval and question answering (QA). }
+
+\paragraph{\change{Memory Bank Construction}}
+\change{As shown in Table~\ref{tab:detail_process}, we detail the workflows of the three sub-stages (I), (II), and (III) for naive RAG, prevailing memory systems, and our LightMem. 
+It can be observed that baseline memory systems typically perform their update stage during user–model interaction, which introduces substantial test-time latency. 
+In contrast, LightMem decouples this update process from online interaction, thereby significantly reducing test-time latency.
+All models involved in these processes are listed in Table~\ref{tab:function_model_map}. 
+As shown, LightMem introduces only one additional model, LLMlingua-2,beyond those used by baseline methods. 
+This model follows a lightweight BERT architecture and requires less than 2GB of GPU memory during inference, rendering its overhead negligible. 
+Moreover, for fairness, the latency introduced by this component is fully accounted for in our reported Runtime metric.}
+
+\begin{table*}[ht]
+\centering
+\caption{\change{The mainstream memory architectures and the LightMem pipeline of memory bank construction stage. 
+Black-font processes denote those executed during online test-time interactions, whereas \textcolor{red}{red-font} processes denote those executed offline.
+}}
+\vspace{0.5ex}
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{3pt}
+\small
+\scalebox{0.95}{
+\begin{threeparttable}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Method} & \textbf{(I) Segment} & \textbf{(II) Summary/Extrct} & \textbf{(III) Update}\\ 
+\midrule
+NaiveRAG
+& \makecell{$ \text{Raw dialog} \to f_{\text{seg}}()$ \\ 
+$\to \{ \text{seg}_i \} $}
+
+& $ \to f_{\text{index}}() \to \{\text{emb}_i\} $
+& \textbackslash
+\\
+\midrule
+\makecell{Other \\ Memory \\ Systems}
+& \makecell{$ \text{Raw dialog} \to f_{\text{seg}}()$ \\ 
+$\to \{ \text{seg}_i \} $}
+& \makecell{$ \to f_{\text{sum/extract}}() \to \{\text{memory entry}_i\} $ \\
+$ \to f_{\text{index}}() \to \{\text{emb}_i\} $
+}
+& \makecell{$ \to f_{\text{retrieve}}() \to \{\text{related entry}_i\} $ \\
+$ \to f_{\text{update}}() $ \\ 
+$  \to \{\text{add, delete, update, merge...}\} $
+}
+\\
+\midrule
+LightMem 
+& \makecell{$\text{Raw dialog} \to f_{\text{seg}}()$ \\ 
+$ \to \{\text{seg}_i\}$ \\
+$\to f_{\text{pre\_compress}}() $ \\
+$\to \{\text{comp\_seg}_i\}$ \\
+$\to \text{sensory buffer full} \to$ \\ 
+$f_{\text{topic}}() \to $ \\
+$\{\text{topic-wise comp\_seg}_i\}$
+}
+
+& \makecell{$\to \text{STM buffer full} $ 
+$\to f_{\text{sum/extract}}()$ \\
+$\to \{\text{topic}_i, \{\text{memory entry}_j\}\}$ \\
+$ \to f_{\text{index}}() \to \{\text{topic}_i, \{\text{emb}_j\}\} $
+}
+& \makecell{\color{red}$\text{Offline update trigger} $ \\
+\color{red}$\{\text{every entry}_i\} \to f_{\text{retrieve}}()$ \\
+\color{red}$\to \{\text{related entry}_j\} \to \{\text{update queue}\}$ \\
+\color{red}All update queues established \\
+\color{red}$ \to \text{parallel } f_{\text{update}}() $ \\ 
+\color{red}$ \to \{\text{add, delete, update, merge...}\} $
+}
+
+\\
+
+
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+}
+\label{tab:detail_process}
+\end{table*}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{l l l}
+\hline
+\textbf{Function} & \textbf{Model / Strategy} & \textbf{Implementation in This Paper} \\
+\hline
+$f_{\text{seg}}()$ & Segmentation strategy & Turn-level granularity input \\
+$f_{\text{index}}()$ & Embedding model & all-MiniLM-L6-v2 \\
+$f_{\text{sum/extract}}()$ & System backbone model & GPT-4o-mini; Qwen3-30B-A3B-Instruct-2507 \\
+$f_{\text{retrieve}}()$ & Retrieval strategy & Cosine similarity vector retrieval \\
+$f_{\text{update}}()$ & System backbone model & GPT-4o-mini; Qwen3-30B-A3B-Instruct-2507 \\
+\color{red}$f_{\text{pre\_compress}}()$ & \color{red}Token compression model & \color{red}LLMlingua-2 \\
+\color{red}$f_{\text{topic}}()$ & \color{red}Topic segmentation model & \color{red}LLMlingua-2 \\
+$f_{\text{chat}}()$ & Chat model & GPT-4o-mini; Qwen3-30B-A3B-Instruct-2507 \\
+\hline
+\end{tabular}
+\caption{\change{Mapping between functions, their roles, and the concrete models used in this paper. Black-font entries denote models shared by both LightMem and baseline methods, whereas \textcolor{red}{red-font} entries denote models unique to LightMem.}}
+\label{tab:function_model_map}
+\end{table}
+
+\paragraph{\change{Retrieval and Usage}}
+\change{After the memory bank construction stage, we obtain an up-to-date memory bank. 
+When a new user query arrives, the memory system use $f_{\text{retrieve}}()$ to retrieve relevant entries from this repository, appends them to the query, and then prompts the chat model $f_{\text{chat}}()$ to produce a response.} 
+
+
+% \subsection{Metric Details}
+
+% \label{metric_detail}
+
+\subsection{\change{Notation and Complexity Details}}
+\label{notation_detail}
+
+\begin{table}[h]
+\centering
+\caption{\change{Notation used in complexity analysis (\S Section~\ref{sec:complexity_analysis}).}}
+\begin{tabular}{p{2cm} p{12cm}}
+\toprule
+\textbf{Symbol} & \textbf{Definition} \\
+\midrule
+$N$ & Total number of turns in a dialogue history. \\
+\midrule
+$T$ & Average number of tokens per turn. \\
+\midrule
+$r$ & Token compression rate (as defined in the main paper). After one compression step, only a fraction $r$ of tokens is retained. \\
+\midrule
+$x$ & Number of compression iterations. In LightMem, the \textit{pre-compress} module may be invoked multiple times for the same message to remove redundancy until the message is sufficiently compact. This occurs frequently in datasets such as \textbf{LongMemEval}. All time costs are included in runtime metrics. \\
+\midrule
+$th$ & Capacity of the Short-Term Memory (STM) buffer, as defined in the paper. \\
+\midrule
+\makecell{$L_{\text{sum-in}}$ / $L_{\text{sum-out}}$} & Number of tokens in the \textbf{input prompt template} and \textbf{output} of a single backbone LLM call for \textit{summarization}. These are similar across memory frameworks. \\
+\midrule
+$M_1$ / $M_2$ & Number of memory entries produced from a single summarization operation under Other Memory Systems ($M_1$) and LightMem ($M_2$). \\
+\midrule
+$L_{\text{up-in}}$ / $L_{\text{up-out}}$ & Number of tokens in the \textbf{input prompt template} and \textbf{output} of a single backbone LLM call for \textit{memory update}. Similar across frameworks. \\
+\midrule
+$R_1$ / $R_2$ & Proportion of summary entries that successfully retrieve at least one relevant memory entry (triggering an update) for Other Memory Systems ($R_1$) and LightMem ($R_2$). Some entries do not retrieve any relevant counterparts and thus do not trigger updates. \\
+\bottomrule
+\end{tabular}
+\label{tab:notation}
+\end{table}
+

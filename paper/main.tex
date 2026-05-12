@@ -39,12 +39,15 @@
 \newcommand{\FlatLMEAccABS}{44.4}
 \newcommand{\FlatLMEF}{0.211}
 \newcommand{\FlatTokens}{1100}
-\newcommand{\AmemLMEAcc}{64.0}
-\newcommand{\AmemLMEAccKU}{87.5}
-\newcommand{\AmemLMEAccTR}{38.5}
-\newcommand{\AmemLMEAccMS}{46.2}
-\newcommand{\AmemLMEAccABS}{100.0}
-\newcommand{\AmemLMEF}{0.218}
+\newcommand{\AmemLMEAcc}{67.3}
+\newcommand{\AmemLMEAccKU}{78.3}
+\newcommand{\AmemLMEAccTR}{45.0}
+\newcommand{\AmemLMEAccMS}{60.0}
+\newcommand{\AmemLMEAccSSA}{100.0}
+\newcommand{\AmemLMEAccSSP}{44.4}
+\newcommand{\AmemLMEAccSSU}{95.2}
+\newcommand{\AmemLMEAccABS}{55.6}
+\newcommand{\AmemLMEF}{0.224}
 \newcommand{\TTMGLMEAcc}{61.3}
 \newcommand{\TTMGLMEAccKU}{78.3}
 \newcommand{\TTMGLMEAccTR}{52.5}
@@ -54,10 +57,10 @@
 \newcommand{\TTMGLMEAccSSU}{100.0}
 \newcommand{\TTMGLMEAccABS}{88.9}
 \newcommand{\TTMGLMEF}{0.171}
-\newcommand{\DeltaLMEAcc}{-6.7}
+\newcommand{\DeltaLMEAcc}{-6.0}
 \newcommand{\DeltaLMEKU}{0.0}
-\newcommand{\DeltaLMETR}{0.0}
-\newcommand{\DeltaLMEABS}{44.4}
+\newcommand{\DeltaLMETR}{7.5}
+\newcommand{\DeltaLMEABS}{33.3}
 \newcommand{\DeltaLMESSU}{9.5}
 
 % Router variants. TTMG-Abstain: route on TTMG's own abstention flag (no labels).
@@ -84,10 +87,50 @@
 
 % Paired McNemar tests (two-sided exact binomial on discordant pairs).
 \newcommand{\McnemarOverall}{0.21}
-\newcommand{\McnemarABS}{0.125}
-\newcommand{\McnemarABSonesided}{0.0625}
+\newcommand{\McnemarABS}{0.125}  % n=9 stratified subset
+\newcommand{\McnemarABSonesided}{0.0625}  % n=9 stratified subset
+\newcommand{\McnemarABSFull}{1.00}  % full abstention slice, n=30, b=1 c=1
 \newcommand{\McnemarSSU}{0.50}
 \newcommand{\McnemarSSA}{0.07}
+
+% Effect sizes (Cohen's h for proportions). |h|>0.2 small, >0.5 medium, >0.8 large.
+\newcommand{\CohenABSFlat}{1.00}
+\newcommand{\CohenABSAmem}{0.78}
+\newcommand{\CohenSSUFlat}{0.63}
+\newcommand{\CohenSSUAmem}{0.44}
+\newcommand{\CohenTRFlat}{0.00}
+\newcommand{\CohenTRAmem}{0.15}
+\newcommand{\CohenOverallFlat}{-0.14}
+\newcommand{\CohenOverallAmem}{-0.12}
+
+% Component breakdown (calls per question on N=150 subset, 150 questions total).
+\newcommand{\AmemWriterCalls}{4931}
+\newcommand{\TTMGWriterCalls}{450}
+\newcommand{\TTMGLinkerCalls}{1107}
+\newcommand{\TTMGParserCalls}{150}
+\newcommand{\AmemIngestSec}{115.1}
+\newcommand{\TTMGIngestSec}{80.3}
+\newcommand{\FlatIngestSec}{0.4}
+\newcommand{\FlatAnswerSec}{2.9}
+\newcommand{\AmemAnswerSec}{2.9}
+\newcommand{\TTMGAnswerSec}{4.7}
+
+% Full abstention-only evaluation (n=30): Flat and TTMG tie on accuracy,
+% but TTMG abstains explicitly on 80% of questions while Flat never does.
+\newcommand{\FlatABSFull}{76.7}
+\newcommand{\TTMGABSFull}{76.7}
+\newcommand{\TTMGABSFullAbstainRate}{80.0}
+\newcommand{\FlatABSFullAbstainRate}{0.0}
+
+% Full 500-question LongMemEval-S for Flat (scale verification).
+\newcommand{\FlatFullAcc}{70.0}
+\newcommand{\FlatFullSSU}{92.9}
+\newcommand{\FlatFullSSA}{94.6}
+\newcommand{\FlatFullSSP}{53.3}
+\newcommand{\FlatFullMS}{61.7}
+\newcommand{\FlatFullTR}{57.1}
+\newcommand{\FlatFullKU}{74.4}
+\newcommand{\FlatFullABS}{70.0}
 
 % 95% bootstrap CIs (percentile, B=5000) on the overall numbers.
 \newcommand{\FlatLMECIlo}{60.7}
@@ -99,11 +142,11 @@
 \newcommand{\AblContradict}{58.7}
 
 % Efficiency.
-\newcommand{\AmemTokens}{35904}
+\newcommand{\AmemTokens}{37260}
 \newcommand{\TTMGTokens}{13603}
-\newcommand{\AmemLatency}{117.1}
+\newcommand{\AmemLatency}{118.1}
 \newcommand{\TTMGLatency}{85.0}
-\newcommand{\TokensOverhead}{-62.1}
+\newcommand{\TokensOverhead}{-63.5}
 
 \title{Temporal Truth-Maintained Memory Graphs:\\
 Truth Maintenance for Long-Horizon Agent Memory}

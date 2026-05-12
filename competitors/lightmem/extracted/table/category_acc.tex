@@ -1,0 +1,51 @@
+\begin{table*}[htbp]
+\centering
+\caption{\textbf{Category-wise Accuracy}. Accuracy (\%) by method across question types. Parentheses indicate category proportion and sample size. For GPT, LightMem is configured with parameters $r=0.7$ and $\text{th}=512$; for Qwen, LightMem is configured with $r=0.4$ and $\text{th}=768$.
+}
+\vspace{0.5ex}
+\renewcommand{\arraystretch}{1.1}
+\setlength{\tabcolsep}{3pt}
+\small
+\scalebox{0.95}{
+\begin{threeparttable}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+\textbf{Method} &
+\makecell{\textbf{Temporal}\\\makecell{\footnotesize ( $n{=}133$)}} &
+\makecell{\textbf{Multi-Session}\\\makecell{\footnotesize ($n{=}133$)}} &
+\makecell{\textbf{Knowledge-Update}\\\makecell{\footnotesize ($n{=}78$)}} &
+\makecell{\textbf{Single-User}\\\makecell{\footnotesize ($n{=}70$)}} &
+\makecell{\textbf{Single-Assistant}\\\makecell{\footnotesize ($n{=}56$)}} &
+\makecell{\textbf{Single-Preference}\\\makecell{\footnotesize ($n{=}30$)}} \\
+\midrule
+
+% ===== GPT-4o-mini section =====
+\rowcolor{gptbar}\multicolumn{7}{c}{\openailogo\ \textbf{GPT-4o-mini}}\\
+\midrule
+\rowcolor{gptgray} \textit{Full Text}    & 31.58 & 45.45 & 76.92 & 87.14 & 89.29 & 36.67 \\
+\rowcolor{gptgray} \textit{Naive RAG}    & 39.85 & 48.48 & 67.95 & 90.00 & 98.21 & 53.33 \\
+\rowcolor{gptgray} \textit{LangMem}      & 15.79 & 20.30 & 66.67 & 60.00 & 46.43 & 60.00 \\
+\rowcolor{gptgray} \textit{A-MEM}        & 47.36 & 48.87 & 64.11 & 92.86 & 96.43 & 46.67 \\
+\rowcolor{gptgray} \textit{MemoryOS}     & 32.33 & 31.06 & 48.72 & 80.00 & 64.29 & 30.00 \\
+\rowcolor{gptgray} \textit{Mem0}         & 40.15 & 46.21 & 70.12 & 81.43 & 41.07 & 60.00 \\
+\rowcolor{gptgray} \textit{LightMem}     & 67.18 & 71.74 & 83.12 & 87.14 & 32.14 & 68.18 \\
+
+\addlinespace[0.4ex]
+\midrule
+
+% ===== Qwen section =====
+\rowcolor{qwenbar}\multicolumn{7}{c}{\qwenlogo\ \textbf{Qwen3-30B-A3B-Instruct-2507}}\\
+\midrule
+\rowcolor{qwenlav} \textit{Full Text}    & 33.08 & 35.61 & 76.92 & 82.86 & 87.50 & 50.00 \\
+\rowcolor{qwenlav} \textit{Naive RAG}    & 36.84 & 47.73 & 65.38 & 91.43 & 98.21 & 70.00 \\
+\rowcolor{qwenlav} \textit{LangMem}      & 37.60 & 38.35 & 67.95 & 78.57 & 42.86 & 70.00 \\
+\rowcolor{qwenlav} \textit{A-MEM}        & 51.88 & 51.12 & 76.93 & 90.00 & 96.43 & 40.00 \\
+\rowcolor{qwenlav} \textit{MemoryOS}     & 28.57 & 36.84 & 61.54 & 72.86 & 92.86 & 33.33 \\
+\rowcolor{qwenlav} \textit{Mem0}         & 41.94 & 28.13 & 28.57 & 55.32 & 26.09 & 81.82 \\
+\rowcolor{qwenlav} \textit{LightMem}         & 54.20 & 51.91 & 66.67 & 80.00 & 31.25 & 80.00 \\
+\bottomrule
+\end{tabular}
+\end{threeparttable}
+}
+\label{tab:catwise_acc_by_model}
+\end{table*}

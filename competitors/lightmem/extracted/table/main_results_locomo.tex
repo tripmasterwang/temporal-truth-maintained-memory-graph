@@ -1,0 +1,77 @@
+\begin{table*}[t]
+\centering
+\caption{\change{Effectiveness and efficiency comparison on \textsc{LoCoMo}. Due to space limitations and for ease of comparison, we merge the results before and after LightMem’s offline update into a single row. The ACC reported corresponds to the performance after the offline update.
+}}
+\renewcommand{\arraystretch}{1.00}
+\setlength{\tabcolsep}{2.5pt}
+\setlength\dashlinedash{1.0pt}
+\setlength\dashlinegap{2pt}
+\small
+\scalebox{1.00}{
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\multirow{2}{*}{\textbf{Method}} & \multirow{2}{*}{\textbf{ACC (\%)}} & 
+\multicolumn{2}{c}{\textbf{Summary Tokens (k)}} & 
+\multicolumn{2}{c}{\textbf{Update Tokens (k)}} & 
+\multirow{2}{*}{\textbf{Total (k)}} & 
+\multirow{2}{*}{\textbf{Calls}} & 
+\multirow{2}{*}{\textbf{Runtime (s)}} \\
+\cmidrule(lr){3-4}\cmidrule(lr){5-6}
+ &  & \textbf{In} & \textbf{Out} & \textbf{In} & \textbf{Out} &  &  &  \\
+\midrule
+
+% ===== GPT-4o-mini 分区 =====
+\rowcolor{gptbar}\multicolumn{9}{c}{\openailogo\ \textbf{GPT-4o-mini}}\\
+\midrule
+\rowcolor{gptgray} FullText          & 71.83 & -- & -- & -- & -- & -- & -- & -- \\
+\rowcolor{gptgray} NaiveRAG          & 63.64 & -- & -- & -- & -- & -- & -- & -- \\
+\rowcolor{gptgray} LangMem           & 57.20 & -- & -- & 898.27 & 111.95 & 1010.22 & 920.62 & 2229.37 \\
+\rowcolor{gptgray} A-MEM             & 64.16 & 182.74 & 49.29 & 729.89 & 187.52 & 1149.43 & 1175.47 & 6060.73 \\
+\rowcolor{gptgray} MemoryOS(locomo)\footnotemark   & 58.25 & 110.98 & 33.40 & 78.08  & 64.54 & 287.00 & 553.45 & 2422.05 \\
+\rowcolor{gptgray} MemoryOS(regular)  & 54.87 & 226.86 & 46.61 & 177.66 & 75.34 & 526.48 & 1016.06 & 3332.59 \\
+\rowcolor{gptgray} Mem0              & 61.69 & 851.32 & 20.53 & 632.12 & 189.42 & 1693.39 & 1602.20 & 4432.87 \\
+\hdashline
+\rowcolor{gptgray} LightMem(0.7,512) & \underline{71.95} & 73.19 & 20.13 & 6.05 & 0.40 & 99.76 & 41.65 & 848.49 \\
+\rowcolor{gptgray} LightMem(0.7,768) & 70.26 & \textbf{57.54} & \underline{18.92} & \textbf{3.79} & \textbf{0.23} & \textbf{80.48} & \textbf{29.55} & \textbf{737.80} \\
+\rowcolor{gptgray} LightMem(0.8,768) & \textbf{72.99} & \underline{62.82} & \textbf{17.95} & \underline{4.14} & \underline{0.28} & \underline{85.19} & \underline{29.83} & \underline{815.32} \\
+
+\addlinespace[0.4ex]
+\midrule
+
+% ===== Qwen 分区 =====
+\rowcolor{qwenbar}\multicolumn{9}{c}{\qwenlogo\ \textbf{Qwen3-30B-A3B-Instruct-2507}}\\
+\midrule
+\rowcolor{qwenlav} FullText          & \textbf{74.87} & -- & -- & -- & -- & -- & -- & -- \\
+\rowcolor{qwenlav} NaiveRAG          & 66.95 & -- & -- & -- & -- & -- & -- & -- \\
+\rowcolor{qwenlav} LangMem           & 60.53 & -- & -- & 1004.35 & 138.02 & 1142.37 & 1005.37 & 2268.57 \\
+\rowcolor{qwenlav} A-MEM             & 56.10 & 158.29 & 60.85 & 924.19 & 483.51 & 1626.80 & 1175.40 & 5543.90 \\
+\rowcolor{qwenlav} MemoryOS(locomo)  & 61.04 & 122.21 & 53.12 & 104.43 & 81.75 & 361.51 & 414.70 & 1269.70 \\
+\rowcolor{qwenlav} MemoryOS(regular)  & 51.30 & 228.85 & 51.60 & 242.27 & 143.63 & 666.35 & 1004.60 & 1982.20 \\
+\rowcolor{qwenlav} Mem0              & 43.31 & 827.09 & \textbf{18.64} & 763.88 & 189.80 & 1799.40 & 1614.50 & 4540.70 \\
+\hdashline
+\rowcolor{qwenlav} LightMem(0.6,768)  & 71.36 & \textbf{56.68} & \underline{34.14} & \textbf{8.31} & \textbf{0.74} & \textbf{99.87} & \textbf{29.10} & \textbf{815.70} \\
+\rowcolor{qwenlav} LightMem(0.8,1024) & \underline{72.60} & \underline{61.38} & 36.33 & \underline{9.86} & \underline{0.88} & \underline{108.45} & \underline{32.00} & \underline{1079.40} \\
+
+% \addlinespace[0.4ex]
+% \midrule
+
+% % ===== GLM 分区 =====
+% \rowcolor{glmblue}\multicolumn{9}{c}{\zhipulogo\ \textbf{GLM-4.6}}\\
+% \midrule
+% \rowcolor{glmblue} FullText          & 36.71 & --      & --      & --      & --      & 103.38 & --     & -- \\
+% \rowcolor{glmblue} NaiveRAG          & \textbf{73.20} & --      & --      & --      & --      & --     & --     & 53,725.15 \\
+% \rowcolor{glmblue} LangMem           & 49.20 & --      & --      & 3,052.42 & 7.03   & 3,059.45 & 314.61 & 5,577.91 \\
+% \rowcolor{glmblue} A-MEM             & 70.60 & 444.95  & 63.40   & 1,992.04 & 403.39 & 2,903.78 & 450.40 & 8,068.80 \\
+% \hdashline
+% \rowcolor{glmblue} LightMem           &       &         &         &         &         &         &        &        \\
+% \rowcolor{glmblue} 
+% $r$=0.5, $th$=256 & \underline{73.00} & \underline{16.55} & 14.06 & -- & -- & \underline{30.61} & \underline{10.78} & \textbf{1,014.37} \\
+% \rowcolor{glmblue} 
+% $r$=0.6, $th$=256 & \textbf{73.20} & \textbf{16.55} & \underline{13.99} & -- & -- & 30.54 & \textbf{10.78} & 1,077.69 \\
+% \rowcolor{glmblue} 
+% $r$=0.7, $th$=512 & 72.80 & \textbf{16.55} & \textbf{13.91} & -- & -- & \textbf{30.46} & 10.78 & \underline{1,038.19} \\
+
+\bottomrule
+\end{tabular}}
+\label{tab:memory_comparison_locomo}
+\end{table*}

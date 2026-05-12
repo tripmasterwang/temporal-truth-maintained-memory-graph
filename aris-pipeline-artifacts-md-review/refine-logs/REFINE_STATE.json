@@ -1,0 +1,25 @@
+{
+  "phase": "done",
+  "round": 4,
+  "threadId": "019dcdd2-8a56-7c51-8017-9ac14ad3038e",
+  "last_score": 9.0,
+  "last_verdict": "READY",
+  "status": "completed",
+  "timestamp": "2026-04-27T15:00:00+08:00",
+  "pivot": "drift_calibrated_hybrid_reranker",
+  "final_method_name": "CalLB",
+  "outputs": [
+    "FINAL_PROPOSAL.md",
+    "REVIEW_SUMMARY.md",
+    "REFINEMENT_REPORT.md",
+    "round-0-initial-proposal.md",
+    "round-1-review.md",
+    "round-1-refinement.md",
+    "round-2-review.md",
+    "round-2-refinement.md",
+    "round-3-review.md",
+    "round-3-refinement.md",
+    "round-4-review.md",
+    "score-history.md"
+  ]
+}

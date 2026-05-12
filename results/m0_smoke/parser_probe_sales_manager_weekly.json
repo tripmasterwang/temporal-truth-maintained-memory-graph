@@ -1,0 +1,170 @@
+[
+  {
+    "qid": "content_meeting_notes_163_meeting_notes_1",
+    "task": "remembering",
+    "question": "Write meeting notes for: Strategic Account Review: TelcoConnect Group Integration & Expansion",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_project_proposal_163_project_proposal_1",
+    "task": "remembering",
+    "question": "Write a project proposal for 'Global Healthcare Provider Partnership Expansion Initiative'",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_project_proposal_163_project_proposal_2",
+    "task": "remembering",
+    "question": "Write a project proposal for 'Regional 5G Enterprise Solutions Expansion Initiative'",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_email_writeup_163_email_writeup_1",
+    "task": "remembering",
+    "question": "Write an email about: To provide an update on the Q3 performance for key enterprise accounts and outline strategic priorities for the upcoming period.",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "content_meeting_notes_163_meeting_notes_2",
+    "task": "remembering",
+    "question": "Write meeting notes for: Strategic Account Review: Global Compliance Solutions for Key Manufacturing Client",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "activity_food_total_163",
+    "task": "reasoning",
+    "question": "What is my total food spending this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "food_spending"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||food_spending"
+  },
+  {
+    "qid": "activity_steps_total_163",
+    "task": "reasoning",
+    "question": "How many total steps have I taken this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "step_count"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||step_count"
+  },
+  {
+    "qid": "goal_food_expenses_coffee_163_0",
+    "task": "reasoning",
+    "question": "Am I meeting my coffee budget goal?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "coffee_budget_goal"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||coffee_budget_goal"
+  },
+  {
+    "qid": "goal_step_tracker_daily_steps_163_0",
+    "task": "reasoning",
+    "question": "Am I meeting my daily step goal?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "daily_step_goal_met"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||daily_step_goal_met"
+  },
+  {
+    "qid": "activity_food_coffee_163",
+    "task": "reasoning",
+    "question": "How much have I spent on coffee this week?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "coffee_spending"
+    },
+    "slot_type": "single_valued",
+    "asks_truth_of_fact": true,
+    "applicable": true,
+    "canonical_key_str": "user||coffee_spending"
+  },
+  {
+    "qid": "pref_movies_general_163",
+    "task": "recommending",
+    "question": "Can you suggest me a movie?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_books_general_163",
+    "task": "recommending",
+    "question": "I'm looking for a good book to read. Any suggestions?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_music_general_163",
+    "task": "recommending",
+    "question": "What music would you recommend?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_travel_general_163",
+    "task": "recommending",
+    "question": "I'm planning a trip. Any destination suggestions?",
+    "claim_key": null,
+    "slot_type": "unknown",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": ""
+  },
+  {
+    "qid": "pref_movies_genres_163",
+    "task": "recommending",
+    "question": "Can you recommend a movie in genres I enjoy?",
+    "claim_key": {
+      "entity": "user",
+      "slot_name": "enjoyed_movie_genres"
+    },
+    "slot_type": "multi_valued",
+    "asks_truth_of_fact": false,
+    "applicable": false,
+    "canonical_key_str": "user||enjoyed_movie_genres"
+  }
+]

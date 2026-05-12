@@ -1,0 +1,26 @@
+\section{\change{Complexity analysis about LightMem}}
+\label{sec:complexity_analysis}
+
+
+\begin{table}[h]
+\label{tab:complexity_ana}
+\centering
+\setlength{\tabcolsep}{2pt} % 缩小列间距
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Method} & \textbf{Summary Tokens} & \textbf{Update Tokens} & \textbf{API Calls} & \textbf{Runtime} \\
+\hline
+\makecell{Baselines} & $N(L_{\text{sum-in}} + T + L_{\text{sum-out}})$ & $NM_1R_1(L_{\text{up-in}} + L_{\text{up-out}})$ & $N$ & $O(N)$ \\
+\hline
+LightMem & $\frac{N r^x T}{th}(L_{\text{sum-in}} + th + L_{\text{sum-out}})$ & $\frac{N r^x T}{th} M_2 R_2 (L_{\text{up-in}} + L_{\text{up-out}})$ & $\frac{N r^x T}{th}$ & $O\Big(\frac{N r^x T}{th}\Big)$ \\
+\hline
+\end{tabular}
+\caption{\change{Complexity comparison between LightMem and other memory systems. The specific definitions of each symbol are provided in the Appendix~\ref{notation_detail}.}}
+\label{tab:complexity_comparison}
+\end{table}
+
+\change{As shown in Table~\ref{tab:complexity_ana},  we consider a dialogue with \(N\) turns, each containing on average \(T\) tokens. In conventional memory systems, each turn triggers a summarization call, consuming \(L_{\text{sum-in}} + T + L_{\text{sum-out}}\) tokens and totaling \(N(L_{\text{sum-in}} + T + L_{\text{sum-out}})\) tokens with \(N\) API calls. Each summarization produces \(M_1\) memory entries, a fraction \(R_1\) of which retrieve at least one relevant neighbor and trigger an update, resulting in an update-token cost of \(NM_1R_1(L_{\text{up-in}} + L_{\text{up-out}})\).}
+
+\change{In \textbf{LightMem}, each turn is first passed through iterative pre-compression submodule, retaining only \(r^x T\) tokens after \(x\) iterations, and appended to a short-term memory (STM) buffer of capacity \(th\). Summarization is triggered only when the buffer reaches capacity, yielding \(\frac{Nr^x T}{th}\) summarization calls, each consuming \(L_{\text{sum-in}} + th + L_{\text{sum-out}}\) tokens. Each summarization produces \(M_2\) memory entries, but stricter retrieval constraints, including semantic similarity and timestamp filtering, reduce the fraction \(R_2\) that trigger updates. Hence, the update phase involves \(\frac{Nr^x T}{th} M_2 R_2\) calls, with a total token cost of \(\frac{Nr^x T}{th} M_2 R_2 (L_{\text{up-in}} + L_{\text{up-out}})\).}
+
+\change{Overall, \textbf{LightMem} requires only \(\frac{Nr^x T}{th}\) API calls for both summarization operations, substantially reducing token usage and call frequency compared to other systems. Correspondingly, the runtime complexity of other memory systems is \(O(N)\), while LightMem achieves a reduced runtime of \(O\Big(\frac{Nr^x T}{th}\Big)\), reflecting the efficiency gain from compressed summarization and selective updates.}

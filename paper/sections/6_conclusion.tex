@@ -15,16 +15,19 @@ surfaced, and strategic abstention when the memory lacks sufficient
 information to answer reliably. This approach directly enforces a
 coherence constraint over the memory's contents.
 
-Empirically, TTMG achieves paired set-inclusion gains on two
-truth-maintenance-sensitive capability slices -- abstention
-(+\DeltaLMEABS{}\,pp; paired 4--0) and single-session-user
-(+\DeltaLMESSU{}\,pp; paired 2--0) -- at \TokensOverhead\% of A-Mem's
-token cost. On the unselected bulk of the benchmark, TTMG and Flat
-RAG are statistically indistinguishable (overall $p{=}$\McnemarOverall);
-composing the two via inference-time routers (TTMG-Abstain
-\AbstainRouterAcc\%, TTMG+R-LLM \LLMRouterAcc\%) matches Flat RAG's
-overall accuracy while preserving TTMG's abstention and supersede
-behaviours. The oracle upper bound of \OracleLMEAcc\% documents
+Empirically, TTMG matches Flat RAG on outcome accuracy at
+statistical parity on both overall LongMemEval-S
+($p{=}$\McnemarOverall) and the full abstention set
+($p{=}$\McnemarABSFull, $n{=}30$), while delivering
+\TokensOverhead\% of A-Mem's token cost and providing an explicit
+abstention policy that fires on
+\TTMGABSFullAbstainRate\% of abstention questions (versus 0\% for
+Flat). On single-session-user questions TTMG captures every Flat
+correct answer and two more (paired 2--0, $n{=}21$). Composing TTMG
+with Flat RAG at inference time via our TTMG-Abstain
+(\AbstainRouterAcc\%) or TTMG+R-LLM (\LLMRouterAcc\%) routers
+recovers overall accuracy while preserving TTMG's supersede
+behaviour wherever the router fires. The oracle upper bound of \OracleLMEAcc\% documents
 that claim-level and raw-text retrieval carry substantially
 complementary information; harvesting
 that complementarity beyond the feature router is a direct target for
